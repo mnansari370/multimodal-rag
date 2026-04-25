@@ -1,59 +1,108 @@
+# =========================
 # Python
+# =========================
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.egg-info/
-dist/
-build/
-*.egg
 .eggs/
+build/
+dist/
 
-# Virtual environments
+# =========================
+# Environments
+# =========================
 .env
-.venv
-env/
+.env.*
+.venv/
 venv/
+env/
+*.key
+secrets.yaml
+.env.local
 
-# Large data files — keep structure, skip binaries and bulk pages
-data/raw/
-data/embeddings/*.bin
-data/embeddings/*.faiss
-data/embeddings/*.index
-data/embeddings/chunks.jsonl
-data/processed/*.pkl
-data/processed/*.parquet
-# Individual page JSONs are derivable from the download script; commit only the chunks
-data/processed/page_*.json
-
-# Model weights downloaded at runtime
-models/
-
-# Jupyter
+# =========================
+# Jupyter / IDE / OS
+# =========================
 .ipynb_checkpoints/
 *.ipynb
-
-# Results and logs (keep structure, not bulk outputs)
-results/logs/
-results/*.log
-*.log
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
 
-# HPC
+# =========================
+# Heavy data: raw / processed corpus
+# Keep folder structure using .gitkeep only
+# =========================
+data/raw/*
+!data/raw/.gitkeep
+
+data/processed/*
+!data/processed/.gitkeep
+
+# =========================
+# Heavy indexes / embeddings
+# =========================
+data/embeddings/*
+!data/embeddings/.gitkeep
+
+*.faiss
+*.index
+*.pkl
+*.bin
+*.npy
+*.npz
+*.parquet
+
+# =========================
+# Benchmark images
+# Do not push real screenshots unless intentionally small/public
+# =========================
+data/benchmark/images/*
+!data/benchmark/images/.gitkeep
+
+# Keep benchmark JSON files
+!data/benchmark/benchmark.json
+!data/benchmark/benchmark_template.json
+!data/benchmark/README.md
+
+# =========================
+# Results and logs
+# Keep final small tables/json if needed, ignore logs
+# =========================
+results/logs/*
+!results/logs/.gitkeep
+
+*.log
 *.out
 *.err
 slurm-*.out
 
-# API keys / secrets
-.env.local
-secrets.yaml
-*.key
+# Optional: ignore very large result artifacts
+results/*.png
+results/*.jpg
+results/*.jpeg
+results/*.pdf
+
+# Keep small report-ready result JSON/Markdown tables
+!results/*.json
+!results/tables/
+!results/tables/*.md
+
+# =========================
+# Model/cache files
+# =========================
+models/
+checkpoints/
+.cache/
+huggingface/
+wandb/
+
+# =========================
+# SLURM temporary files
+# =========================
+core.*

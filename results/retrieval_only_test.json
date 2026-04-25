@@ -1,0 +1,36 @@
+{
+  "timestamp": "20260425_171835",
+  "benchmark_size": 5,
+  "mode": "retrieval_only",
+  "config": {
+    "retriever_type": "hybrid",
+    "retrieval_top_k": 50,
+    "use_reranker": true,
+    "reranker_top_k": 20,
+    "pruning_strategy": "threshold",
+    "pruning_threshold": 0.0,
+    "context_top_k": 5,
+    "mmr_lambda": 0.7,
+    "generator_backend": "local",
+    "generator_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    "max_new_tokens": 512,
+    "use_vlp": true,
+    "vlp_backend": "internvl2",
+    "vlp_model": null,
+    "bm25_path": "data/embeddings/bm25.pkl",
+    "faiss_path": "data/embeddings/dense.faiss",
+    "chunks_path": "data/embeddings/chunks.jsonl"
+  },
+  "retrieval_metrics": {
+    "mrr": 0.4792,
+    "recall@5": 0.5,
+    "hit@5": 0.6,
+    "ndcg@5": 0.4453,
+    "recall@10": 0.5,
+    "hit@10": 0.6,
+    "ndcg@10": 0.4453,
+    "recall@20": 0.6,
+    "hit@20": 0.8,
+    "ndcg@20": 0.4753
+  }
+}

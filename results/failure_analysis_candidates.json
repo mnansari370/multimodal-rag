@@ -1,0 +1,349 @@
+[
+  {
+    "id": "ex_005",
+    "category": "optimizer",
+    "difficulty": "medium",
+    "query": "Why does my model produce NaN loss after a few training steps?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/optim.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/autograd.html",
+      "/docs/stable/notes/amp_examples.html",
+      "/docs/stable/autograd.html",
+      "/docs/stable/notes/modules.html",
+      "/docs/stable/generated/torch.autograd.backward.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_007",
+    "category": "dtype",
+    "difficulty": "easy",
+    "query": "What causes 'RuntimeError: Expected all tensors to be on the same device'?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensor_attributes.html",
+      "https://pytorch.org/docs/stable/notes/cuda.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.signal.windows.hamming.html",
+      "/docs/stable/generated/torch.signal.windows.hann.html",
+      "/docs/stable/generated/torch.signal.windows.general_cosine.html",
+      "/docs/stable/generated/torch.signal.windows.gaussian.html",
+      "/docs/stable/testing.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_010",
+    "category": "amp",
+    "difficulty": "medium",
+    "query": "How do I use GradScaler correctly with mixed precision?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.sparse_adam.SparseAdam.html",
+      "/docs/stable/generated/torch.optim.SparseAdam.html",
+      "/docs/stable/generated/torch.optim.sgd.SGD_class.html",
+      "/docs/stable/generated/torch.optim.SGD.html",
+      "/docs/stable/generated/torch.optim.radam.RAdam_class.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_013",
+    "category": "batch_norm",
+    "difficulty": "medium",
+    "query": "Why does BatchNorm behave differently in train vs eval mode?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/autograd.html",
+      "/docs/stable/notes/modules.html",
+      "/docs/stable/generated/torch.nn.utils.fusion.fuse_linear_bn_eval.html",
+      "/docs/stable/generated/torch.nn.utils.fuse_linear_bn_eval.html",
+      "/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_014",
+    "category": "distributed",
+    "difficulty": "hard",
+    "query": "How do I fix the 'RuntimeError: NCCL error: unhandled system error' in DDP?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/notes/ddp.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.error_on_graph_break.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.skipped_functions.html",
+      "/docs/stable/notes/cuda.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_015",
+    "category": "optimizer",
+    "difficulty": "medium",
+    "query": "What is gradient accumulation and how do I implement it correctly?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.Optimizer.zero_grad.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/amp_examples.html",
+      "/docs/stable/generated/torch.nn.modules.loss.CTCLoss.html",
+      "/docs/stable/generated/torch.nn.CTCLoss.html",
+      "/docs/stable/generated/torch.nn.modules.loss.CrossEntropyLoss.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_021",
+    "category": "general",
+    "difficulty": "hard",
+    "query": "What causes 'RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation'?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/autograd.html",
+      "https://pytorch.org/docs/stable/notes/autograd.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.autograd.function.FunctionCtx.mark_dirty.html",
+      "/docs/stable/generated/torch.autograd.function.InplaceFunction.html",
+      "/docs/stable/generated/torch.autograd.function.BackwardCFunction.html",
+      "/docs/stable/generated/torch.nn.modules.sparse.Embedding.html",
+      "/docs/stable/generated/torch.nn.Embedding.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_028",
+    "category": "dataloader",
+    "difficulty": "medium",
+    "query": "How do I avoid the DataLoader bottleneck when training on large image datasets?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_inductor_profiling.html",
+      "/docs/stable/distributed.html",
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_profiling_torch_compile.html",
+      "/docs/stable/generated/torch.nn.DataParallel.html",
+      "/docs/stable/optim.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_029",
+    "category": "dataloader",
+    "difficulty": "medium",
+    "query": "How do I correctly implement model inference with batched inputs of different lengths?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.rnn.pad_sequence.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/distributed.html",
+      "/docs/stable/sparse.html",
+      "/docs/stable/generated/torch.nn.utils.rnn.pack_padded_sequence.html",
+      "/docs/stable/generated/torch.nn.modules.loss.CTCLoss.html",
+      "/docs/stable/generated/torch.nn.CTCLoss.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_039",
+    "category": "dtype",
+    "difficulty": "easy",
+    "query": "Why do I get expected scalar type Float but found Half?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/testing.html",
+      "/docs/stable/tensor_attributes.html",
+      "/docs/stable/generated/torch.fx.experimental.symbolic_shapes.guard_scalar.html",
+      "/docs/stable/onnx_verification.html",
+      "/docs/stable/generated/torch.set_default_dtype.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_043",
+    "category": "batch_norm",
+    "difficulty": "medium",
+    "query": "Why does BatchNorm behave differently in train and eval mode?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/autograd.html",
+      "/docs/stable/generated/torch.nn.utils.fusion.fuse_linear_bn_eval.html",
+      "/docs/stable/generated/torch.nn.utils.fuse_linear_bn_eval.html",
+      "/docs/stable/func.batch_norm.html",
+      "/docs/stable/generated/torch.nn.modules.batchnorm.SyncBatchNorm.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_044",
+    "category": "batch_norm",
+    "difficulty": "medium",
+    "query": "What normalization layer should I use for very small batch sizes?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.nn.modules.normalization.LayerNorm.html",
+      "/docs/stable/generated/torch.nn.LayerNorm.html",
+      "/docs/stable/generated/torch.nn.modules.normalization.RMSNorm.html",
+      "/docs/stable/generated/torch.nn.RMSNorm.html",
+      "/docs/stable/ddp_comm_hooks.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_047",
+    "category": "general",
+    "difficulty": "easy",
+    "query": "How do I move a model to GPU in PyTorch?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html",
+      "https://pytorch.org/docs/stable/tensors.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/mps.html",
+      "/docs/stable/notes/cuda.html",
+      "/docs/stable/notes/hip.html",
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_aot_inductor.html",
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_get_started.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_048",
+    "category": "general",
+    "difficulty": "easy",
+    "query": "Why do I get tensors on different devices error?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_fake_tensor.html",
+      "/docs/stable/storage.html",
+      "/docs/stable/community/design.html",
+      "/docs/stable/notes/cuda.html",
+      "/docs/stable/generated/torch.cuda.comm.broadcast_coalesced.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_050",
+    "category": "general",
+    "difficulty": "medium",
+    "query": "What is the difference between model.train() and model.eval()?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/autograd.html",
+      "/docs/stable/notes/get_start_xpu.html",
+      "/docs/stable/notes/multiprocessing.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.where_to_apply_compile.html",
+      "/docs/stable/generated/torch.func.stack_module_state.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_054",
+    "category": "optimizer",
+    "difficulty": "medium",
+    "query": "How do I use AdamW in PyTorch?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/accelerator/autoload.html",
+      "/docs/stable/generated/torch.optim.NAdam.html",
+      "/docs/stable/generated/torch.optim.nadam.NAdam_class.html",
+      "/docs/stable/optim.html",
+      "/docs/stable/accelerator/operators.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_063",
+    "category": "general",
+    "difficulty": "medium",
+    "query": "When should I use torch.inference_mode instead of no_grad?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html",
+      "/docs/stable/notes/autograd.html",
+      "/docs/stable/generated/torch.func.grad.html",
+      "/docs/stable/generated/torch.no_grad.html",
+      "/docs/stable/generated/torch.func.vjp.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_067",
+    "category": "dtype",
+    "difficulty": "medium",
+    "query": "How do I avoid dtype mismatch between labels and CrossEntropyLoss?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.Tensor.view.html",
+      "/docs/stable/fsdp.html",
+      "/docs/stable/distributed.tensor.html",
+      "/docs/stable/notes/multiprocessing.html",
+      "/docs/stable/generated/torch.arange.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  },
+  {
+    "id": "ex_068",
+    "category": "general",
+    "difficulty": "medium",
+    "query": "How do I debug exploding gradients?",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.nn.modules.loss.SmoothL1Loss.html",
+      "/docs/stable/generated/torch.nn.SmoothL1Loss.html",
+      "/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "/docs/stable/notes/amp_examples.html",
+      "/docs/stable/notes/local_tensor_tutorial.html"
+    ],
+    "likely_failure_type": "retriever found related but not exact source",
+    "analysis_note": "Gold source was not in top-10 reranked URLs. Inspect whether query terms are too broad, chunking separated the relevant section, or reranker preferred a neighboring API page."
+  }
+]

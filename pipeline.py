@@ -1,16 +1,3 @@
-"""
-End-to-end pipeline for the Multimodal RAG Troubleshooting System.
-
-This is the main entry point that wires together all modules:
-
-  [Input] → [VLP] → [Query Reformulator] → [Hybrid Retriever]
-          → [Cross-encoder Reranker] → [Context Selector] → [Answer Generator]
-
-The pipeline class is designed to be instantiated once (so models load
-once) and then called repeatedly for different queries.
-"""
-
-import time
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -25,36 +12,29 @@ from src.efficiency import select_context
 from src.generation import AnswerGenerator, GeneratorOutput
 from src.evaluation.efficiency_metrics import LatencyProfile, Timer
 
-
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class PipelineConfig:
-    """Configuration for the full pipeline. Mirrors configs/pipeline.yaml."""
-
-    # Retrieval settings
     retriever_type: Literal["bm25", "dense", "hybrid"] = "hybrid"
-    retrieval_top_k: int = 50          # candidates to pull before reranking
-    reranker_top_k: int = 20          # candidates to keep after reranking
+    retrieval_top_k: int = 50
+    use_reranker: bool = True
+    reranker_top_k: int = 20
 
-    # Context pruning settings
     pruning_strategy: Literal["threshold", "diversity", "coverage"] = "threshold"
     pruning_threshold: float = 0.0
     context_top_k: int = 5
     mmr_lambda: float = 0.7
 
-    # Generation settings
-    generator_backend: Literal["local", "openai", "anthropic"] = "openai"
-    generator_model: str = "gpt-4o-mini"
+    generator_backend: Literal["local", "openai", "anthropic"] = "local"
+    generator_model: str = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
     max_new_tokens: int = 512
 
-    # VLP settings
     use_vlp: bool = True
     vlp_backend: Literal["internvl2", "llava"] = "internvl2"
     vlp_model: Optional[str] = None
 
-    # Index paths
     bm25_path: str = "data/embeddings/bm25.pkl"
     faiss_path: str = "data/embeddings/dense.faiss"
     chunks_path: str = "data/embeddings/chunks.jsonl"
@@ -62,7 +42,6 @@ class PipelineConfig:
 
 @dataclass
 class PipelineOutput:
-    """Full output from one pipeline run."""
     answer: str
     sources: list[dict] = field(default_factory=list)
     vlp_output: Optional[VLPOutput] = None
@@ -76,24 +55,9 @@ class PipelineOutput:
 
 
 class MultimodalRAGPipeline:
-    """
-    The full pipeline — instantiate once, query many times.
-
-    Usage:
-        pipeline = MultimodalRAGPipeline(config)
-        pipeline.load_indexes()
-        result = pipeline.run(
-            question="Why is my training crashing?",
-            image=screenshot_image,
-            log_snippet="RuntimeError: CUDA out of memory",
-        )
-        print(result.answer)
-    """
-
     def __init__(self, config: PipelineConfig = None):
         self.config = config or PipelineConfig()
 
-        # Initialize components (models load lazily on first use)
         self.vlp = None
         if self.config.use_vlp:
             self.vlp = VisionLanguageParser(
@@ -102,7 +66,7 @@ class MultimodalRAGPipeline:
             )
 
         self.retriever = self._build_retriever()
-        self.reranker = Reranker()
+        self.reranker = Reranker() if self.config.use_reranker else None
         self.generator = AnswerGenerator(
             backend=self.config.generator_backend,
             model_name=self.config.generator_model,
@@ -113,19 +77,17 @@ class MultimodalRAGPipeline:
     def _build_retriever(self):
         if self.config.retriever_type == "bm25":
             return BM25Retriever()
-        elif self.config.retriever_type == "dense":
+        if self.config.retriever_type == "dense":
             return DenseRetriever()
-        else:
-            return HybridRetriever()
+        return HybridRetriever()
 
     def load_indexes(self):
-        """Load pre-built retrieval indexes from disk."""
-        logger.info("Loading retrieval indexes...")
         cfg = self.config
+        logger.info("Loading retrieval indexes...")
 
-        if self.config.retriever_type == "bm25":
+        if cfg.retriever_type == "bm25":
             self.retriever.load(cfg.bm25_path)
-        elif self.config.retriever_type == "dense":
+        elif cfg.retriever_type == "dense":
             self.retriever.load(cfg.faiss_path, cfg.chunks_path)
         else:
             self.retriever.load(cfg.bm25_path, cfg.faiss_path, cfg.chunks_path)
@@ -134,21 +96,22 @@ class MultimodalRAGPipeline:
         logger.info("Indexes loaded successfully.")
 
     def build_indexes(self, chunks: list[dict]):
-        """Build retrieval indexes from a list of chunks (for initial setup)."""
-        logger.info(f"Building indexes over {len(chunks)} chunks...")
         self.retriever.build(chunks)
         self._indexes_loaded = True
 
     def save_indexes(self):
-        """Save built indexes to disk."""
         cfg = self.config
-        if self.config.retriever_type == "bm25":
+        if cfg.retriever_type == "bm25":
             self.retriever.save(cfg.bm25_path)
-        elif self.config.retriever_type == "dense":
+        elif cfg.retriever_type == "dense":
             self.retriever.save(cfg.faiss_path, cfg.chunks_path)
         else:
             self.retriever.save(cfg.bm25_path, cfg.faiss_path, cfg.chunks_path)
-        logger.info("Indexes saved.")
+
+    def retrieve_only(self, query: str, top_k: int = 20) -> list[dict]:
+        if not self._indexes_loaded:
+            raise RuntimeError("Indexes not loaded.")
+        return self.retriever.search(query, top_k=top_k)
 
     def run(
         self,
@@ -157,55 +120,42 @@ class MultimodalRAGPipeline:
         image_path: Optional[str] = None,
         log_snippet: str = "",
     ) -> PipelineOutput:
-        """
-        Run the full pipeline on a user query.
-
-        Args:
-            question: The user's typed question.
-            image: Optional PIL Image (screenshot or diagram).
-            image_path: Alternative to passing image directly.
-            log_snippet: Optional log or config text pasted by user.
-
-        Returns:
-            PipelineOutput with the answer and all intermediate results.
-        """
         if not self._indexes_loaded:
-            raise RuntimeError("Indexes not loaded. Call load_indexes() or build_indexes() first.")
+            raise RuntimeError("Indexes not loaded. Call load_indexes() first.")
 
-        latency = LatencyProfile()
         cfg = self.config
+        latency = LatencyProfile()
 
-        # ── Module 2: Vision-Language Parser ────────────────────────────────
         vlp_output = None
         if self.vlp and (image is not None or image_path is not None):
             with Timer() as t:
-                if image_path and image is None:
+                if image is None and image_path:
                     image = Image.open(image_path).convert("RGB")
                 vlp_output = self.vlp.parse(image=image)
             latency.vlp_time_s = t.elapsed
-            logger.info(f"VLP: category={vlp_output.visual_category}, "
-                        f"error='{vlp_output.error_message[:60]}'")
 
-        # ── Module 3: Query Reformulator ─────────────────────────────────────
         with Timer() as t:
             reformulation = reformulate_query(question, vlp_output, log_snippet)
         latency.reformulation_time_s = t.elapsed
-
         effective_query = reformulation.reformulated_query
 
-        # ── Module 4: Retriever ───────────────────────────────────────────────
         with Timer() as t:
             retrieved = self.retriever.search(effective_query, top_k=cfg.retrieval_top_k)
         latency.retrieval_time_s = t.elapsed
-        logger.info(f"Retrieved {len(retrieved)} candidates")
 
-        # ── Module 5: Cross-encoder Reranker ──────────────────────────────────
-        with Timer() as t:
-            reranked = self.reranker.rerank(effective_query, retrieved, top_k=cfg.reranker_top_k)
-        latency.reranking_time_s = t.elapsed
-        logger.info(f"Reranked → {len(reranked)} candidates")
+        if self.reranker:
+            with Timer() as t:
+                reranked = self.reranker.rerank(
+                    effective_query,
+                    retrieved,
+                    top_k=cfg.reranker_top_k,
+                )
+            latency.reranking_time_s = t.elapsed
+        else:
+            reranked = retrieved[: cfg.reranker_top_k]
+            for c in reranked:
+                c.setdefault("reranker_score", c.get("rrf_score", c.get("dense_score", c.get("bm25_score", 0.0))))
 
-        # ── Module 6: Context Selector ────────────────────────────────────────
         with Timer() as t:
             selected, pruning_stats = select_context(
                 reranked,
@@ -216,13 +166,7 @@ class MultimodalRAGPipeline:
                 lambda_param=cfg.mmr_lambda,
             )
         latency.pruning_time_s = t.elapsed
-        logger.info(
-            f"Context pruning ({cfg.pruning_strategy}): "
-            f"{pruning_stats['original_tokens']} → {pruning_stats['pruned_tokens']} tokens "
-            f"({pruning_stats['token_reduction_pct']}% reduction)"
-        )
 
-        # ── Module 7: Answer Generator ────────────────────────────────────────
         with Timer() as t:
             gen_output = self.generator.generate(
                 query=effective_query,
@@ -230,11 +174,6 @@ class MultimodalRAGPipeline:
                 max_new_tokens=cfg.max_new_tokens,
             )
         latency.generation_time_s = t.elapsed
-
-        logger.info(
-            f"Answer generated in {latency.generation_time_s:.2f}s | "
-            f"Total latency: {latency.total_time_s:.2f}s"
-        )
 
         return PipelineOutput(
             answer=gen_output.answer,

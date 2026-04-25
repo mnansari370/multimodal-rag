@@ -90,6 +90,19 @@ class SemanticSimilarity:
 
 # ─── Citation accuracy ────────────────────────────────────────────────────────
 
+def _normalize_url(url: str) -> str:
+    """Strip domain prefix for URL comparison — same logic as retrieval_metrics."""
+    for prefix in [
+        "https://docs.pytorch.org",
+        "http://docs.pytorch.org",
+        "https://pytorch.org",
+        "http://pytorch.org",
+    ]:
+        if url.startswith(prefix):
+            return url[len(prefix):].rstrip("/")
+    return url.rstrip("/")
+
+
 def citation_accuracy(answer: str, gold_urls: list[str], source_chunks: list[dict]) -> float:
     """
     Check what fraction of [Source N] citations in the answer point to
@@ -108,12 +121,12 @@ def citation_accuracy(answer: str, gold_urls: list[str], source_chunks: list[dic
     if not cited_indices:
         return 0.0
 
-    gold_url_set = set(gold_urls)
+    gold_url_set = {_normalize_url(u) for u in gold_urls}
     correct = 0
     for idx in cited_indices:
         if 0 <= idx < len(source_chunks):
-            chunk_url = source_chunks[idx].get("source_url", "")
-            if any(g in chunk_url or chunk_url in g for g in gold_url_set):
+            chunk_url = _normalize_url(source_chunks[idx].get("source_url", ""))
+            if chunk_url in gold_url_set:
                 correct += 1
 
     return round(correct / len(cited_indices), 4)

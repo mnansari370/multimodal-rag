@@ -20,6 +20,7 @@ data/raw/
 data/embeddings/*.bin
 data/embeddings/*.faiss
 data/embeddings/*.index
+data/embeddings/chunks.jsonl
 data/processed/*.pkl
 data/processed/*.parquet
 # Individual page JSONs are derivable from the download script; commit only the chunks

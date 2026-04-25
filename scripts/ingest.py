@@ -37,6 +37,8 @@ def main():
                         help="Skip download if raw pages already exist")
     parser.add_argument("--delay", type=float, default=0.3,
                         help="Seconds between download requests")
+    parser.add_argument("--heading-only", action="store_true",
+                        help="Only run heading-based chunking (skip fixed-size, saves memory)")
     args = parser.parse_args()
 
     if not args.skip_download:
@@ -55,20 +57,23 @@ def main():
     )
     logger.info(f"Heading chunks: {len(chunks_heading)}")
 
-    logger.info("=== Chunking (fixed-size with overlap) ===")
-    chunks_fixed = chunk_all(
-        args.processed_dir,
-        output_file=f"{args.processed_dir}/chunks_fixed.jsonl",
-        strategy="fixed",
-    )
-    logger.info(f"Fixed-size chunks: {len(chunks_fixed)}")
+    chunks_fixed_count = "skipped"
+    if not args.heading_only:
+        logger.info("=== Chunking (fixed-size with overlap) ===")
+        chunks_fixed = chunk_all(
+            args.processed_dir,
+            output_file=f"{args.processed_dir}/chunks_fixed.jsonl",
+            strategy="fixed",
+        )
+        logger.info(f"Fixed-size chunks: {len(chunks_fixed)}")
+        chunks_fixed_count = len(chunks_fixed)
 
     print("\n" + "="*50)
     print("Ingestion complete.")
     print(f"  Pages downloaded: {len(list(Path(args.raw_dir).glob('*.json')))}")
     print(f"  Pages cleaned:    {len(cleaned)}")
     print(f"  Chunks (heading): {len(chunks_heading)}")
-    print(f"  Chunks (fixed):   {len(chunks_fixed)}")
+    print(f"  Chunks (fixed):   {chunks_fixed_count}")
     print(f"\nNext step: python scripts/build_index.py")
 
 

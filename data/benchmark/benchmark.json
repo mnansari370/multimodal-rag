@@ -1,0 +1,411 @@
+[
+  {
+    "id": "ex_001",
+    "query": "Why is my training crashing with CUDA out of memory?",
+    "image_path": "data/benchmark/images/cuda_oom_screenshot.png",
+    "log_snippet": "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB (GPU 0; 10.76 GiB total capacity; 8.45 GiB already allocated; 1.38 GiB free; 8.71 GiB reserved in total by PyTorch)",
+    "gold_answer": "The CUDA out of memory error occurs because the allocated memory (8.45 GiB) plus the requested allocation (2.00 GiB) exceeds available GPU memory. Solutions: reduce batch_size, enable gradient checkpointing with model.gradient_checkpointing_enable(), use mixed precision with torch.cuda.amp.autocast(), or call torch.cuda.empty_cache() between batches.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_002",
+    "query": "What is wrong with my batch normalization configuration?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "gold_answer": "Batch normalization requires at least 2 samples per batch during training to compute meaningful per-channel statistics. With batch_size=1, variance is zero and the layer cannot normalize. Solutions: use batch_size >= 2, switch to GroupNorm (works with any batch size), or set BatchNorm2d(track_running_stats=False) and use eval() mode during validation.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_003",
+    "query": "How do I fix the DataLoader worker shared memory error?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: DataLoader worker (pid 12345) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory. Please try to raise your shared memory limit.",
+    "gold_answer": "DataLoader workers use shared memory (/dev/shm) to pass data between processes. The 'Bus error' occurs when this space is exhausted. Fix by: reducing num_workers, setting pin_memory=False, reducing batch_size, or increasing Docker's shared memory via --shm-size flag. As a quick fix, set num_workers=0 to disable multiprocessing entirely.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_004",
+    "query": "How do I enable automatic mixed precision in PyTorch?",
+    "image_path": null,
+    "log_snippet": "",
+    "gold_answer": "Use torch.cuda.amp.autocast() and GradScaler. Wrap forward pass: with torch.cuda.amp.autocast(): output = model(input); loss = criterion(output, target). Then: scaler.scale(loss).backward(); scaler.step(optimizer); scaler.update(). GradScaler handles the loss scaling needed to prevent gradients from underflowing in float16.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html",
+      "https://pytorch.org/docs/stable/notes/amp_examples.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_005",
+    "query": "Why does my model produce NaN loss after a few training steps?",
+    "image_path": null,
+    "log_snippet": "loss: tensor(nan, grad_fn=<NllLossBackward0>)\ngrad norm: inf",
+    "gold_answer": "NaN loss with infinite gradients indicates gradient explosion. Fix with gradient clipping: torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) before optimizer.step(). Also check: learning rate too high (reduce by 10x), numerical instability in custom loss functions, or NaN in input data.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/optim.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_006",
+    "query": "How do I reduce GPU memory usage during training?",
+    "image_path": null,
+    "log_snippet": "torch.cuda.memory_allocated(): 9.1 GB\ntorch.cuda.max_memory_reserved(): 9.8 GB",
+    "gold_answer": "To reduce GPU memory: (1) Enable gradient checkpointing — model.gradient_checkpointing_enable() recomputes activations during backward pass instead of storing them; (2) Use AMP with autocast to use float16; (3) Reduce batch size and accumulate gradients with loss.backward() every N steps before optimizer.step(); (4) Delete tensors no longer needed and call torch.cuda.empty_cache().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_007",
+    "query": "What causes 'RuntimeError: Expected all tensors to be on the same device'?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!",
+    "gold_answer": "This error occurs when you try to perform operations between tensors on different devices. Move all tensors to the same device using .to(device) or .cuda(). Common causes: forgot to call model.to(device), mixed CPU and GPU data in a forward pass, or a buffer/parameter created as CPU tensor. Use tensor.device to inspect where each tensor lives.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensor_attributes.html",
+      "https://pytorch.org/docs/stable/notes/cuda.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_008",
+    "query": "How do I set up DistributedDataParallel for multi-GPU training?",
+    "image_path": null,
+    "log_snippet": "NCCL WARN Timeout in ncclAllReduce",
+    "gold_answer": "DDP setup requires: (1) Initialize process group — dist.init_process_group('nccl'); (2) Wrap model — model = DDP(model, device_ids=[local_rank]); (3) Use DistributedSampler in DataLoader. Each process handles one GPU. Run with torchrun --nproc_per_node=N script.py. NCCL timeout usually means a process is stuck — check all ranks reach the collective.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/distributed.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_009",
+    "query": "Why does gradient checkpointing slow down my training significantly?",
+    "image_path": null,
+    "log_snippet": "Training step time without checkpointing: 0.8s\nTraining step time with checkpointing: 1.4s",
+    "gold_answer": "Gradient checkpointing trades memory for compute — it recomputes forward activations during backward pass instead of storing them. This increases step time by ~30% for most architectures (you pay for each recomputed layer). This tradeoff is worthwhile when OOM prevents training at the batch size you need. Use torch.utils.checkpoint.checkpoint() selectively on the most memory-intensive layers.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_010",
+    "query": "How do I use GradScaler correctly with mixed precision?",
+    "image_path": null,
+    "log_snippet": "Warning: Grad overflow detected for param weight in layer Linear. Skipping optimizer step.",
+    "gold_answer": "GradScaler detects gradient overflow (inf/nan) and skips the optimizer step for that iteration — this is expected behavior during AMP warmup. The scaler automatically decreases the loss scale when overflow is detected and increases it when steps are consistently healthy. The skipped steps will not corrupt your model. Ensure you call scaler.update() every step.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_011",
+    "query": "What is the correct way to implement learning rate warmup with a scheduler?",
+    "image_path": null,
+    "log_snippet": "lr: 0.000000 (not increasing from zero)",
+    "gold_answer": "For learning rate warmup, use LinearLR as a warmup scheduler and chain it with your main scheduler using SequentialLR. Example: warmup = LinearLR(optimizer, start_factor=0.001, end_factor=1.0, total_iters=warmup_steps); main = CosineAnnealingLR(optimizer, T_max=total_steps - warmup_steps); scheduler = SequentialLR(optimizer, [warmup, main], milestones=[warmup_steps]).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_012",
+    "query": "How do I profile my PyTorch model to find bottlenecks?",
+    "image_path": null,
+    "log_snippet": "Training iteration: 2.3s\nDataLoading: unknown",
+    "gold_answer": "Use torch.profiler.profile() to measure time by operation: with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof: run_training_step(). Then print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10)). Also check DataLoader bottleneck by timing data loading vs forward/backward pass separately.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/profiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_013",
+    "query": "Why does BatchNorm behave differently in train vs eval mode?",
+    "image_path": null,
+    "log_snippet": "validation loss much higher than training loss despite same data",
+    "gold_answer": "During training, BatchNorm normalizes using the current batch mean/variance. During eval (model.eval()), it uses running statistics accumulated during training. If model stays in training mode during validation, batch statistics from the small val batch cause unstable normalization. Always call model.eval() before validation and model.train() before training. Also freeze BN with model.apply(freeze_bn) when fine-tuning.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_014",
+    "query": "How do I fix the 'RuntimeError: NCCL error: unhandled system error' in DDP?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: NCCL error in: /opt/conda/conda-bld/pytorch.../THCCachingAllocator.cpp:961, unhandled system error, NCCL version 2.10.3\nncclSystemError: System call (socket) failed.",
+    "gold_answer": "NCCL socket errors in DDP are usually caused by firewall rules blocking inter-GPU communication ports, or processes on different nodes being unable to reach each other. Set NCCL_SOCKET_IFNAME to specify the network interface (e.g., eth0). Also set NCCL_DEBUG=INFO to get detailed diagnostic output. Ensure all nodes have the same NCCL version.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/notes/ddp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_015",
+    "query": "What is gradient accumulation and how do I implement it correctly?",
+    "image_path": null,
+    "log_snippet": "batch_size: 8\ntarget_effective_batch_size: 64",
+    "gold_answer": "Gradient accumulation simulates a larger batch size by accumulating gradients over N steps before updating weights. Implementation: set optimizer.zero_grad() outside the loop, call loss = loss / accumulation_steps to normalize, call loss.backward() every step, and only call optimizer.step() and optimizer.zero_grad() every N steps. This achieves effective batch size of N * actual_batch_size.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.Optimizer.zero_grad.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_016",
+    "query": "Why am I getting 'RuntimeError: Expected scalar type Float but found Half'?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: expected scalar type Float but found Half in tensor at /pytorch/aten/src/ATen/native/Loss.cpp:257",
+    "gold_answer": "This dtype mismatch occurs when mixing float32 and float16 operations outside of an autocast context. Inside torch.autocast, PyTorch manages dtype conversion automatically. Outside it, you must explicitly cast: loss_fn(output.float(), target.float()). If using AMP, make sure your entire forward pass is inside the autocast block.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html",
+      "https://pytorch.org/docs/stable/tensor_attributes.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_017",
+    "query": "How do I use torch.no_grad() correctly?",
+    "image_path": null,
+    "log_snippet": "memory usage not decreasing during validation despite no_grad",
+    "gold_answer": "torch.no_grad() disables gradient computation but does not affect memory used by activations themselves. For lower memory during validation, combine it with smaller batch sizes. Use it as a context manager: with torch.no_grad(): outputs = model(inputs). Do not use model(inputs).detach() as a substitute — that still computes but detaches the graph. For inference-only deployments, also call model.eval() to disable dropout.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/autograd.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_018",
+    "query": "How do I reproduce results exactly in PyTorch?",
+    "image_path": null,
+    "log_snippet": "results differ between runs despite same random seed",
+    "gold_answer": "Full reproducibility requires: torch.manual_seed(seed), torch.cuda.manual_seed_all(seed), np.random.seed(seed), random.seed(seed), and setting torch.backends.cudnn.deterministic = True plus torch.backends.cudnn.benchmark = False. Note: deterministic mode can be ~20% slower. Some CUDA operations have no deterministic implementation — these will raise RuntimeError if you also set torch.use_deterministic_algorithms(True).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/randomness.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_019",
+    "query": "Why is my model training fast on one GPU but slow on multiple GPUs with DDP?",
+    "image_path": null,
+    "log_snippet": "1 GPU: 3.2 iter/s\n4 GPU DDP: 2.8 iter/s (expected 12.8)",
+    "gold_answer": "Poor DDP scaling usually comes from: communication overhead dominating compute (model too small for multi-GPU), DataLoader being a bottleneck (increase num_workers, use persistent_workers=True), or synchronization stalls (all-reduce after every backward step). Profile with NCCL_DEBUG=INFO. For small models, DataParallel on one machine may outperform DDP. Check GPU utilization with nvidia-smi — if not near 100%, DataLoader is likely the bottleneck.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/ddp.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_020",
+    "query": "How do I save and load a model checkpoint correctly in PyTorch?",
+    "image_path": null,
+    "log_snippet": "checkpoint saved but model gives different results after loading",
+    "gold_answer": "Save and load state_dict, not the full model: torch.save({'epoch': epoch, 'model_state_dict': model.state_dict(), 'optimizer_state_dict': optimizer.state_dict(), 'loss': loss}, path). Load with: checkpoint = torch.load(path); model.load_state_dict(checkpoint['model_state_dict']); optimizer.load_state_dict(checkpoint['optimizer_state_dict']). For DDP models, wrap before loading or strip the 'module.' prefix from keys.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_021",
+    "query": "What causes 'RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation'?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [512, 1024]], which is output 0 of AsStridedBackward0",
+    "gold_answer": "Inplace operations modify a tensor's data in place, which invalidates the saved reference needed for autograd. Replace inplace ops: tensor += x → tensor = tensor + x, tensor.relu_() → F.relu(tensor), tensor[mask] = 0 → use torch.where() instead. If inside a loop, ensure you're not overwriting a tensor that's still in the computation graph.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/autograd.html",
+      "https://pytorch.org/docs/stable/notes/autograd.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_022",
+    "query": "How does MultiheadAttention work in PyTorch and what are common configuration mistakes?",
+    "image_path": "data/benchmark/images/attention_diagram.png",
+    "log_snippet": "",
+    "gold_answer": "PyTorch's MultiheadAttention(embed_dim, num_heads) requires embed_dim to be divisible by num_heads (head_dim = embed_dim // num_heads). Input shape is (seq_len, batch, embed_dim) by default, or (batch, seq_len, embed_dim) with batch_first=True. Common mistakes: forgetting key_padding_mask when sequences have different lengths, using attn_mask with wrong shape (num_heads * batch, seq_len, seq_len for custom masks).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Transformer.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_023",
+    "query": "Why is autocast not reducing memory usage as expected?",
+    "image_path": null,
+    "log_snippet": "Memory before autocast: 4.2 GB\nMemory after enabling autocast: 4.1 GB",
+    "gold_answer": "autocast alone reduces compute precision for activations but does not save as much memory as expected because: (1) model parameters remain in float32 unless you explicitly call model.half() or model.bfloat16(); (2) optimizer states (Adam moments) remain float32. For full memory reduction, use autocast for forward pass and convert model weights: model.to(torch.float16) or use bfloat16 which is more numerically stable on A100s.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html",
+      "https://pytorch.org/docs/stable/notes/amp_examples.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_024",
+    "query": "How do I correctly use SyncBatchNorm across multiple GPUs?",
+    "image_path": null,
+    "log_snippet": "torch.nn.modules.batchnorm._NormBase.forward: Expected more than 1 value per channel when training",
+    "gold_answer": "SyncBatchNorm synchronizes batch statistics across all GPUs in DDP, allowing small per-GPU batch sizes. Convert a model: model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model) before wrapping with DDP. This is essential when per-GPU batch size is 1-2. Note: SyncBatchNorm is slower than regular BatchNorm due to the all-reduce communication — only use it when batch size per GPU is too small for stable statistics.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.SyncBatchNorm.html",
+      "https://pytorch.org/docs/stable/notes/ddp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_025",
+    "query": "Why is torch.load giving a FutureWarning about weights_only?",
+    "image_path": null,
+    "log_snippet": "FutureWarning: You are using torch.load with weights_only=False which is the default value... This will change in a future version.",
+    "gold_answer": "PyTorch is moving toward weights_only=True by default for security reasons — arbitrary pickle loading can execute malicious code. For model checkpoints (state_dicts), use torch.load(path, weights_only=True). For checkpoints that contain Python objects (optimizers with custom schedulers, etc.), you must set weights_only=False explicitly. The safe migration path is to ensure your checkpoints only contain tensors and standard Python types.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_026",
+    "query": "How do I implement a custom learning rate scheduler?",
+    "image_path": null,
+    "log_snippet": "scheduler step timing error: expected to be called after optimizer step",
+    "gold_answer": "Implement a custom scheduler by subclassing LRScheduler and overriding get_lr(). Always call scheduler.step() AFTER optimizer.step() — calling it before is deprecated and produces a warning. For one-cycle policies or complex schedules, use LambdaLR with a lambda function: scheduler = LambdaLR(optimizer, lr_lambda=lambda step: warmup_fn(step)). Verify by plotting the lr history with [scheduler.get_last_lr() for _ in range(total_steps)].",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_027",
+    "query": "What causes 'RuntimeError: Expected all tensors to have the same dtype'?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: expected scalar type Long but found Float\nInput tensor dtype: torch.float32\nTarget tensor dtype: torch.int64",
+    "gold_answer": "This error typically occurs in loss functions: CrossEntropyLoss and NLLLoss expect target tensors as Long (int64), not Float. Fix: target = target.long(). Similarly, embedding layers require Long inputs. For binary classification with BCELoss, both input and target must be Float. Check tensor dtypes with tensor.dtype and cast explicitly with .to(torch.float32) or .long().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensor_attributes.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_028",
+    "query": "How do I avoid the DataLoader bottleneck when training on large image datasets?",
+    "image_path": null,
+    "log_snippet": "GPU utilization: 42%\nDataLoader time per batch: 0.8s\nForward+backward time per batch: 0.3s",
+    "gold_answer": "GPU at 42% utilization means DataLoader is the bottleneck. Solutions in order of impact: (1) Increase num_workers to 4-8 (match CPU core count); (2) Set pin_memory=True for faster CPU→GPU transfer; (3) Set persistent_workers=True to avoid respawning workers each epoch; (4) Prefetch data to GPU before it's needed with prefetch_factor; (5) Cache decoded images to SSD or RAM disk if they fit. Profile with Pytorch Profiler to confirm DataLoader is the bottleneck.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_029",
+    "query": "How do I correctly implement model inference with batched inputs of different lengths?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: stack expects each tensor to be equal size, but got [512] at entry 0 and [348] at entry 1",
+    "gold_answer": "Variable-length sequences need padding for batch processing. Use torch.nn.utils.rnn.pad_sequence(sequences, batch_first=True, padding_value=0) to pad a list of tensors to the same length. Then create an attention mask: mask = (padded != padding_value). Pass the mask to your model to ignore padding positions. For DataLoader, implement a custom collate_fn that handles padding.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.rnn.pad_sequence.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_030",
+    "query": "Why does my CUDA kernel time look short but wall time is high?",
+    "image_path": null,
+    "log_snippet": "cuda_time_total: 120ms\nwall_time: 450ms\nCPU-GPU sync calls: 180",
+    "gold_answer": "Excessive CPU-GPU synchronization is the problem. PyTorch CUDA operations are asynchronous — they launch and return immediately unless you force synchronization. Common triggers: moving tensors to CPU (.item(), .numpy(), .cpu()) inside the training loop, printing tensor values, or calling torch.cuda.synchronize(). Remove or batch these operations. The profiler shows sync overhead separately — look for CudaSynchronize entries.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/profiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "hard"
+  }
+]

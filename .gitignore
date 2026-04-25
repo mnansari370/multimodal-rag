@@ -15,13 +15,15 @@ build/
 env/
 venv/
 
-# Large data files — keep structure, skip binaries
+# Large data files — keep structure, skip binaries and bulk pages
 data/raw/
 data/embeddings/*.bin
 data/embeddings/*.faiss
 data/embeddings/*.index
 data/processed/*.pkl
 data/processed/*.parquet
+# Individual page JSONs are derivable from the download script; commit only the chunks
+data/processed/page_*.json
 
 # Model weights downloaded at runtime
 models/

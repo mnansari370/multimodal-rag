@@ -1,0 +1,13 @@
+# Chunking strategy comparison
+# Build two indexes and compare Recall@10 on the benchmark
+
+heading_chunking:
+  strategy: heading
+  max_chunk_tokens: 400
+  output_file: data/processed/chunks_heading.jsonl
+
+fixed_chunking:
+  strategy: fixed
+  max_chunk_tokens: 400
+  overlap_pct: 0.20
+  output_file: data/processed/chunks_fixed.jsonl

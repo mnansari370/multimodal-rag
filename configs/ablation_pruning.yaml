@@ -1,0 +1,35 @@
+# Context pruning ablation — produces the efficiency table from Section 6.2
+# Measures: prompt tokens, latency, faithfulness, answer score
+# Run with ablation_efficiency.sh
+
+base_config:
+  retriever_type: hybrid
+  use_vlp: true
+  reranker_top_k: 20
+  generator_backend: openai
+  generator_model: gpt-4o-mini
+
+pruning_experiments:
+  - name: no_pruning
+    pruning_strategy: threshold
+    pruning_threshold: -999      # keeps everything
+    context_top_k: 20
+
+  - name: score_threshold
+    pruning_strategy: threshold
+    pruning_threshold: 0.0
+    context_top_k: 10
+
+  - name: top_k_diversity
+    pruning_strategy: diversity
+    context_top_k: 5
+
+  - name: coverage_pruning_07
+    pruning_strategy: coverage
+    context_top_k: 5
+    mmr_lambda: 0.7
+
+  - name: coverage_pruning_05
+    pruning_strategy: coverage
+    context_top_k: 5
+    mmr_lambda: 0.5

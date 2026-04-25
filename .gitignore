@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# Large data files — keep structure, skip binaries
+data/raw/
+data/embeddings/*.bin
+data/embeddings/*.faiss
+data/embeddings/*.index
+data/processed/*.pkl
+data/processed/*.parquet
+
+# Model weights downloaded at runtime
+models/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Results and logs (keep structure, not bulk outputs)
+results/logs/
+results/*.log
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# HPC
+*.out
+*.err
+slurm-*.out
+
+# API keys / secrets
+.env.local
+secrets.yaml
+*.key

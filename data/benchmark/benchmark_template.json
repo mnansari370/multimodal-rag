@@ -1,0 +1,70 @@
+[
+  {
+    "id": "ex_001",
+    "query": "Why is my training crashing with CUDA out of memory?",
+    "image_path": "data/benchmark/images/cuda_oom_screenshot.png",
+    "log_snippet": "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB (GPU 0; 10.76 GiB total capacity; 8.45 GiB already allocated)",
+    "gold_answer": "The CUDA out of memory error typically occurs because your batch size is too large for your GPU memory. Try reducing batch_size, enabling gradient checkpointing with model.gradient_checkpointing_enable(), or using mixed precision training with torch.cuda.amp.autocast().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_002",
+    "query": "What is wrong with my batch normalization configuration?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "gold_answer": "Batch normalization requires more than one sample per batch during training to compute meaningful statistics. When batch_size=1, the batch norm layer cannot compute variance. Use BatchNorm with batch_size >= 2, or switch to GroupNorm or LayerNorm which work with batch_size=1.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_003",
+    "query": "How do I fix the DataLoader worker error?",
+    "image_path": null,
+    "log_snippet": "RuntimeError: DataLoader worker (pid 12345) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory.",
+    "gold_answer": "This error occurs when DataLoader workers run out of shared memory. Solutions: reduce num_workers, increase shared memory with --shm-size in Docker, set pin_memory=False, or reduce the batch size. You can also set num_workers=0 to disable multiprocessing.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_004",
+    "query": "Why is my loss NaN after a few iterations?",
+    "image_path": null,
+    "log_snippet": "loss: tensor(nan, grad_fn=<NllLossBackward0>)",
+    "gold_answer": "NaN loss is usually caused by: learning rate too high (gradients explode), numerical instability in loss computation, or bad data (zeros in log, negative values in sqrt). Try gradient clipping with torch.nn.utils.clip_grad_norm_(), reduce learning rate, or use mixed precision with loss scaling.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "training_stability",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_005",
+    "query": "How do I enable automatic mixed precision in PyTorch?",
+    "image_path": null,
+    "log_snippet": "",
+    "gold_answer": "Use torch.cuda.amp.autocast() and GradScaler. Wrap forward pass in autocast context: with torch.cuda.amp.autocast(): output = model(input). Then scale the loss: scaler.scale(loss).backward(), scaler.step(optimizer), scaler.update().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html",
+      "https://pytorch.org/docs/stable/notes/amp_examples.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "easy"
+  }
+]

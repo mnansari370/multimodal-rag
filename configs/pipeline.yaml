@@ -1,0 +1,23 @@
+# Main pipeline configuration
+# Change these values to run different ablation experiments
+
+retriever_type: hybrid            # bm25 | dense | hybrid
+retrieval_top_k: 50               # candidates pulled before reranking
+reranker_top_k: 20                # candidates kept after reranking
+
+pruning_strategy: threshold       # threshold | diversity | coverage
+pruning_threshold: 0.0            # for threshold strategy — tune on validation set
+context_top_k: 5                  # final chunks passed to generator
+mmr_lambda: 0.7                   # for coverage strategy: 1.0=relevance, 0.0=diversity
+
+generator_backend: openai         # local | openai | anthropic
+generator_model: gpt-4o-mini
+max_new_tokens: 512
+
+use_vlp: true
+vlp_backend: internvl2            # internvl2 | llava
+vlp_model: null                   # null = use default for backend
+
+bm25_path: data/embeddings/bm25.pkl
+faiss_path: data/embeddings/dense.faiss
+chunks_path: data/embeddings/chunks.jsonl

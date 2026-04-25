@@ -1,0 +1,43 @@
+# Retriever ablation experiment config
+# Run retrieval_eval.sh with each retriever_type to fill in the main results table
+
+experiments:
+  - name: baseline_bm25
+    retriever_type: bm25
+    use_vlp: false
+    pruning_strategy: threshold
+    context_top_k: 5
+
+  - name: baseline_dense
+    retriever_type: dense
+    use_vlp: false
+    pruning_strategy: threshold
+    context_top_k: 5
+
+  - name: baseline_hybrid
+    retriever_type: hybrid
+    use_vlp: false
+    pruning_strategy: threshold
+    context_top_k: 5
+
+  - name: hybrid_plus_reranker
+    retriever_type: hybrid
+    use_reranker: true
+    use_vlp: false
+    pruning_strategy: threshold
+    context_top_k: 5
+
+  - name: hybrid_reranker_vlp
+    retriever_type: hybrid
+    use_reranker: true
+    use_vlp: true
+    pruning_strategy: threshold
+    context_top_k: 5
+
+  - name: full_system
+    retriever_type: hybrid
+    use_reranker: true
+    use_vlp: true
+    pruning_strategy: coverage
+    context_top_k: 5
+    mmr_lambda: 0.7

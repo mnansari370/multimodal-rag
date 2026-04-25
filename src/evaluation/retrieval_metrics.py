@@ -86,6 +86,26 @@ def ndcg_at_k(
     return actual_dcg / ideal_dcg
 
 
+def _normalize_url(url: str) -> str:
+    """
+    Normalize PyTorch doc URLs so that docs.pytorch.org and pytorch.org/docs
+    both map to the same canonical form.
+
+    The corpus uses docs.pytorch.org (the new CDN domain), while human-curated
+    benchmarks often reference the older pytorch.org/docs form. Both point to
+    the same content, so we strip the domain and keep only the path.
+    """
+    for prefix in [
+        "https://docs.pytorch.org",
+        "http://docs.pytorch.org",
+        "https://pytorch.org",
+        "http://pytorch.org",
+    ]:
+        if url.startswith(prefix):
+            return url[len(prefix):].rstrip("/")
+    return url.rstrip("/")
+
+
 def evaluate_retrieval(
     benchmark: list[dict],
     retrieve_fn,
@@ -107,18 +127,27 @@ def evaluate_retrieval(
     for example in benchmark:
         query = example["query"]
         gold_ids = set(example.get("gold_chunk_ids", []))
-        gold_urls = set(example.get("gold_source_urls", []))
+        gold_urls = set(_normalize_url(u) for u in example.get("gold_source_urls", []))
 
         results = retrieve_fn(query)
         retrieved_ids = [r.get("chunk_id", "") for r in results]
-        retrieved_urls = [r.get("source_url", "") for r in results]
 
-        # Evaluate against chunk IDs if available, else URLs
+        # Deduplicate URLs while preserving rank order — multiple chunks from the
+        # same page should count as one hit (the page is either relevant or not)
+        seen_urls = set()
+        deduped_urls = []
+        for r in results:
+            norm_url = _normalize_url(r.get("source_url", ""))
+            if norm_url not in seen_urls:
+                seen_urls.add(norm_url)
+                deduped_urls.append(norm_url)
+
+        # Evaluate against chunk IDs if available, else deduplicated URLs
         if gold_ids:
             eval_ids = retrieved_ids
             eval_gold = gold_ids
         else:
-            eval_ids = retrieved_urls
+            eval_ids = deduped_urls
             eval_gold = gold_urls
 
         metrics["mrr"].append(reciprocal_rank(eval_ids, eval_gold))

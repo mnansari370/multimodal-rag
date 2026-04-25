@@ -125,15 +125,12 @@ export ANTHROPIC_API_KEY=your_key_here
 **Step 1 — Download and index the corpus**
 
 ```bash
-# Download PyTorch documentation (~2800 pages)
-python -m src.ingestion.downloader --output-dir data/raw
+# Download, clean, and chunk PyTorch documentation (~2800 pages)
+# This takes 30-60 minutes depending on your connection
+python scripts/ingest.py --heading-only
 
-# Clean and chunk
-python -m src.ingestion.cleaner --raw-dir data/raw --output-dir data/processed
-python -m src.chunking.chunker --processed-dir data/processed \
-    --output-file data/processed/chunks_heading.jsonl --strategy heading
-
-# Build indexes (needs GPU for embedding)
+# Build BM25 and FAISS indexes
+# GPU speeds up the embedding step considerably
 python scripts/build_index.py --chunks data/processed/chunks_heading.jsonl
 ```
 

@@ -1,0 +1,533 @@
+[
+  {
+    "id": "ex_003",
+    "category": "cuda_memory",
+    "difficulty": "hard",
+    "query": "How do I measure peak GPU memory during one training step?",
+    "log_snippet": "I need to compare peak memory before and after the forward/backward pass.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/extending.html",
+      "/docs/stable/generated/torch.xpu.memory.max_memory_reserved.html",
+      "/docs/stable/generated/torch.xpu.memory.max_memory_allocated.html",
+      "/docs/stable/generated/torch.cuda.memory.max_memory_allocated.html",
+      "/docs/stable/generated/torch.cuda.memory.max_memory_reserved.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 3.62306809425354,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_006",
+    "category": "cuda_memory",
+    "difficulty": "hard",
+    "query": "Why does memory usage grow across epochs even after del and empty_cache?",
+    "log_snippet": "Epoch 1: reserved=4 GB. Epoch 2: reserved=5.2 GB. Epoch 3: reserved=6.1 GB.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.PolynomialLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.StepLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ChainedScheduler.html",
+      "/docs/stable/data.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -2.6109437942504883,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_021",
+    "category": "batch_norm",
+    "difficulty": "hard",
+    "query": "When should I use GroupNorm instead of BatchNorm?",
+    "log_snippet": "Small batch size (2-4) because of large 3D medical images.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/func.batch_norm.html",
+      "/docs/stable/generated/torch.nn.functional.affine_grid.html",
+      "/docs/stable/quantization-support.html",
+      "/docs/stable/generated/torch.ao.nn.intrinsic.quantized.BNReLU3d.html",
+      "/docs/stable/generated/torch.ao.nn.intrinsic.quantized.modules.bn_relu.BNReLU3d.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -1.9975521564483643,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_044",
+    "category": "config",
+    "difficulty": "hard",
+    "query": "Why is lr=10.0 causing unstable training in my config?",
+    "log_snippet": "learning_rate: 10.0\noptimizer: adamw\nwarmup_steps: 0",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.OneCycleLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.LinearLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ReduceLROnPlateau.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CosineAnnealingWarmRestarts.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 1.0779919624328613,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_046",
+    "category": "checkpointing",
+    "difficulty": "hard",
+    "query": "How can gradient checkpointing reduce memory during training?",
+    "log_snippet": "Training BERT-Large with batch_size=8, OOMing at layer 18.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "/docs/stable/generated/torch.nn.modules.batchnorm.BatchNorm2d.html",
+      "/docs/stable/generated/torch.nn.modules.batchnorm.BatchNorm3d.html",
+      "/docs/stable/generated/torch.nn.BatchNorm3d.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -0.7481522560119629,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_049",
+    "category": "torch_compile",
+    "difficulty": "hard",
+    "query": "How do I use torch.compile only on part of my model?",
+    "log_snippet": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_troubleshooting.html",
+      "/docs/stable/user_guide/torch_compiler/compile/dynamic_shapes_core_concepts.html",
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_dynamic_shapes.html",
+      "/docs/stable/generated/torch.compile.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.dynamo_core_concepts.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 4.770964622497559,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_056",
+    "category": "cuda_memory",
+    "difficulty": "hard",
+    "query": "Why does memory usage grow across epochs even after del and empty_cache (variant)?",
+    "log_snippet": "Epoch 1: reserved=4 GB. Epoch 2: reserved=5.2 GB. Epoch 3: reserved=6.1 GB.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.StepLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.PolynomialLR.html",
+      "/docs/stable/data.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ChainedScheduler.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -2.6239309310913086,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_071",
+    "category": "batch_norm",
+    "difficulty": "hard",
+    "query": "When should I use GroupNorm instead of BatchNorm (variant)?",
+    "log_snippet": "Small batch size (2-4) because of large 3D medical images.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/func.batch_norm.html",
+      "/docs/stable/generated/torch.nn.functional.affine_grid.html",
+      "/docs/stable/sparse.html",
+      "/docs/stable/quantization-support.html",
+      "/docs/stable/generated/torch.ao.nn.intrinsic.quantized.BNReLU3d.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -2.235055923461914,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_075",
+    "category": "optimizer",
+    "difficulty": "hard",
+    "query": "How do I restore optimizer state when resuming from a checkpoint (variant)?",
+    "log_snippet": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.CosineAnnealingWarmRestarts.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.LRScheduler.html",
+      "/docs/stable/distributed.checkpoint.html",
+      "/docs/stable/checkpoint.html",
+      "/docs/stable/generated/torch.optim.Optimizer.load_state_dict.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 0.6719145178794861,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_090",
+    "category": "architecture",
+    "difficulty": "hard",
+    "query": "How do I add a causal mask to MultiheadAttention for a decoder (variant)?",
+    "log_snippet": "Decoder attends to future tokens \u2014 need to mask them out.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.ao.nn.quantizable.modules.activation.MultiheadAttention.html",
+      "/docs/stable/generated/torch.ao.nn.quantizable.MultiheadAttention.html",
+      "/docs/stable/generated/torch.nn.TransformerDecoderLayer.html",
+      "/docs/stable/generated/torch.nn.modules.transformer.TransformerDecoderLayer.html",
+      "/docs/stable/generated/torch.nn.modules.transformer.TransformerDecoder.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 0.7811433672904968,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_094",
+    "category": "config",
+    "difficulty": "hard",
+    "query": "Why is lr=10.0 causing unstable training in my config (variant)?",
+    "log_snippet": "learning_rate: 10.0\noptimizer: adamw\nwarmup_steps: 0",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.OneCycleLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.LinearLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ReduceLROnPlateau.html",
+      "/docs/stable/generated/torch.optim.swa_utils.SWALR.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 0.8618998527526855,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_096",
+    "category": "checkpointing",
+    "difficulty": "hard",
+    "query": "How can gradient checkpointing reduce memory during training (variant)?",
+    "log_snippet": "Training BERT-Large with batch_size=8, OOMing at layer 18.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "/docs/stable/generated/torch.nn.modules.batchnorm.BatchNorm3d.html",
+      "/docs/stable/generated/torch.nn.BatchNorm3d.html",
+      "/docs/stable/generated/torch.nn.BatchNorm1d.html",
+      "/docs/stable/generated/torch.nn.modules.batchnorm.BatchNorm1d.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -0.5129634737968445,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_099",
+    "category": "torch_compile",
+    "difficulty": "hard",
+    "query": "How do I use torch.compile only on part of my model (variant)?",
+    "log_snippet": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_troubleshooting.html",
+      "/docs/stable/user_guide/torch_compiler/compile/dynamic_shapes_core_concepts.html",
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_dynamic_shapes.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.dynamo_core_concepts.html",
+      "/docs/stable/generated/torch.compile.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 4.898446083068848,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_103",
+    "category": "cuda_memory",
+    "difficulty": "hard",
+    "query": "How do I measure peak GPU memory during one training step (variant)?",
+    "log_snippet": "I need to compare peak memory before and after the forward/backward pass.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/extending.html",
+      "/docs/stable/generated/torch.xpu.memory.max_memory_allocated.html",
+      "/docs/stable/generated/torch.cuda.memory.max_memory_allocated.html",
+      "/docs/stable/generated/torch.xpu.memory.max_memory_reserved.html",
+      "/docs/stable/generated/torch.cuda.memory.max_memory_reserved.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 4.135046005249023,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_106",
+    "category": "cuda_memory",
+    "difficulty": "hard",
+    "query": "Why does memory usage grow across epochs even after del and empty_cache (variant)?",
+    "log_snippet": "Epoch 1: reserved=4 GB. Epoch 2: reserved=5.2 GB. Epoch 3: reserved=6.1 GB.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.StepLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.PolynomialLR.html",
+      "/docs/stable/data.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ChainedScheduler.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -2.6239309310913086,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_121",
+    "category": "batch_norm",
+    "difficulty": "hard",
+    "query": "When should I use GroupNorm instead of BatchNorm (variant)?",
+    "log_snippet": "Small batch size (2-4) because of large 3D medical images.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/func.batch_norm.html",
+      "/docs/stable/generated/torch.nn.functional.affine_grid.html",
+      "/docs/stable/sparse.html",
+      "/docs/stable/quantization-support.html",
+      "/docs/stable/generated/torch.ao.nn.intrinsic.quantized.BNReLU3d.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -2.235055923461914,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_125",
+    "category": "optimizer",
+    "difficulty": "hard",
+    "query": "How do I restore optimizer state when resuming from a checkpoint (variant)?",
+    "log_snippet": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.CosineAnnealingWarmRestarts.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.LRScheduler.html",
+      "/docs/stable/distributed.checkpoint.html",
+      "/docs/stable/checkpoint.html",
+      "/docs/stable/generated/torch.optim.Optimizer.load_state_dict.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 0.6719145178794861,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_140",
+    "category": "architecture",
+    "difficulty": "hard",
+    "query": "How do I add a causal mask to MultiheadAttention for a decoder (variant)?",
+    "log_snippet": "Decoder attends to future tokens \u2014 need to mask them out.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.ao.nn.quantizable.modules.activation.MultiheadAttention.html",
+      "/docs/stable/generated/torch.ao.nn.quantizable.MultiheadAttention.html",
+      "/docs/stable/generated/torch.nn.TransformerDecoderLayer.html",
+      "/docs/stable/generated/torch.nn.modules.transformer.TransformerDecoderLayer.html",
+      "/docs/stable/generated/torch.nn.modules.transformer.TransformerDecoder.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 0.7811433672904968,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_144",
+    "category": "config",
+    "difficulty": "hard",
+    "query": "Why is lr=10.0 causing unstable training in my config (variant)?",
+    "log_snippet": "learning_rate: 10.0\noptimizer: adamw\nwarmup_steps: 0",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.OneCycleLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.LinearLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ReduceLROnPlateau.html",
+      "/docs/stable/generated/torch.optim.swa_utils.SWALR.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 0.8618998527526855,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_146",
+    "category": "checkpointing",
+    "difficulty": "hard",
+    "query": "How can gradient checkpointing reduce memory during training (variant)?",
+    "log_snippet": "Training BERT-Large with batch_size=8, OOMing at layer 18.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "/docs/stable/generated/torch.nn.modules.batchnorm.BatchNorm3d.html",
+      "/docs/stable/generated/torch.nn.BatchNorm3d.html",
+      "/docs/stable/generated/torch.nn.BatchNorm1d.html",
+      "/docs/stable/generated/torch.nn.modules.batchnorm.BatchNorm1d.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -0.5129634737968445,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_149",
+    "category": "torch_compile",
+    "difficulty": "hard",
+    "query": "How do I use torch.compile only on part of my model (variant)?",
+    "log_snippet": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_troubleshooting.html",
+      "/docs/stable/user_guide/torch_compiler/compile/dynamic_shapes_core_concepts.html",
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_dynamic_shapes.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.dynamo_core_concepts.html",
+      "/docs/stable/generated/torch.compile.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 4.898446083068848,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_020",
+    "category": "batch_norm",
+    "difficulty": "medium",
+    "query": "Why does model accuracy drop when I call model.eval()?",
+    "log_snippet": "Train acc: 92%, Val acc: 74% after calling model.eval().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/notes/autograd.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.PolynomialLR.html",
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_troubleshooting.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ConstantLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ReduceLROnPlateau.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -2.2320573329925537,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_030",
+    "category": "dtype",
+    "difficulty": "medium",
+    "query": "Why does CrossEntropyLoss complain about the target dtype?",
+    "log_snippet": "RuntimeError: expected scalar type Long but found Float for argument 'target'",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/export/ir_spec.html",
+      "/docs/stable/generated/torch.nn.modules.loss.CTCLoss.html",
+      "/docs/stable/generated/torch.nn.CTCLoss.html",
+      "/docs/stable/generated/torch.fx.experimental.symbolic_shapes.PropagateUnbackedSymInts.html",
+      "/docs/stable/testing.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": -1.5735785961151123,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_045",
+    "category": "checkpointing",
+    "difficulty": "medium",
+    "query": "How should I save a complete training checkpoint?",
+    "log_snippet": "Need to save model, optimizer, scheduler, and current epoch.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/generated/torch.optim.lr_scheduler.LambdaLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.LRScheduler.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.ChainedScheduler.html",
+      "/docs/stable/generated/torch.optim.lr_scheduler.SequentialLR.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 2.502072334289551,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  },
+  {
+    "id": "ex_048",
+    "category": "torch_compile",
+    "difficulty": "medium",
+    "query": "Why does torch.compile break on my custom module?",
+    "log_snippet": "Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "top_retrieved_urls": [
+      "/docs/stable/user_guide/torch_compiler/torch.compiler_troubleshooting.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.dynamo_nonstrict_trace.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.dynamo_core_concepts.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.error_on_graph_break.html",
+      "/docs/stable/user_guide/torch_compiler/compile/programming_model.skipped_functions.html"
+    ],
+    "failure_type": "wrong_topic_retrieved (query too vague or missing key terms)",
+    "top_reranker_score": 3.6862804889678955,
+    "analysis_note": "Gold source not found in top-10 reranked results. Review: query terms, chunking of the gold page, and whether reformulation would help."
+  }
+]

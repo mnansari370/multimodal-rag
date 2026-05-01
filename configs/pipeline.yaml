@@ -17,7 +17,7 @@ mmr_lambda: 0.7
 
 generator_backend: anthropic
 generator_model: claude-haiku-4-5-20251001
-max_new_tokens: 500
+max_new_tokens: 700
 
 use_vlp: true
 vlp_backend: anthropic

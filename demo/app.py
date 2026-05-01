@@ -24,327 +24,392 @@ logger = logging.getLogger(__name__)
 _pipeline: MultimodalRAGPipeline = None
 
 
-# ──────────────────────────────── CSS ────────────────────────────────────────
+# ── Theme ──────────────────────────────────────────────────────────────────────
+
+THEME = gr.themes.Soft(
+    primary_hue=gr.themes.colors.blue,
+    neutral_hue=gr.themes.colors.slate,
+    font=[gr.themes.GoogleFont("Inter"), "ui-sans-serif", "sans-serif"],
+).set(
+    button_primary_background_fill="linear-gradient(90deg, #1e40af, #2563eb)",
+    button_primary_background_fill_hover="linear-gradient(90deg, #1d3fad, #1d4ed8)",
+    button_primary_text_color="#ffffff",
+    button_primary_border_color="transparent",
+    block_label_text_size="sm",
+    block_label_text_weight="600",
+)
+
+
+# ── CSS ────────────────────────────────────────────────────────────────────────
 
 CSS = """
-/* ── Global ── */
-body { font-family: 'Inter', 'Segoe UI', sans-serif; }
-
-/* ── Header banner ── */
-.header-banner {
-    background: linear-gradient(135deg, #0f2744 0%, #1a4a8a 60%, #2563b0 100%);
-    border-radius: 12px;
-    padding: 28px 32px 22px;
-    margin-bottom: 4px;
-    box-shadow: 0 4px 20px rgba(15,39,68,0.35);
+/* ── Container ── */
+.gradio-container {
+    max-width: 1280px !important;
+    margin: 0 auto !important;
 }
-.header-banner h1 {
-    color: #ffffff;
-    font-size: 1.9rem;
+
+/* ── Header ── */
+.app-header {
+    background: linear-gradient(135deg, #0f2744 0%, #1e40af 60%, #2563eb 100%);
+    border-radius: 14px;
+    padding: 26px 30px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 20px rgba(15,39,68,0.3);
+}
+.app-header h1 {
+    color: #fff;
+    font-size: 1.8rem;
     font-weight: 700;
-    margin: 0 0 6px;
+    margin: 0 0 7px;
     letter-spacing: -0.3px;
 }
-.header-banner p {
-    color: #b8d4f5;
-    font-size: 0.97rem;
-    margin: 0 0 18px;
+.app-header p {
+    color: #bfdbfe;
+    font-size: 0.93rem;
+    margin: 0 0 16px;
 }
-.stat-pills { display: flex; gap: 10px; flex-wrap: wrap; }
-.stat-pill {
-    background: rgba(255,255,255,0.12);
+.pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill {
+    background: rgba(255,255,255,0.13);
     border: 1px solid rgba(255,255,255,0.22);
     border-radius: 20px;
-    padding: 4px 13px;
-    color: #e2eeff;
-    font-size: 0.8rem;
+    padding: 3px 11px;
+    color: #e0f2fe;
+    font-size: 0.75rem;
     font-weight: 500;
 }
 
-/* ── Input column ── */
-.input-card {
-    background: #f8fafd;
-    border: 1px solid #dce8f8;
-    border-radius: 10px;
-    padding: 16px;
-}
-.how-it-works {
-    background: #f0f6ff;
-    border-left: 3px solid #2563b0;
-    border-radius: 0 8px 8px 0;
-    padding: 12px 16px;
-    font-size: 0.85rem;
-    color: #2d4a6e;
-    line-height: 1.65;
-}
-.how-it-works b { color: #1a4a8a; }
-
 /* ── Submit button ── */
-.submit-btn {
-    background: linear-gradient(90deg, #1a4a8a, #2563b0) !important;
-    color: white !important;
-    font-weight: 600 !important;
-    border-radius: 8px !important;
-    border: none !important;
-    padding: 11px !important;
+#submit-btn {
+    width: 100% !important;
+    padding: 13px !important;
     font-size: 1rem !important;
+    font-weight: 600 !important;
     letter-spacing: 0.2px !important;
-    box-shadow: 0 2px 8px rgba(26,74,138,0.3) !important;
-    transition: opacity 0.15s !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 10px rgba(37,99,235,0.35) !important;
+    margin-top: 4px !important;
 }
-.submit-btn:hover { opacity: 0.88 !important; }
 
-/* ── Answer tab ── */
+/* ── Output containers ── */
 .answer-box {
     background: #ffffff;
-    border: 1px solid #dce8f8;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
-    padding: 20px 22px;
+    padding: 20px 24px;
     min-height: 200px;
-    line-height: 1.7;
-    font-size: 0.95rem;
+    line-height: 1.75;
+    font-size: 0.94rem;
+    color: #1e293b;
 }
+.answer-box p  { margin: 5px 0; }
+.answer-box ul { margin: 5px 0 10px 20px; padding: 0; }
+.answer-box li { margin: 4px 0; }
+.answer-box strong { color: #1e3a5f; }
 
-/* ── Sources ── */
-.source-card {
-    border: 1px solid #e2eaf5;
-    border-radius: 8px;
+/* ── Source cards ── */
+.src-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
     padding: 14px 16px;
     margin-bottom: 10px;
-    background: #fafcff;
+    background: #f8fafc;
 }
-.source-card-header { font-weight: 600; color: #1a4a8a; font-size: 0.93rem; }
-.source-meta { color: #6b7f99; font-size: 0.8rem; margin: 3px 0 8px; }
-.source-preview {
-    background: #f4f7fb;
-    border-left: 3px solid #93b9e8;
-    padding: 8px 12px;
+.src-title { font-weight: 700; color: #1e3a5f; font-size: 0.9rem; margin-bottom: 3px; }
+.src-meta  { font-size: 0.77rem; color: #64748b; margin-bottom: 8px; }
+.src-badge {
+    display: inline-block;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 0.71rem;
+    font-weight: 600;
+    margin-left: 5px;
+}
+.src-preview {
+    background: #f1f5f9;
+    border-left: 3px solid #60a5fa;
     border-radius: 0 6px 6px 0;
-    font-size: 0.82rem;
-    color: #374151;
+    padding: 8px 12px;
+    font-size: 0.79rem;
     font-family: 'Menlo', 'Consolas', monospace;
     white-space: pre-wrap;
+    color: #334155;
     overflow-wrap: break-word;
 }
 
-/* ── Stats tab ── */
-.stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-.stats-card {
-    background: #f8fafd;
-    border: 1px solid #dce8f8;
-    border-radius: 8px;
+/* ── Stats ── */
+.stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
     padding: 14px 16px;
+    margin-bottom: 12px;
 }
-.stats-card-title {
-    font-size: 0.75rem;
-    font-weight: 600;
+.stat-title {
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #6b7f99;
-    margin-bottom: 8px;
+    letter-spacing: 0.6px;
+    color: #64748b;
+    margin-bottom: 10px;
 }
-.stats-card-value { font-size: 1.05rem; font-weight: 600; color: #1a4a8a; }
-.stats-card-sub { font-size: 0.8rem; color: #6b7f99; margin-top: 2px; }
+.funnel-step { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 0.87rem; }
+.funnel-num   { font-weight: 700; color: #1d4ed8; font-size: 1.05rem; min-width: 38px; }
+.funnel-arrow { color: #93c5fd; font-size: 1rem; }
 .stage-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 5px 0;
-    border-bottom: 1px solid #eef2f8;
-    font-size: 0.87rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.86rem;
+    color: #334155;
 }
 .stage-row:last-child { border-bottom: none; }
-.stage-name { color: #374151; }
-.stage-time { font-weight: 600; color: #2563b0; font-size: 0.85rem; }
-.badge {
-    display: inline-block;
-    padding: 2px 9px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-.badge-blue { background: #dbeafe; color: #1a4a8a; }
-.badge-green { background: #d1fae5; color: #065f46; }
-.badge-purple { background: #ede9fe; color: #5b21b6; }
-.funnel-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.88rem;
-    padding: 6px 0;
-}
-.funnel-num { font-weight: 700; color: #1a4a8a; font-size: 1.05rem; min-width: 32px; }
-.funnel-arrow { color: #93b9e8; font-size: 1.1rem; }
-.funnel-label { color: #6b7f99; }
+.stage-time { font-weight: 600; color: #1d4ed8; }
+.mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.mini-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 12px; text-align: center; }
+.mini-val   { font-size: 1.5rem; font-weight: 700; color: #1d4ed8; line-height: 1; }
+.mini-label { font-size: 0.76rem; color: #64748b; margin-top: 4px; }
 .vlp-box {
     background: #fdf4ff;
     border: 1px solid #e9d5ff;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 14px 16px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
-.vlp-title { font-weight: 600; color: #6b21a8; font-size: 0.88rem; margin-bottom: 8px; }
-.vlp-field { font-size: 0.83rem; color: #374151; margin: 3px 0; }
-.vlp-field span { font-weight: 500; color: #6b21a8; }
+.vlp-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #7e22ce; margin-bottom: 8px; }
+.vlp-row   { font-size: 0.84rem; color: #374151; margin: 3px 0; }
+.vlp-row strong { color: #6b21a8; }
+
+/* ── How it works ── */
+.hiw-box {
+    background: #f0f9ff;
+    border-left: 4px solid #38bdf8;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    font-size: 0.83rem;
+    line-height: 1.7;
+    color: #0c4a6e;
+    margin-top: 12px;
+}
+.hiw-box strong { color: #0369a1; }
+
+/* ── Placeholder ── */
+.placeholder {
+    color: #94a3b8;
+    font-size: 0.88rem;
+    padding: 24px 16px;
+    text-align: center;
+}
 
 /* ── Tabs ── */
-.tab-nav button { font-weight: 500 !important; }
+.tab-wrap button { font-weight: 500 !important; }
+
+/* ── Image upload — make it obviously clickable ── */
+.image-upload-area .wrap { min-height: 160px !important; cursor: pointer !important; }
 """
 
-# ──────────────────────────────── Helpers ────────────────────────────────────
 
-def _bar(value_pct: float, width: int = 120) -> str:
-    filled = int(round(value_pct / 100 * width))
-    return "█" * filled + "░" * (width - filled)
+# ── Static HTML blocks ─────────────────────────────────────────────────────────
+
+HEADER_HTML = """
+<div class="app-header">
+  <h1>Multimodal RAG Troubleshooter</h1>
+  <p>Upload a screenshot, paste a log snippet, or just ask a question — get a grounded, cited answer from PyTorch docs.</p>
+  <div class="pills">
+    <span class="pill">Hybrid BM25 + Dense Retrieval</span>
+    <span class="pill">Cross-Encoder Reranking</span>
+    <span class="pill">MMR Context Pruning</span>
+    <span class="pill">Claude Haiku Generation</span>
+    <span class="pill">MRR@10 = 0.475</span>
+    <span class="pill">75% Token Reduction</span>
+  </div>
+</div>
+"""
+
+HOW_IT_WORKS_HTML = """
+<div class="hiw-box">
+  <strong>How it works</strong><br><br>
+  <strong>1. Visual parsing</strong> — screenshot is parsed by a VLM to extract error text, components, and keywords.<br>
+  <strong>2. Query reformulation</strong> — question is enriched with visual cues and log context.<br>
+  <strong>3. Hybrid retrieval</strong> — BM25 + dense FAISS results fused with Reciprocal Rank Fusion over ~10 k PyTorch doc chunks.<br>
+  <strong>4. Cross-encoder reranking</strong> — MiniLM re-scores top 50, keeps best 20.<br>
+  <strong>5. MMR pruning</strong> — 5 diverse, high-relevance chunks selected (~75% token cut).<br>
+  <strong>6. Cited generation</strong> — Claude answers with [Source N] citations from real doc URLs.
+</div>
+"""
+
+PLACEHOLDER_ANSWER = "<div class='placeholder'>Your answer will appear here after you submit a query.</div>"
+PLACEHOLDER_SOURCES = "<div class='placeholder'>Source documents will appear here.</div>"
+PLACEHOLDER_STATS = "<div class='placeholder'>Pipeline stats — retrieval funnel, token efficiency, and latency — will appear here.</div>"
+
+EXAMPLES = [
+    ["Why is my training crashing with CUDA out of memory?", None,
+     "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB (GPU 0; 10.76 GiB total; 8.91 GiB already allocated)"],
+    ["How do I fix NaN loss during training?", None,
+     "loss went to nan after epoch 3\noptimizer: Adam lr=1e-3\nscaler: GradScaler enabled"],
+    ["How do I enable mixed precision training in PyTorch?", None, ""],
+    ["What causes BatchNorm to behave differently during inference?", None, ""],
+    ["My DataLoader is the bottleneck — how do I speed it up?", None,
+     "num_workers=0\npin_memory=False\nbatch_size=128"],
+    ["How do I train across multiple GPUs with DDP?", None,
+     "RuntimeError: Expected all tensors to be on the same device"],
+]
 
 
-def _fmt_sources(chunks: list[dict]) -> str:
+# ── Output formatters ──────────────────────────────────────────────────────────
+
+def _md_to_html(text: str) -> str:
+    import re
+    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+    out, in_ul = [], False
+    for line in text.split("\n"):
+        s = line.strip()
+        if s.startswith("- "):
+            if not in_ul:
+                out.append("<ul>")
+                in_ul = True
+            out.append(f"<li>{s[2:]}</li>")
+        else:
+            if in_ul:
+                out.append("</ul>")
+                in_ul = False
+            if s:
+                out.append(f"<p>{s}</p>")
+    if in_ul:
+        out.append("</ul>")
+    return "\n".join(out)
+
+
+def _fmt_sources(chunks: list) -> str:
     if not chunks:
-        return "<p style='color:#6b7f99;font-size:0.9rem;'>No sources retrieved.</p>"
-
+        return "<div class='placeholder'>No sources retrieved.</div>"
     parts = []
-    for i, chunk in enumerate(chunks[:5], 1):
-        title = chunk.get("title", "Documentation")
-        section = chunk.get("section", "")
-        url = chunk.get("source_url", "")
-        score = chunk.get("reranker_score", chunk.get("rrf_score", 0.0))
-        preview = chunk.get("text", "")[:350]
-        if len(chunk.get("text", "")) > 350:
-            preview += "..."
+    for i, c in enumerate(chunks[:5], 1):
+        title   = c.get("title", "Documentation")
+        section = c.get("section", "")
+        url     = c.get("source_url", "")
+        score   = c.get("reranker_score", c.get("rrf_score", 0.0))
+        text    = c.get("text", "")
+        preview = text[:350] + ("…" if len(text) > 350 else "")
 
-        header_label = f"[Source {i}] {title}"
+        heading = f"[{i}] {title}"
         if section and section != title:
-            header_label += f" — {section}"
-
-        score_badge = f'<span class="badge badge-blue">score {score:.3f}</span>'
-
-        link_html = f'<a href="{url}" target="_blank" style="color:#2563b0;font-size:0.8rem;">{url}</a>' if url else ""
-
+            heading += f" — {section}"
+        link_html = (f'<a href="{url}" target="_blank" style="color:#2563eb;">{url}</a>'
+                     if url else "")
         parts.append(f"""
-<div class="source-card">
-  <div class="source-card-header">{header_label} &nbsp; {score_badge}</div>
-  <div class="source-meta">{link_html}</div>
-  <div class="source-preview">{preview}</div>
+<div class="src-card">
+  <div class="src-title">{heading}<span class="src-badge">score {score:.3f}</span></div>
+  <div class="src-meta">{link_html}</div>
+  <div class="src-preview">{preview}</div>
 </div>""")
-
     return "\n".join(parts)
 
 
 def _fmt_stats(result) -> str:
     if result is None:
-        return "<p style='color:#6b7f99;'>Run a query to see pipeline stats.</p>"
+        return PLACEHOLDER_STATS
 
-    lat = result.latency
+    lat   = result.latency
     stats = result.pruning_stats
-    ref = result.reformulation
-    vlp = result.vlp_output
-    gen = result.generator_output
+    ref   = result.reformulation
+    vlp   = result.vlp_output
+    gen   = result.generator_output
+    parts = []
 
-    html_parts = []
-
-    # VLP section (only when image was provided)
+    # VLP
     if vlp and (vlp.error_message or vlp.keywords):
-        kw_str = ", ".join(vlp.keywords[:8]) if vlp.keywords else "—"
-        comp_str = ", ".join(vlp.software_components) if vlp.software_components else "—"
-        html_parts.append(f"""
+        kw   = ", ".join(vlp.keywords[:8]) or "—"
+        comp = ", ".join(vlp.software_components) or "—"
+        parts.append(f"""
 <div class="vlp-box">
-  <div class="vlp-title">Vision-Language Parser Output</div>
-  <div class="vlp-field"><span>Category:</span> {vlp.visual_category or "—"}</div>
-  <div class="vlp-field"><span>Error detected:</span> {vlp.error_message or "—"}</div>
-  <div class="vlp-field"><span>Components:</span> {comp_str}</div>
-  <div class="vlp-field"><span>Keywords:</span> {kw_str}</div>
+  <div class="vlp-label">Vision-Language Parser output</div>
+  <div class="vlp-row"><strong>Category:</strong> {vlp.visual_category or "—"}</div>
+  <div class="vlp-row"><strong>Error detected:</strong> {vlp.error_message or "—"}</div>
+  <div class="vlp-row"><strong>Components:</strong> {comp}</div>
+  <div class="vlp-row"><strong>Keywords:</strong> {kw}</div>
 </div>""")
 
-    # Query reformulation
+    # Reformulation
     if ref:
-        strategy_label = ref.strategy if hasattr(ref, "strategy") else "adaptive"
-        eff_q = ref.reformulated_query if ref.reformulated_query else "—"
-        html_parts.append(f"""
-<div class="stats-card" style="margin-bottom:14px;">
-  <div class="stats-card-title">Query Reformulation</div>
-  <div style="font-size:0.82rem;color:#6b7f99;margin-bottom:4px;">
-    Strategy: <span class="badge badge-purple">{strategy_label}</span>
+        strat = getattr(ref, "strategy", "adaptive")
+        q     = (ref.reformulated_query or "—")[:240]
+        parts.append(f"""
+<div class="stat-card">
+  <div class="stat-title">Query reformulation</div>
+  <div style="font-size:0.8rem;color:#64748b;margin-bottom:6px;">
+    Strategy: <strong style="color:#1d4ed8;">{strat}</strong>
   </div>
-  <div style="font-size:0.85rem;color:#374151;font-style:italic;line-height:1.5;">{eff_q[:220]}</div>
+  <div style="font-size:0.85rem;color:#334155;font-style:italic;line-height:1.55;">{q}</div>
 </div>""")
 
     # Retrieval funnel
-    n_retrieved = len(result.retrieved_chunks)
-    n_reranked = len(result.reranked_chunks)
-    n_selected = len(result.selected_chunks)
-    html_parts.append(f"""
-<div class="stats-card" style="margin-bottom:14px;">
-  <div class="stats-card-title">Retrieval Funnel</div>
-  <div class="funnel-row">
-    <span class="funnel-num">{n_retrieved}</span>
-    <span class="funnel-label">chunks retrieved (BM25 + dense fusion)</span>
+    nr  = len(result.retrieved_chunks)
+    nrk = len(result.reranked_chunks)
+    ns  = len(result.selected_chunks)
+    parts.append(f"""
+<div class="stat-card">
+  <div class="stat-title">Retrieval funnel</div>
+  <div class="funnel-step"><span class="funnel-num">{nr}</span><span>candidates — hybrid BM25 + dense fusion</span></div>
+  <div class="funnel-step"><span class="funnel-arrow">↓</span></div>
+  <div class="funnel-step"><span class="funnel-num">{nrk}</span><span>after cross-encoder reranking</span></div>
+  <div class="funnel-step"><span class="funnel-arrow">↓</span></div>
+  <div class="funnel-step"><span class="funnel-num">{ns}</span><span>sent to generator (MMR pruning)</span></div>
+</div>""")
+
+    # Token + latency summary cards
+    orig    = stats.get("original_tokens", 0)
+    pruned  = stats.get("pruned_tokens", 0)
+    red_pct = stats.get("token_reduction_pct", 0.0)
+    ptok    = gen.prompt_tokens if gen else 0
+    ctok    = gen.completion_tokens if gen else 0
+    total_s = lat.total_time_s if lat else 0.0
+
+    parts.append(f"""
+<div class="mini-grid">
+  <div class="mini-card">
+    <div class="mini-val">{red_pct:.0f}%</div>
+    <div class="mini-label">token reduction<br><span style="font-size:0.71rem;">{orig:,} → {pruned:,}</span></div>
   </div>
-  <div class="funnel-row">
-    <span class="funnel-arrow">↓</span>
-    <span class="funnel-num">{n_reranked}</span>
-    <span class="funnel-label">after cross-encoder reranking</span>
-  </div>
-  <div class="funnel-row">
-    <span class="funnel-arrow">↓</span>
-    <span class="funnel-num">{n_selected}</span>
-    <span class="funnel-label">sent to generator (MMR coverage pruning)</span>
+  <div class="mini-card">
+    <div class="mini-val">{total_s:.1f}s</div>
+    <div class="mini-label">total latency<br><span style="font-size:0.71rem;">{ptok+ctok:,} API tokens used</span></div>
   </div>
 </div>""")
 
-    # Token efficiency
-    orig = stats.get("original_tokens", 0)
-    pruned = stats.get("pruned_tokens", 0)
-    reduction = stats.get("token_reduction_pct", 0.0)
-    prompt_tok = gen.prompt_tokens if gen else 0
-    completion_tok = gen.completion_tokens if gen else 0
-    html_parts.append(f"""
-<div class="stats-grid">
-  <div class="stats-card">
-    <div class="stats-card-title">Context Tokens</div>
-    <div class="stats-card-value">{pruned:,}</div>
-    <div class="stats-card-sub">down from {orig:,} ({reduction:.0f}% reduction)</div>
-  </div>
-  <div class="stats-card">
-    <div class="stats-card-title">API Token Usage</div>
-    <div class="stats-card-value">{prompt_tok + completion_tok:,}</div>
-    <div class="stats-card-sub">{prompt_tok:,} prompt · {completion_tok:,} completion</div>
-  </div>
-</div>""")
-
-    # Latency breakdown
+    # Stage latency
     if lat:
         stages = [
-            ("VLP (screenshot parsing)", lat.vlp_time_s),
-            ("Query reformulation", lat.reformulation_time_s),
-            ("Hybrid retrieval", lat.retrieval_time_s),
-            ("Cross-encoder reranking", lat.reranking_time_s),
-            ("Context pruning (MMR)", lat.pruning_time_s),
-            ("Answer generation (Claude)", lat.generation_time_s),
+            ("VLP (screenshot parsing)",    lat.vlp_time_s),
+            ("Query reformulation",          lat.reformulation_time_s),
+            ("Hybrid retrieval",             lat.retrieval_time_s),
+            ("Cross-encoder reranking",      lat.reranking_time_s),
+            ("MMR context pruning",          lat.pruning_time_s),
+            ("Answer generation (Claude)",   lat.generation_time_s),
         ]
         rows = "".join(
-            f'<div class="stage-row"><span class="stage-name">{name}</span>'
-            f'<span class="stage-time">{t:.3f}s</span></div>'
+            f'<div class="stage-row"><span>{name}</span><span class="stage-time">{t:.3f}s</span></div>'
             for name, t in stages if t > 0
         )
-        html_parts.append(f"""
-<div class="stats-card">
-  <div class="stats-card-title">Latency Breakdown</div>
+        parts.append(f"""
+<div class="stat-card">
+  <div class="stat-title">Latency by stage</div>
   {rows}
-  <div class="stage-row" style="margin-top:6px;border-top:2px solid #dce8f8;padding-top:8px;">
-    <span style="font-weight:600;color:#374151;">Total</span>
-    <span class="stage-time" style="font-size:0.95rem;">{lat.total_time_s:.2f}s</span>
+  <div class="stage-row" style="margin-top:6px;border-top:2px solid #e2e8f0;padding-top:8px;">
+    <strong>Total</strong>
+    <span class="stage-time" style="font-size:0.95rem;">{total_s:.2f}s</span>
   </div>
 </div>""")
 
-    return "\n".join(html_parts)
+    return "\n".join(parts)
 
 
-# ──────────────────────────────── Pipeline glue ──────────────────────────────
+# ── Pipeline glue ──────────────────────────────────────────────────────────────
 
 def load_pipeline(config_path: str = None) -> MultimodalRAGPipeline:
     cfg = PipelineConfig()
@@ -360,158 +425,79 @@ def load_pipeline(config_path: str = None) -> MultimodalRAGPipeline:
 
 
 def answer_query(question: str, image, log_snippet: str):
-    """Gradio handler — returns (answer_html, sources_html, stats_html)."""
+    """Gradio handler — image arrives as a PIL Image (type='pil')."""
     global _pipeline
 
-    empty = ("<p style='color:#6b7f99;'>—</p>",) * 3
-
     if _pipeline is None:
-        msg = "<p style='color:#c0392b;'>Pipeline not loaded. Restart the demo with a valid index.</p>"
-        return msg, *empty[1:]
+        err = "<div class='answer-box' style='color:#dc2626;'>Pipeline not loaded — restart the demo.</div>"
+        return err, PLACEHOLDER_SOURCES, PLACEHOLDER_STATS
 
     if not question or not question.strip():
-        return "<p style='color:#c0392b;'>Please enter a question.</p>", *empty[1:]
+        err = "<div class='answer-box' style='color:#dc2626;'>Please enter a question.</div>"
+        return err, PLACEHOLDER_SOURCES, PLACEHOLDER_STATS
 
     try:
-        from PIL import Image as PILImage
-        pil_image = PILImage.fromarray(image).convert("RGB") if image is not None else None
-
         result = _pipeline.run(
             question=question.strip(),
-            image=pil_image,
+            image=image,          # PIL Image or None — pipeline.run() accepts both
             log_snippet=log_snippet or "",
         )
     except Exception as e:
         logger.exception("Pipeline error")
-        return f"<p style='color:#c0392b;'>Error: {e}</p>", *empty[1:]
+        err = f"<div class='answer-box' style='color:#dc2626;'>Error: {e}</div>"
+        return err, PLACEHOLDER_SOURCES, PLACEHOLDER_STATS
 
-    answer_html = f'<div class="answer-box">{_md_to_html(result.answer)}</div>'
+    answer_html  = f'<div class="answer-box">{_md_to_html(result.answer)}</div>'
     sources_html = _fmt_sources(result.selected_chunks)
-    stats_html = _fmt_stats(result)
-
+    stats_html   = _fmt_stats(result)
     return answer_html, sources_html, stats_html
 
 
-def _md_to_html(text: str) -> str:
-    """Minimal Markdown → HTML for the answer box (bold, bullets, newlines)."""
-    import re
-    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
-    lines = text.split("\n")
-    out = []
-    for line in lines:
-        s = line.strip()
-        if s.startswith("- "):
-            out.append(f"<li>{s[2:]}</li>")
-        elif s:
-            out.append(f"<p style='margin:6px 0;'>{s}</p>")
-    html = "\n".join(out)
-    html = re.sub(r"(<li>.*?</li>\n?)+", lambda m: f"<ul style='margin:6px 0 10px 18px;'>{m.group()}</ul>", html, flags=re.DOTALL)
-    return html
-
-
-# ──────────────────────────────── Interface ──────────────────────────────────
-
-EXAMPLES = [
-    ["Why is my training crashing with CUDA out of memory?", None,
-     "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB (GPU 0; 10.76 GiB total capacity; 8.91 GiB already allocated)"],
-    ["How do I fix NaN loss during training?", None,
-     "loss went to nan after epoch 3\noptimizer: Adam lr=1e-3\nscaler: GradScaler enabled"],
-    ["How do I enable mixed precision training in PyTorch?", None, ""],
-    ["What causes BatchNorm to behave differently at inference?", None,
-     "model.train()\nbn_layer = nn.BatchNorm2d(64)\n# outputs differ between train and eval"],
-    ["My DataLoader is the bottleneck — workers seem idle. How do I fix it?", None,
-     "num_workers=0\npin_memory=False\nbatch_size=128"],
-    ["How do I speed up multi-GPU training with DDP?", None,
-     "RuntimeError: Expected all tensors to be on the same device"],
-]
-
-BANNER_HTML = """
-<div class="header-banner">
-  <h1>Multimodal RAG Troubleshooter</h1>
-  <p>
-    Upload a screenshot, paste a log snippet, or just ask a question —
-    get a grounded, cited answer from PyTorch documentation.
-  </p>
-  <div class="stat-pills">
-    <span class="stat-pill">Hybrid BM25 + Dense Retrieval</span>
-    <span class="stat-pill">Cross-Encoder Reranking</span>
-    <span class="stat-pill">MMR Context Pruning</span>
-    <span class="stat-pill">Claude Haiku Generation</span>
-    <span class="stat-pill">MRR@10 = 0.475</span>
-    <span class="stat-pill">75% Token Reduction</span>
-  </div>
-</div>
-"""
-
-HOW_IT_WORKS_HTML = """
-<div class="how-it-works">
-  <b>How this works</b><br><br>
-  <b>1. Visual parsing</b> — if you upload a screenshot, a vision model extracts
-  the error message, components, and keywords before retrieval.<br><br>
-  <b>2. Query reformulation</b> — your question is enriched with visual cues and
-  log context, so retrieval finds the right chunks even for vague queries.<br><br>
-  <b>3. Hybrid retrieval</b> — BM25 (keyword) and dense (semantic) results are
-  fused with Reciprocal Rank Fusion across ~10 k PyTorch documentation chunks.<br><br>
-  <b>4. Cross-encoder reranking</b> — a MiniLM cross-encoder re-scores the top 50
-  candidates and keeps the best 20.<br><br>
-  <b>5. MMR pruning</b> — Maximum Marginal Relevance selects 5 diverse, high-relevance
-  chunks, cutting context tokens by ~75%.<br><br>
-  <b>6. Cited generation</b> — Claude produces a structured answer grounded in those
-  5 chunks, with [Source N] citations tied to real documentation URLs.
-</div>
-"""
-
+# ── Interface ──────────────────────────────────────────────────────────────────
 
 def build_interface() -> gr.Blocks:
-    with gr.Blocks(title="Multimodal RAG Troubleshooter", css=CSS) as demo:
+    with gr.Blocks(css=CSS, theme=THEME, title="Multimodal RAG Troubleshooter") as demo:
 
-        gr.HTML(BANNER_HTML)
+        gr.HTML(HEADER_HTML)
 
         with gr.Row(equal_height=False):
 
-            # ── Left column: inputs ──────────────────────────────────────
-            with gr.Column(scale=1, min_width=340):
-                image_input = gr.Image(
-                    label="Screenshot (optional)",
-                    type="numpy",
-                    height=220,
-                    elem_classes=["input-card"],
-                )
+            # ── Left: inputs ───────────────────────────────────────────────
+            with gr.Column(scale=1, min_width=320):
                 question_input = gr.Textbox(
                     label="Your question",
-                    placeholder="e.g. Why does my loss go to NaN after a few steps?",
+                    placeholder="e.g. Why does my training loss go to NaN?",
                     lines=3,
+                )
+                image_input = gr.Image(
+                    label="Screenshot (optional) — click here or drag & drop an image",
+                    type="pil",
+                    sources=["upload", "clipboard"],
+                    elem_classes=["image-upload-area"],
                 )
                 log_input = gr.Textbox(
                     label="Log / config snippet (optional)",
                     placeholder="Paste error output, stack trace, or YAML config here...",
-                    lines=5,
+                    lines=4,
                 )
                 submit_btn = gr.Button(
                     "Get Answer →",
                     variant="primary",
-                    elem_classes=["submit-btn"],
+                    elem_id="submit-btn",
                 )
                 gr.HTML(HOW_IT_WORKS_HTML)
 
-            # ── Right column: outputs ────────────────────────────────────
+            # ── Right: outputs ─────────────────────────────────────────────
             with gr.Column(scale=2):
-                with gr.Tabs(elem_classes=["tab-nav"]):
-
+                with gr.Tabs(elem_classes=["tab-wrap"]):
                     with gr.TabItem("Answer"):
-                        answer_output = gr.HTML(
-                            value="<div class='answer-box' style='color:#6b7f99;'>Your answer will appear here.</div>"
-                        )
+                        answer_output = gr.HTML(value=PLACEHOLDER_ANSWER)
 
                     with gr.TabItem("Sources"):
-                        sources_output = gr.HTML(
-                            value="<p style='color:#6b7f99;padding:12px;'>Source documents will appear here after you submit a query.</p>"
-                        )
+                        sources_output = gr.HTML(value=PLACEHOLDER_SOURCES)
 
                     with gr.TabItem("Pipeline Stats"):
-                        stats_output = gr.HTML(
-                            value="<p style='color:#6b7f99;padding:12px;'>Retrieval funnel, token efficiency, and latency breakdown will appear here after you submit a query.</p>"
-                        )
+                        stats_output = gr.HTML(value=PLACEHOLDER_STATS)
 
         submit_btn.click(
             fn=answer_query,
@@ -522,13 +508,13 @@ def build_interface() -> gr.Blocks:
         gr.Examples(
             examples=EXAMPLES,
             inputs=[question_input, image_input, log_input],
-            label="Example queries",
+            label="Example queries — click any row to load it",
         )
 
     return demo
 
 
-# ──────────────────────────────── Entry point ────────────────────────────────
+# ── Entry point ────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -18,7 +18,7 @@ mmr_lambda: 0.7
 # for higher answer quality (at higher cost).
 generator_backend: anthropic
 generator_model: claude-haiku-4-5-20251001
-max_new_tokens: 500
+max_new_tokens: 700
 
 # VLP is enabled when a screenshot is provided.
 # Claude Haiku handles vision well and is consistent with the generator backend.

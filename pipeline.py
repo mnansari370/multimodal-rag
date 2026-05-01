@@ -64,7 +64,7 @@ class PipelineConfig:
     # ── Generation ─────────────────────────────────────────────────────────
     generator_backend: str = "anthropic"
     generator_model: str = "claude-haiku-4-5-20251001"
-    max_new_tokens: int = 500
+    max_new_tokens: int = 700
 
     # ── Vision-language parser ─────────────────────────────────────────────
     use_vlp: bool = True

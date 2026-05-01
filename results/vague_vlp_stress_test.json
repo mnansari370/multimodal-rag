@@ -1,0 +1,62 @@
+{
+  "original_explicit_query": {
+    "mrr": 0.4583,
+    "recall@5": 0.4483,
+    "hit@5": 0.6467,
+    "ndcg@5": 0.3795,
+    "recall@10": 0.51,
+    "hit@10": 0.7467,
+    "ndcg@10": 0.4064,
+    "recall@20": 0.5356,
+    "hit@20": 0.7867,
+    "ndcg@20": 0.4152
+  },
+  "vague_query_only": {
+    "mrr": 0.0,
+    "recall@5": 0.0,
+    "hit@5": 0.0,
+    "ndcg@5": 0.0,
+    "recall@10": 0.0,
+    "hit@10": 0.0,
+    "ndcg@10": 0.0,
+    "recall@20": 0.0,
+    "hit@20": 0.0,
+    "ndcg@20": 0.0
+  },
+  "vague_query_plus_log": {
+    "mrr": 0.3383,
+    "recall@5": 0.3089,
+    "hit@5": 0.46,
+    "ndcg@5": 0.2716,
+    "recall@10": 0.3733,
+    "hit@10": 0.5933,
+    "ndcg@10": 0.2978,
+    "recall@20": 0.42,
+    "hit@20": 0.6533,
+    "ndcg@20": 0.3122
+  },
+  "vague_query_plus_vlp": {
+    "mrr": 0.4368,
+    "recall@5": 0.3983,
+    "hit@5": 0.6467,
+    "ndcg@5": 0.351,
+    "recall@10": 0.4939,
+    "hit@10": 0.7067,
+    "ndcg@10": 0.3919,
+    "recall@20": 0.5239,
+    "hit@20": 0.7467,
+    "ndcg@20": 0.4022
+  },
+  "vague_query_plus_log_plus_vlp": {
+    "mrr": 0.4436,
+    "recall@5": 0.4061,
+    "hit@5": 0.62,
+    "ndcg@5": 0.3586,
+    "recall@10": 0.4856,
+    "hit@10": 0.7267,
+    "ndcg@10": 0.3928,
+    "recall@20": 0.5122,
+    "hit@20": 0.7267,
+    "ndcg@20": 0.4028
+  }
+}

@@ -1,0 +1,12 @@
+| Mode | Reranker | MRR | Recall@5 | Recall@10 | Recall@20 | Hit@10 | nDCG@10 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| original_explicit_query | No | 0.4583 | 0.4483 | 0.5100 | 0.5356 | 0.7467 | 0.4064 |
+| vague_query_only | No | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| vague_query_plus_log | No | 0.3383 | 0.3089 | 0.3733 | 0.4200 | 0.5933 | 0.2978 |
+| vague_query_plus_vlp | No | 0.4368 | 0.3983 | 0.4939 | 0.5239 | 0.7067 | 0.3919 |
+| vague_query_plus_log_plus_vlp | No | 0.4436 | 0.4061 | 0.4856 | 0.5122 | 0.7267 | 0.3928 |
+| original_explicit_query | Yes | 0.4747 | 0.4278 | 0.5011 | 0.5056 | 0.7333 | 0.4033 |
+| vague_query_only | Yes | 0.0300 | 0.0000 | 0.1800 | 0.2133 | 0.3000 | 0.0591 |
+| vague_query_plus_log | Yes | 0.3496 | 0.3467 | 0.4083 | 0.4450 | 0.6200 | 0.3116 |
+| vague_query_plus_vlp | Yes | 0.4523 | 0.3872 | 0.5006 | 0.5194 | 0.7200 | 0.3830 |
+| vague_query_plus_log_plus_vlp | Yes | 0.4105 | 0.3856 | 0.4789 | 0.5122 | 0.6867 | 0.3568 |

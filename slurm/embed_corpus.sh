@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=embed_corpus
+#SBATCH --job-name=rag_embed
 #SBATCH --output=results/logs/embed_corpus_%j.out
 #SBATCH --error=results/logs/embed_corpus_%j.err
 #SBATCH --time=04:00:00
@@ -10,35 +10,30 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=gpu
 
-# Build FAISS dense index over the chunked corpus
-# Requires GPU for fast embedding generation
+# Build FAISS dense embeddings and BM25 index over the chunked corpus.
+# Requires GPU for fast batch encoding with the bi-encoder model.
+#
+# By default uses heading-based chunks. Pass a different chunks file
+# via the first argument to use fixed-size chunks:
+#   sbatch slurm/embed_corpus.sh data/processed/chunks_fixed.jsonl
 
 cd $SLURM_SUBMIT_DIR
 
-source activate DL_env
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate multimodal_RAG
+
+mkdir -p results/logs data/embeddings
 
 CHUNKS_FILE=${1:-data/processed/chunks_heading.jsonl}
-echo "=== Building dense embeddings for: $CHUNKS_FILE ==="
+echo "=== Building retrieval indexes from: $CHUNKS_FILE ==="
 
-python - <<EOF
-import json
-from src.retrieval import HybridRetriever
+python scripts/build_index.py \
+    --chunks "$CHUNKS_FILE" \
+    --bm25-out data/embeddings/bm25.pkl \
+    --faiss-out data/embeddings/dense.faiss \
+    --chunks-out data/embeddings/chunks.jsonl
 
-chunks = []
-with open("$CHUNKS_FILE") as f:
-    for line in f:
-        chunks.append(json.loads(line.strip()))
-
-print(f"Loaded {len(chunks)} chunks")
-
-retriever = HybridRetriever()
-retriever.build(chunks)
-retriever.save(
-    bm25_path="data/embeddings/bm25.pkl",
-    faiss_path="data/embeddings/dense.faiss",
-    chunks_path="data/embeddings/chunks.jsonl",
-)
-print("Embeddings saved to data/embeddings/")
-EOF
+echo "=== Index statistics ==="
+python scripts/validate_data.py
 
 echo "Embedding complete."

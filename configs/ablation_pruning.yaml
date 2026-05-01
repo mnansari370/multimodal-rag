@@ -1,34 +1,43 @@
-# Context pruning ablation — produces the efficiency table from Section 6.2
-# Measures: prompt tokens, latency, faithfulness, answer score
-# Run with ablation_efficiency.sh
+# Context pruning ablation config — produces the efficiency table from Section 6.2.
+#
+# Experiments compare: no pruning, score threshold, top-k diversity, and
+# coverage (MMR) pruning. The base retrieval stack stays the same across all.
+#
+# Run via: sbatch slurm/ablation_efficiency.sh
 
 base_config:
   retriever_type: hybrid
-  use_vlp: true
+  use_reranker: true
   reranker_top_k: 20
-  generator_backend: openai
-  generator_model: gpt-4o-mini
+  use_vlp: false    # VLP is off during retrieval-only ablation to isolate pruning
+  generator_backend: anthropic
+  generator_model: claude-haiku-4-5-20251001
 
 pruning_experiments:
+  # Baseline: send all 20 reranked chunks to the generator (no pruning)
   - name: no_pruning
     pruning_strategy: threshold
-    pruning_threshold: -999      # keeps everything
+    pruning_threshold: -999      # effectively keeps everything
     context_top_k: 20
 
+  # Simple score threshold — keep only chunks above reranker score 0.0
   - name: score_threshold
     pruning_strategy: threshold
     pruning_threshold: 0.0
     context_top_k: 10
 
+  # Top-k with diversity penalty for near-duplicate chunks
   - name: top_k_diversity
     pruning_strategy: diversity
     context_top_k: 5
 
+  # MMR-style coverage pruning, lambda=0.7 (relevance-heavy)
   - name: coverage_pruning_07
     pruning_strategy: coverage
     context_top_k: 5
     mmr_lambda: 0.7
 
+  # MMR-style coverage pruning, lambda=0.5 (more diversity)
   - name: coverage_pruning_05
     pruning_strategy: coverage
     context_top_k: 5

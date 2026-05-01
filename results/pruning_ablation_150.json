@@ -1,0 +1,67 @@
+[
+  {
+    "setting": "no_pruning_20",
+    "strategy": "threshold",
+    "top_k": 20,
+    "threshold": -999,
+    "mmr_lambda": 0.7,
+    "avg_input_chunks": 20.0,
+    "avg_selected_chunks": 20.0,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 7093.5,
+    "avg_token_reduction_pct": 0.0,
+    "avg_retrieve_rerank_prune_latency_s": 1.798
+  },
+  {
+    "setting": "threshold_top10",
+    "strategy": "threshold",
+    "top_k": 10,
+    "threshold": 0.0,
+    "mmr_lambda": 0.7,
+    "avg_input_chunks": 20.0,
+    "avg_selected_chunks": 3.91,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1416.6,
+    "avg_token_reduction_pct": 79.98,
+    "avg_retrieve_rerank_prune_latency_s": 1.764
+  },
+  {
+    "setting": "top5_diversity",
+    "strategy": "diversity",
+    "top_k": 5,
+    "threshold": 0.0,
+    "mmr_lambda": 0.7,
+    "avg_input_chunks": 20.0,
+    "avg_selected_chunks": 4.99,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1772.6,
+    "avg_token_reduction_pct": 75.01,
+    "avg_retrieve_rerank_prune_latency_s": 1.752
+  },
+  {
+    "setting": "coverage_mmr_07",
+    "strategy": "coverage",
+    "top_k": 5,
+    "threshold": 0.0,
+    "mmr_lambda": 0.7,
+    "avg_input_chunks": 20.0,
+    "avg_selected_chunks": 5.0,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1777.9,
+    "avg_token_reduction_pct": 74.95,
+    "avg_retrieve_rerank_prune_latency_s": 1.843
+  },
+  {
+    "setting": "coverage_mmr_05",
+    "strategy": "coverage",
+    "top_k": 5,
+    "threshold": 0.0,
+    "mmr_lambda": 0.5,
+    "avg_input_chunks": 20.0,
+    "avg_selected_chunks": 5.0,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1769.6,
+    "avg_token_reduction_pct": 75.09,
+    "avg_retrieve_rerank_prune_latency_s": 1.85
+  }
+]

@@ -1,0 +1,2992 @@
+{
+  "ex_001": {
+    "error_message": "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has 10.76 GiB total; 8.45 GiB already allocated; 1.23 GiB free.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "Python"
+    ],
+    "keywords": [
+      "CUDA out of memory",
+      "RuntimeError",
+      "allocate 2.00 GiB",
+      "GPU memory",
+      "train.py",
+      "configs/exp.yaml",
+      "GPU 0",
+      "10.76 GiB total",
+      "8.45 GiB allocated",
+      "1.23 GiB free"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has 10.76 GiB total; 8.45 GiB already allocated; 1.23 GiB free.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"Python\"],\n  \"keywords\": [\"CUDA out of memory\", \"RuntimeError\", \"allocate 2.00 GiB\", \"GPU memory\", \"train.py\", \"configs/exp.yaml\", \"GPU 0\", \"10.76 GiB total\", \"8.45 GiB allocated\", \"1.23 GiB free\"]\n}\n```"
+  },
+  "ex_002": {
+    "error_message": "After del tensor and torch.cuda.empty_cache(): memory_allocated=0.3 GB, memory_reserved=8.9 GB",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "Python"
+    ],
+    "keywords": [
+      "del tensor",
+      "torch.cuda.empty_cache()",
+      "memory_allocated",
+      "memory_reserved",
+      "CUDA memory",
+      "GPU memory leak",
+      "memory fragmentation",
+      "0.3 GB",
+      "8.9 GB"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"After del tensor and torch.cuda.empty_cache(): memory_allocated=0.3 GB, memory_reserved=8.9 GB\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"Python\"],\n  \"keywords\": [\"del tensor\", \"torch.cuda.empty_cache()\", \"memory_allocated\", \"memory_reserved\", \"CUDA memory\", \"GPU memory leak\", \"memory fragmentation\", \"0.3 GB\", \"8.9 GB\"]\n}\n```"
+  },
+  "ex_003": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "CUDA"
+    ],
+    "keywords": [
+      "peak memory",
+      "forward pass",
+      "backward pass",
+      "memory comparison",
+      "train.py",
+      "config",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"CUDA\"],\n  \"keywords\": [\"peak memory\", \"forward pass\", \"backward pass\", \"memory comparison\", \"train.py\", \"config\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_004": {
+    "error_message": "Training ResNet-50 with batch_size=128 OOMs. Tried reducing to 64 but still too large.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "ResNet-50"
+    ],
+    "keywords": [
+      "CUDA memory",
+      "out of memory",
+      "OOM",
+      "batch_size",
+      "ResNet-50",
+      "training",
+      "memory troubleshooting",
+      "batch reduction",
+      "GPU memory",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training ResNet-50 with batch_size=128 OOMs. Tried reducing to 64 but still too large.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"ResNet-50\"],\n  \"keywords\": [\"CUDA memory\", \"out of memory\", \"OOM\", \"batch_size\", \"ResNet-50\", \"training\", \"memory troubleshooting\", \"batch reduction\", \"GPU memory\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_005": {
+    "error_message": "After empty_cache() GPU memory still shows 6 GB used by other processes.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "Python"
+    ],
+    "keywords": [
+      "empty_cache()",
+      "GPU memory",
+      "CUDA memory management",
+      "memory leak",
+      "other processes",
+      "memory troubleshooting",
+      "torch.cuda.empty_cache()"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"After empty_cache() GPU memory still shows 6 GB used by other processes.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"Python\"],\n  \"keywords\": [\"empty_cache()\", \"GPU memory\", \"CUDA memory management\", \"memory leak\", \"other processes\", \"memory troubleshooting\", \"torch.cuda.empty_cache()\"]\n}\n```"
+  },
+  "ex_006": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "CUDA"
+    ],
+    "keywords": [
+      "cuda memory",
+      "troubleshooting",
+      "reserved memory",
+      "epoch",
+      "training",
+      "config",
+      "yaml",
+      "memory allocation",
+      "GPU memory growth"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"CUDA\"],\n  \"keywords\": [\"cuda memory\", \"troubleshooting\", \"reserved memory\", \"epoch\", \"training\", \"config\", \"yaml\", \"memory allocation\", \"GPU memory growth\"]\n}\n```"
+  },
+  "ex_007": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16"
+    ],
+    "keywords": [
+      "fp16",
+      "training",
+      "memory reduction",
+      "experiment.yaml",
+      "mixed precision",
+      "speed up",
+      "AMP troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\"],\n  \"keywords\": [\"fp16\", \"training\", \"memory reduction\", \"experiment.yaml\", \"mixed precision\", \"speed up\", \"AMP troubleshooting\"]\n}\n```"
+  },
+  "ex_008": {
+    "error_message": "loss=nan after epoch 1 with fp16 autocast enabled.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16",
+      "autocast"
+    ],
+    "keywords": [
+      "loss=nan",
+      "epoch 1",
+      "fp16 autocast",
+      "numerical instability",
+      "mixed precision training",
+      "autocast enabled",
+      "NaN loss",
+      "training failure"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"loss=nan after epoch 1 with fp16 autocast enabled.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\", \"autocast\"],\n  \"keywords\": [\"loss=nan\", \"epoch 1\", \"fp16 autocast\", \"numerical instability\", \"mixed precision training\", \"autocast enabled\", \"NaN loss\", \"training failure\"]\n}\n```"
+  },
+  "ex_009": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "GradScaler",
+      "PyTorch"
+    ],
+    "keywords": [
+      "GradScaler",
+      "scale",
+      "65536",
+      "32768",
+      "16384",
+      "8192",
+      "decreasing",
+      "train.py",
+      "config",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"GradScaler\", \"PyTorch\"],\n  \"keywords\": [\"GradScaler\", \"scale\", \"65536\", \"32768\", \"16384\", \"8192\", \"decreasing\", \"train.py\", \"config\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_010": {
+    "error_message": "Training on A100 GPU, getting NaN with fp16.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "A100 GPU",
+      "fp16",
+      "AMP"
+    ],
+    "keywords": [
+      "NaN",
+      "fp16",
+      "A100 GPU",
+      "training",
+      "mixed precision",
+      "numerical instability",
+      "gradient overflow",
+      "loss explosion"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training on A100 GPU, getting NaN with fp16.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"A100 GPU\", \"fp16\", \"AMP\"],\n  \"keywords\": [\"NaN\", \"fp16\", \"A100 GPU\", \"training\", \"mixed precision\", \"numerical instability\", \"gradient overflow\", \"loss explosion\"]\n}\n```"
+  },
+  "ex_011": {
+    "error_message": "Code uses torch.autocast but loss.backward() gives underflow warnings.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.autocast",
+      "AMP"
+    ],
+    "keywords": [
+      "torch.autocast",
+      "loss.backward()",
+      "underflow warnings",
+      "automatic mixed precision",
+      "gradient underflow",
+      "numerical stability",
+      "backward pass",
+      "training"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Code uses torch.autocast but loss.backward() gives underflow warnings.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.autocast\", \"AMP\"],\n  \"keywords\": [\"torch.autocast\", \"loss.backward()\", \"underflow warnings\", \"automatic mixed precision\", \"gradient underflow\", \"numerical stability\", \"backward pass\", \"training\"]\n}\n```"
+  },
+  "ex_012": {
+    "error_message": "Custom loss class with matrix inverse causes NaN in fp16.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16"
+    ],
+    "keywords": [
+      "custom loss class",
+      "matrix inverse",
+      "NaN",
+      "fp16",
+      "floating point precision",
+      "numerical stability",
+      "train.py",
+      "config file",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Custom loss class with matrix inverse causes NaN in fp16.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\"],\n  \"keywords\": [\"custom loss class\", \"matrix inverse\", \"NaN\", \"fp16\", \"floating point precision\", \"numerical stability\", \"train.py\", \"config file\", \"YAML\"]\n}\n```"
+  },
+  "ex_013": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "GPU"
+    ],
+    "keywords": [
+      "DataLoader",
+      "batch_size",
+      "num_workers",
+      "GPU Utilization",
+      "experiment.yaml",
+      "dataset"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"GPU\"],\n  \"keywords\": [\"DataLoader\", \"batch_size\", \"num_workers\", \"GPU Utilization\", \"experiment.yaml\", \"dataset\"]\n}\n```"
+  },
+  "ex_014": {
+    "error_message": "RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "DataLoader worker",
+      "SIGBUS",
+      "Bus error",
+      "shared memory",
+      "shm",
+      "train.py",
+      "configs/exp.yaml",
+      "worker killed"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"DataLoader worker\", \"SIGBUS\", \"Bus error\", \"shared memory\", \"shm\", \"train.py\", \"configs/exp.yaml\", \"worker killed\"]\n}\n```"
+  },
+  "ex_015": {
+    "error_message": "Dataset.__getitem__ does .cuda() before returning. Workers hang.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "CUDA"
+    ],
+    "keywords": [
+      "Dataset.__getitem__",
+      "cuda()",
+      "workers hang",
+      "dataloader",
+      "multiprocessing",
+      "device placement",
+      "training script",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Dataset.__getitem__ does .cuda() before returning. Workers hang.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"CUDA\"],\n  \"keywords\": [\"Dataset.__getitem__\", \"cuda()\", \"workers hang\", \"dataloader\", \"multiprocessing\", \"device placement\", \"training script\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_016": {
+    "error_message": "Training with GPU but data transfer is slow.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "GPU",
+      "DataLoader"
+    ],
+    "keywords": [
+      "data transfer",
+      "slow",
+      "GPU training",
+      "dataloader",
+      "performance",
+      "bottleneck",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training with GPU but data transfer is slow.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"GPU\", \"DataLoader\"],\n  \"keywords\": [\"data transfer\", \"slow\", \"GPU training\", \"dataloader\", \"performance\", \"bottleneck\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_017": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader"
+    ],
+    "keywords": [
+      "DataLoader",
+      "workers",
+      "reinitialization",
+      "epoch",
+      "experiment.yaml",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\"],\n  \"keywords\": [\"DataLoader\", \"workers\", \"reinitialization\", \"epoch\", \"experiment.yaml\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_018": {
+    "error_message": "Validation metrics change between runs even with torch.manual_seed.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "torch.manual_seed"
+    ],
+    "keywords": [
+      "validation metrics",
+      "torch.manual_seed",
+      "reproducibility",
+      "non-deterministic behavior",
+      "experiment.yaml",
+      "random seed",
+      "metric variance",
+      "run consistency"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Validation metrics change between runs even with torch.manual_seed.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"torch.manual_seed\"],\n  \"keywords\": [\"validation metrics\", \"torch.manual_seed\", \"reproducibility\", \"non-deterministic behavior\", \"experiment.yaml\", \"random seed\", \"metric variance\", \"run consistency\"]\n}\n```"
+  },
+  "ex_019": {
+    "error_message": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "batch normalization",
+      "input size",
+      "torch.Size",
+      "channel",
+      "training",
+      "configs/exp.yaml",
+      "value per channel"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch\"],\n  \"keywords\": [\"RuntimeError\", \"batch normalization\", \"input size\", \"torch.Size\", \"channel\", \"training\", \"configs/exp.yaml\", \"value per channel\"]\n}\n```"
+  },
+  "ex_020": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "train.py",
+      "config",
+      "exp.yaml",
+      "model.eval()",
+      "Train acc",
+      "Val acc",
+      "overfitting",
+      "validation accuracy",
+      "training accuracy",
+      "92%",
+      "74%"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"YAML\"],\n  \"keywords\": [\"train.py\", \"config\", \"exp.yaml\", \"model.eval()\", \"Train acc\", \"Val acc\", \"overfitting\", \"validation accuracy\", \"training accuracy\", \"92%\", \"74%\"]\n}\n```"
+  },
+  "ex_021": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch"
+    ],
+    "keywords": [
+      "batch size",
+      "3D medical images",
+      "memory constraints",
+      "training configuration",
+      "YAML config",
+      "batch norm troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\"],\n  \"keywords\": [\"batch size\", \"3D medical images\", \"memory constraints\", \"training configuration\", \"YAML config\", \"batch norm troubleshooting\"]\n}\n```"
+  },
+  "ex_022": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "ResNet",
+      "BatchNorm"
+    ],
+    "keywords": [
+      "BatchNorm",
+      "statistics shifting",
+      "fine-tuning",
+      "pretrained ResNet",
+      "train.py",
+      "config",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"ResNet\", \"BatchNorm\"],\n  \"keywords\": [\"BatchNorm\", \"statistics shifting\", \"fine-tuning\", \"pretrained ResNet\", \"train.py\", \"config\", \"YAML\"]\n}\n```"
+  },
+  "ex_023": {
+    "error_message": "grad_norm=948.2 at step 150, loss=nan at step 151.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "grad_norm",
+      "loss=nan",
+      "step 150",
+      "step 151",
+      "training instability",
+      "gradient explosion",
+      "NaN loss",
+      "optimizer troubleshooting",
+      "numerical instability",
+      "training divergence"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"grad_norm=948.2 at step 150, loss=nan at step 151.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"grad_norm\", \"loss=nan\", \"step 150\", \"step 151\", \"training instability\", \"gradient explosion\", \"NaN loss\", \"optimizer troubleshooting\", \"numerical instability\", \"training divergence\"]\n}\n```"
+  },
+  "ex_024": {
+    "error_message": "UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "lr_scheduler",
+      "optimizer"
+    ],
+    "keywords": [
+      "lr_scheduler.step()",
+      "optimizer.step()",
+      "UserWarning",
+      "training loop order",
+      "learning rate scheduler",
+      "optimizer step",
+      "scheduler step",
+      "step ordering",
+      "training configuration"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"lr_scheduler\", \"optimizer\"],\n  \"keywords\": [\"lr_scheduler.step()\", \"optimizer.step()\", \"UserWarning\", \"training loop order\", \"learning rate scheduler\", \"optimizer step\", \"scheduler step\", \"step ordering\", \"training configuration\"]\n}\n```"
+  },
+  "ex_025": {
+    "error_message": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "loss spikes",
+      "epoch 5",
+      "model checkpoint",
+      "resume training",
+      "training instability",
+      "checkpoint loading",
+      "loss divergence",
+      "training resumption",
+      "optimizer state",
+      "learning rate"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Loaded model checkpoint but loss spikes from epoch 5 onward after resume.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"loss spikes\", \"epoch 5\", \"model checkpoint\", \"resume training\", \"training instability\", \"checkpoint loading\", \"loss divergence\", \"training resumption\", \"optimizer state\", \"learning rate\"]\n}\n```"
+  },
+  "ex_026": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "Adam",
+      "PyTorch"
+    ],
+    "keywords": [
+      "Adam optimizer",
+      "weight decay",
+      "L2 coupling",
+      "weight regularization",
+      "optimizer configuration",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"Adam\", \"PyTorch\"],\n  \"keywords\": [\"Adam optimizer\", \"weight decay\", \"L2 coupling\", \"weight regularization\", \"optimizer configuration\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_027": {
+    "error_message": "Gradient accumulation across two micro-batches is giving wrong results.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "gradient accumulation",
+      "micro-batches",
+      "wrong results",
+      "train.py",
+      "config",
+      "optimizer",
+      "training"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Gradient accumulation across two micro-batches is giving wrong results.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"gradient accumulation\", \"micro-batches\", \"wrong results\", \"train.py\", \"config\", \"optimizer\", \"training\"]\n}\n```"
+  },
+  "ex_028": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "experiment.yaml",
+      "learning_rate",
+      "pretrained_layers",
+      "classifier_head",
+      "lr=1e-5",
+      "lr=1e-3",
+      "optimizer_configuration",
+      "transfer_learning"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"experiment.yaml\", \"learning_rate\", \"pretrained_layers\", \"classifier_head\", \"lr=1e-5\", \"lr=1e-3\", \"optimizer_configuration\", \"transfer_learning\"]\n}\n```"
+  },
+  "ex_029": {
+    "error_message": "RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "scalar type",
+      "Float",
+      "Half",
+      "mat2",
+      "dtype mismatch",
+      "tensor type",
+      "input argument",
+      "configs/exp.yaml",
+      "train.py"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"scalar type\", \"Float\", \"Half\", \"mat2\", \"dtype mismatch\", \"tensor type\", \"input argument\", \"configs/exp.yaml\", \"train.py\"]\n}\n```"
+  },
+  "ex_030": {
+    "error_message": "RuntimeError: expected scalar type Long but found Float for argument 'target'",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "scalar type",
+      "Long",
+      "Float",
+      "target",
+      "argument",
+      "type mismatch",
+      "train.py",
+      "config",
+      "yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: expected scalar type Long but found Float for argument 'target'\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"scalar type\", \"Long\", \"Float\", \"target\", \"argument\", \"type mismatch\", \"train.py\", \"config\", \"yaml\"]\n}\n```"
+  },
+  "ex_031": {
+    "error_message": "Training on H100 \u2013 float16 gets NaN after 100 steps, bfloat16 is stable.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "H100",
+      "float16",
+      "bfloat16"
+    ],
+    "keywords": [
+      "NaN",
+      "float16",
+      "bfloat16",
+      "training instability",
+      "H100",
+      "numerical precision",
+      "mixed precision",
+      "100 steps",
+      "dtype",
+      "training convergence"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training on H100 \u2013 float16 gets NaN after 100 steps, bfloat16 is stable.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"H100\", \"float16\", \"bfloat16\"],\n  \"keywords\": [\"NaN\", \"float16\", \"bfloat16\", \"training instability\", \"H100\", \"numerical precision\", \"mixed precision\", \"100 steps\", \"dtype\", \"training convergence\"]\n}\n```"
+  },
+  "ex_032": {
+    "error_message": "Need a zeros tensor of type float16 on GPU without creating it on CPU first.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "GPU",
+      "CUDA"
+    ],
+    "keywords": [
+      "zeros tensor",
+      "float16",
+      "GPU",
+      "CPU",
+      "device placement",
+      "tensor creation",
+      "dtype",
+      "memory allocation"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Need a zeros tensor of type float16 on GPU without creating it on CPU first.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"GPU\", \"CUDA\"],\n  \"keywords\": [\"zeros tensor\", \"float16\", \"GPU\", \"CPU\", \"device placement\", \"tensor creation\", \"dtype\", \"memory allocation\"]\n}\n```"
+  },
+  "ex_033": {
+    "error_message": "DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "GPU"
+    ],
+    "keywords": [
+      "DDP",
+      "distributed training",
+      "hangs",
+      "rank 0",
+      "4 GPUs",
+      "init done",
+      "deadlock",
+      "synchronization",
+      "multi-GPU",
+      "process group"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"GPU\"],\n  \"keywords\": [\"DDP\", \"distributed training\", \"hangs\", \"rank 0\", \"4 GPUs\", \"init done\", \"deadlock\", \"synchronization\", \"multi-GPU\", \"process group\"]\n}\n```"
+  },
+  "ex_034": {
+    "error_message": "RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "NCCL",
+      "Distributed Training"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "NCCL error",
+      "ncclAllReduce",
+      "unhandled system error",
+      "NCCL version 2.16.2",
+      "distributed",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"NCCL\", \"Distributed Training\"],\n  \"keywords\": [\"RuntimeError\", \"NCCL error\", \"ncclAllReduce\", \"unhandled system error\", \"NCCL version 2.16.2\", \"distributed\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_035": {
+    "error_message": "DDP training but all ranks see identical batches.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "YAML"
+    ],
+    "keywords": [
+      "DDP",
+      "distributed training",
+      "ranks",
+      "identical batches",
+      "data distribution",
+      "experiment.yaml",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP training but all ranks see identical batches.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"YAML\"],\n  \"keywords\": [\"DDP\", \"distributed training\", \"ranks\", \"identical batches\", \"data distribution\", \"experiment.yaml\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_036": {
+    "error_message": "DDP deadlock when rank 0 and rank 1 take different if-else branches.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "Python"
+    ],
+    "keywords": [
+      "DDP deadlock",
+      "rank 0",
+      "rank 1",
+      "if-else branches",
+      "distributed training",
+      "synchronization",
+      "deadlock detection",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP deadlock when rank 0 and rank 1 take different if-else branches.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"Python\"],\n  \"keywords\": [\"DDP deadlock\", \"rank 0\", \"rank 1\", \"if-else branches\", \"distributed training\", \"synchronization\", \"deadlock detection\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_037": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "DDP",
+      "NVIDIA A100 GPUs",
+      "PyTorch"
+    ],
+    "keywords": [
+      "DDP training",
+      "NVIDIA A100",
+      "distributed training",
+      "8 GPUs",
+      "experiment.yaml",
+      "Starting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"DDP\", \"NVIDIA A100 GPUs\", \"PyTorch\"],\n  \"keywords\": [\"DDP training\", \"NVIDIA A100\", \"distributed training\", \"8 GPUs\", \"experiment.yaml\", \"Starting\"]\n}\n```"
+  },
+  "ex_038": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "Attention",
+      "Multi-Head Attention"
+    ],
+    "keywords": [
+      "scaled dot product attention",
+      "query",
+      "key",
+      "value",
+      "softmax",
+      "attention mechanism",
+      "input embedding",
+      "output projection",
+      "multi-head attention block"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"Attention\", \"Multi-Head Attention\"],\n  \"keywords\": [\"scaled dot product attention\", \"query\", \"key\", \"value\", \"softmax\", \"attention mechanism\", \"input embedding\", \"output projection\", \"multi-head attention block\"]\n}\n```"
+  },
+  "ex_039": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "MultiheadAttention"
+    ],
+    "keywords": [
+      "MultiheadAttention",
+      "Input Embedding",
+      "Query",
+      "Key",
+      "Value",
+      "Scaled Attention",
+      "Softmax",
+      "Output Projection",
+      "attention mechanism",
+      "transformer architecture"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"MultiheadAttention\"],\n  \"keywords\": [\"MultiheadAttention\", \"Input Embedding\", \"Query\", \"Key\", \"Value\", \"Scaled Attention\", \"Softmax\", \"Output Projection\", \"attention mechanism\", \"transformer architecture\"]\n}\n```"
+  },
+  "ex_040": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "MultiheadAttention",
+      "Transformer"
+    ],
+    "keywords": [
+      "MultiheadAttention",
+      "causal mask",
+      "decoder",
+      "Input Embedding",
+      "Query",
+      "Key",
+      "Value",
+      "Scaled Attention",
+      "Softmax",
+      "Output Projection"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"MultiheadAttention\", \"Transformer\"],\n  \"keywords\": [\"MultiheadAttention\", \"causal mask\", \"decoder\", \"Input Embedding\", \"Query\", \"Key\", \"Value\", \"Scaled Attention\", \"Softmax\", \"Output Projection\"]\n}\n```"
+  },
+  "ex_041": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "batch_size",
+      "precision",
+      "float32",
+      "image_size",
+      "GPU",
+      "V100",
+      "16GB",
+      "experiment.yaml",
+      "configuration"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"batch_size\", \"precision\", \"float32\", \"image_size\", \"GPU\", \"V100\", \"16GB\", \"experiment.yaml\", \"configuration\"]\n}\n```"
+  },
+  "ex_042": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "YAML",
+      "PyTorch"
+    ],
+    "keywords": [
+      "experiment.yaml",
+      "num_workers",
+      "gpu_utilization",
+      "batch_size",
+      "configuration",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"YAML\", \"PyTorch\"],\n  \"keywords\": [\"experiment.yaml\", \"num_workers\", \"gpu_utilization\", \"batch_size\", \"configuration\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_043": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "fp16",
+      "use_grad_scale",
+      "learning_rate",
+      "experiment.yaml",
+      "configuration",
+      "training_parameters",
+      "gradient_scaling",
+      "mixed_precision"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"fp16\", \"use_grad_scale\", \"learning_rate\", \"experiment.yaml\", \"configuration\", \"training_parameters\", \"gradient_scaling\", \"mixed_precision\"]\n}\n```"
+  },
+  "ex_044": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "YAML",
+      "PyTorch"
+    ],
+    "keywords": [
+      "learning_rate",
+      "optimizer",
+      "warmup_step",
+      "experiment.yaml",
+      "adamw",
+      "config"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"YAML\", \"PyTorch\"],\n  \"keywords\": [\"learning_rate\", \"optimizer\", \"warmup_step\", \"experiment.yaml\", \"adamw\", \"config\"]\n}\n```"
+  },
+  "ex_045": {
+    "error_message": "Need to save model, optimizer, scheduler, and current epoch.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "checkpointing",
+      "model saving",
+      "optimizer",
+      "scheduler",
+      "epoch",
+      "train.py",
+      "config",
+      "YAML",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Need to save model, optimizer, scheduler, and current epoch.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"checkpointing\", \"model saving\", \"optimizer\", \"scheduler\", \"epoch\", \"train.py\", \"config\", \"YAML\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_046": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "BERT"
+    ],
+    "keywords": [
+      "train.py",
+      "config",
+      "configs/exp.yaml",
+      "BERT-Large",
+      "batch_size",
+      "OOMing",
+      "layer 18",
+      "out of memory"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"BERT\"],\n  \"keywords\": [\"train.py\", \"config\", \"configs/exp.yaml\", \"BERT-Large\", \"batch_size\", \"OOMing\", \"layer 18\", \"out of memory\"]\n}\n```"
+  },
+  "ex_047": {
+    "error_message": "FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.load"
+    ],
+    "keywords": [
+      "torch.load",
+      "weights_only",
+      "FutureWarning",
+      "arbitrary code execution",
+      "train.py",
+      "configs/exp.yaml",
+      "security risk"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.load\"],\n  \"keywords\": [\"torch.load\", \"weights_only\", \"FutureWarning\", \"arbitrary code execution\", \"train.py\", \"configs/exp.yaml\", \"security risk\"]\n}\n```"
+  },
+  "ex_048": {
+    "error_message": "Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch._dynamo",
+      "TorchDynamo"
+    ],
+    "keywords": [
+      "InternalTorchDynamoError",
+      "Graph break",
+      "unsupported Python operation",
+      "model forward",
+      "torch.dynamo.exc",
+      "train.py",
+      "config file",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch._dynamo\", \"TorchDynamo\"],\n  \"keywords\": [\"InternalTorchDynamoError\", \"Graph break\", \"unsupported Python operation\", \"model forward\", \"torch.dynamo.exc\", \"train.py\", \"config file\", \"YAML\"]\n}\n```"
+  },
+  "ex_049": {
+    "error_message": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.compile",
+      "YAML configuration"
+    ],
+    "keywords": [
+      "torch.compile",
+      "encoder",
+      "decoder",
+      "dynamic shapes",
+      "selective compilation",
+      "config file",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Want to compile the encoder but not the decoder due to dynamic shapes.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.compile\", \"YAML configuration\"],\n  \"keywords\": [\"torch.compile\", \"encoder\", \"decoder\", \"dynamic shapes\", \"selective compilation\", \"config file\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_050": {
+    "error_message": "Validation accuracy drops from 88% to 76% when I forget model.eval().",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "model.eval()",
+      "validation accuracy",
+      "training mode",
+      "inference mode",
+      "dropout",
+      "batch normalization",
+      "model state"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Validation accuracy drops from 88% to 76% when I forget model.eval().\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"model.eval()\", \"validation accuracy\", \"training mode\", \"inference mode\", \"dropout\", \"batch normalization\", \"model state\"]\n}\n```"
+  },
+  "ex_051": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "CUDA",
+      "GPU"
+    ],
+    "keywords": [
+      "GPU memory",
+      "gradients",
+      "torch.no_grad()",
+      "train.py",
+      "config",
+      "YAML",
+      "memory allocation"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"CUDA\", \"GPU\"],\n  \"keywords\": [\"GPU memory\", \"gradients\", \"torch.no_grad()\", \"train.py\", \"config\", \"YAML\", \"memory allocation\"]\n}\n```"
+  },
+  "ex_052": {
+    "error_message": "Results differ across runs even after torch.manual_seed(42).",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch"
+    ],
+    "keywords": [
+      "torch.manual_seed",
+      "reproducibility",
+      "non-deterministic",
+      "results differ",
+      "random seed",
+      "training runs",
+      "config file",
+      "YAML configuration"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Results differ across runs even after torch.manual_seed(42).\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch\"],\n  \"keywords\": [\"torch.manual_seed\", \"reproducibility\", \"non-deterministic\", \"results differ\", \"random seed\", \"training runs\", \"config file\", \"YAML configuration\"]\n}\n```"
+  },
+  "ex_053": {
+    "error_message": "Inference-only forward pass \u2014 want maximum memory savings.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "train.py",
+      "config",
+      "configs/exp.yaml",
+      "inference-only",
+      "forward pass",
+      "memory savings",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Inference-only forward pass \u2014 want maximum memory savings.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"train.py\", \"config\", \"configs/exp.yaml\", \"inference-only\", \"forward pass\", \"memory savings\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_054": {
+    "error_message": "RuntimeError: Expected all tensors to be on the same device, but found at least two devices.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "tensors",
+      "device",
+      "same device",
+      "train.py",
+      "config",
+      "exp.yaml",
+      "multi-device error"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: Expected all tensors to be on the same device, but found at least two devices.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"tensors\", \"device\", \"same device\", \"train.py\", \"config\", \"exp.yaml\", \"multi-device error\"]\n}\n```"
+  },
+  "ex_055": {
+    "error_message": "Loss becomes nan at step 234. No NaN in inputs.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "Loss becomes nan",
+      "step 234",
+      "NaN",
+      "training",
+      "config file",
+      "exp.yaml",
+      "numerical instability"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Loss becomes nan at step 234. No NaN in inputs.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"Loss becomes nan\", \"step 234\", \"NaN\", \"training\", \"config file\", \"exp.yaml\", \"numerical instability\"]\n}\n```"
+  },
+  "ex_056": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "CUDA",
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "CUDA Memory",
+      "Troubleshooting",
+      "reserved memory",
+      "Epoch",
+      "GB",
+      "train.py",
+      "config",
+      "memory allocation"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"CUDA\", \"PyTorch\", \"Python\"],\n  \"keywords\": [\"CUDA Memory\", \"Troubleshooting\", \"reserved memory\", \"Epoch\", \"GB\", \"train.py\", \"config\", \"memory allocation\"]\n}\n```"
+  },
+  "ex_057": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16"
+    ],
+    "keywords": [
+      "fp16",
+      "training",
+      "memory reduction",
+      "experiment.yaml",
+      "mixed precision",
+      "speed up",
+      "AMP troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\"],\n  \"keywords\": [\"fp16\", \"training\", \"memory reduction\", \"experiment.yaml\", \"mixed precision\", \"speed up\", \"AMP troubleshooting\"]\n}\n```"
+  },
+  "ex_058": {
+    "error_message": "loss=nan after epoch 1 with fp16 autocast enabled.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16",
+      "autocast"
+    ],
+    "keywords": [
+      "loss=nan",
+      "epoch 1",
+      "fp16 autocast",
+      "numerical instability",
+      "mixed precision training",
+      "autocast enabled",
+      "NaN loss",
+      "training failure"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"loss=nan after epoch 1 with fp16 autocast enabled.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\", \"autocast\"],\n  \"keywords\": [\"loss=nan\", \"epoch 1\", \"fp16 autocast\", \"numerical instability\", \"mixed precision training\", \"autocast enabled\", \"NaN loss\", \"training failure\"]\n}\n```"
+  },
+  "ex_059": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "GradScaler",
+      "PyTorch"
+    ],
+    "keywords": [
+      "GradScaler",
+      "scale",
+      "65536",
+      "32768",
+      "16384",
+      "8192",
+      "decreasing",
+      "train.py",
+      "config",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"GradScaler\", \"PyTorch\"],\n  \"keywords\": [\"GradScaler\", \"scale\", \"65536\", \"32768\", \"16384\", \"8192\", \"decreasing\", \"train.py\", \"config\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_060": {
+    "error_message": "Training on A100 GPU, getting NaN with fp16.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "A100 GPU",
+      "fp16",
+      "AMP"
+    ],
+    "keywords": [
+      "NaN",
+      "fp16",
+      "A100 GPU",
+      "training",
+      "mixed precision",
+      "numerical instability",
+      "gradient overflow",
+      "loss explosion"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training on A100 GPU, getting NaN with fp16.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"A100 GPU\", \"fp16\", \"AMP\"],\n  \"keywords\": [\"NaN\", \"fp16\", \"A100 GPU\", \"training\", \"mixed precision\", \"numerical instability\", \"gradient overflow\", \"loss explosion\"]\n}\n```"
+  },
+  "ex_061": {
+    "error_message": "Code uses torch.autocast but loss.backward() gives underflow warnings.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.autocast",
+      "AMP"
+    ],
+    "keywords": [
+      "torch.autocast",
+      "loss.backward()",
+      "underflow warnings",
+      "automatic mixed precision",
+      "gradient underflow",
+      "numerical stability",
+      "backward pass",
+      "training"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Code uses torch.autocast but loss.backward() gives underflow warnings.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.autocast\", \"AMP\"],\n  \"keywords\": [\"torch.autocast\", \"loss.backward()\", \"underflow warnings\", \"automatic mixed precision\", \"gradient underflow\", \"numerical stability\", \"backward pass\", \"training\"]\n}\n```"
+  },
+  "ex_062": {
+    "error_message": "Custom loss class with matrix inverse causes NaN in fp16.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16"
+    ],
+    "keywords": [
+      "custom loss class",
+      "matrix inverse",
+      "NaN",
+      "fp16",
+      "floating point precision",
+      "numerical stability",
+      "train.py",
+      "config file",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Custom loss class with matrix inverse causes NaN in fp16.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\"],\n  \"keywords\": [\"custom loss class\", \"matrix inverse\", \"NaN\", \"fp16\", \"floating point precision\", \"numerical stability\", \"train.py\", \"config file\", \"YAML\"]\n}\n```"
+  },
+  "ex_063": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "GPU"
+    ],
+    "keywords": [
+      "DataLoader",
+      "batch_size",
+      "num_workers",
+      "GPU Utilization",
+      "experiment.yaml",
+      "dataset"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"GPU\"],\n  \"keywords\": [\"DataLoader\", \"batch_size\", \"num_workers\", \"GPU Utilization\", \"experiment.yaml\", \"dataset\"]\n}\n```"
+  },
+  "ex_064": {
+    "error_message": "RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "Python"
+    ],
+    "keywords": [
+      "DataLoader",
+      "SIGBUS",
+      "Bus error",
+      "shared memory",
+      "shm",
+      "worker",
+      "RuntimeError",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"Python\"],\n  \"keywords\": [\"DataLoader\", \"SIGBUS\", \"Bus error\", \"shared memory\", \"shm\", \"worker\", \"RuntimeError\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_065": {
+    "error_message": "Dataset.__getitem__ does .cuda() before returning. Workers hang.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "CUDA"
+    ],
+    "keywords": [
+      "Dataset.__getitem__",
+      "cuda()",
+      "workers hang",
+      "dataloader",
+      "multiprocessing",
+      "device placement",
+      "training script",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Dataset.__getitem__ does .cuda() before returning. Workers hang.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"CUDA\"],\n  \"keywords\": [\"Dataset.__getitem__\", \"cuda()\", \"workers hang\", \"dataloader\", \"multiprocessing\", \"device placement\", \"training script\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_066": {
+    "error_message": "Training with GPU but data transfer is slow.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "GPU",
+      "DataLoader"
+    ],
+    "keywords": [
+      "data transfer",
+      "slow",
+      "GPU",
+      "training",
+      "dataloader",
+      "performance",
+      "bottleneck",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training with GPU but data transfer is slow.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"GPU\", \"DataLoader\"],\n  \"keywords\": [\"data transfer\", \"slow\", \"GPU\", \"training\", \"dataloader\", \"performance\", \"bottleneck\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_067": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader"
+    ],
+    "keywords": [
+      "DataLoader",
+      "troubleshooting",
+      "workers",
+      "reinitialization",
+      "epoch",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\"],\n  \"keywords\": [\"DataLoader\", \"troubleshooting\", \"workers\", \"reinitialization\", \"epoch\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_068": {
+    "error_message": "Validation metrics change between runs even with torch.manual_seed.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "torch.manual_seed"
+    ],
+    "keywords": [
+      "validation metrics",
+      "torch.manual_seed",
+      "reproducibility",
+      "non-deterministic behavior",
+      "experiment.yaml",
+      "seed",
+      "randomness",
+      "metric variance"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Validation metrics change between runs even with torch.manual_seed.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"torch.manual_seed\"],\n  \"keywords\": [\"validation metrics\", \"torch.manual_seed\", \"reproducibility\", \"non-deterministic behavior\", \"experiment.yaml\", \"seed\", \"randomness\", \"metric variance\"]\n}\n```"
+  },
+  "ex_069": {
+    "error_message": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "batch normalization",
+      "input size",
+      "torch.Size",
+      "channel",
+      "training",
+      "configs/exp.yaml",
+      "value per channel"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch\"],\n  \"keywords\": [\"RuntimeError\", \"batch normalization\", \"input size\", \"torch.Size\", \"channel\", \"training\", \"configs/exp.yaml\", \"value per channel\"]\n}\n```"
+  },
+  "ex_070": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "train.py",
+      "config",
+      "exp.yaml",
+      "model.eval()",
+      "Train acc",
+      "Val acc",
+      "overfitting",
+      "validation accuracy",
+      "training accuracy",
+      "92%",
+      "74%"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"YAML\"],\n  \"keywords\": [\"train.py\", \"config\", \"exp.yaml\", \"model.eval()\", \"Train acc\", \"Val acc\", \"overfitting\", \"validation accuracy\", \"training accuracy\", \"92%\", \"74%\"]\n}\n```"
+  },
+  "ex_071": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch"
+    ],
+    "keywords": [
+      "batch size",
+      "3D medical images",
+      "memory constraints",
+      "train.py",
+      "config",
+      "YAML",
+      "small batch size",
+      "2-4"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\"],\n  \"keywords\": [\"batch size\", \"3D medical images\", \"memory constraints\", \"train.py\", \"config\", \"YAML\", \"small batch size\", \"2-4\"]\n}\n```"
+  },
+  "ex_072": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "ResNet",
+      "BatchNorm"
+    ],
+    "keywords": [
+      "BatchNorm",
+      "Troubleshooting",
+      "Fine-tuning",
+      "pretrained ResNet",
+      "BatchNorm statistics shifting",
+      "train.py",
+      "config",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"ResNet\", \"BatchNorm\"],\n  \"keywords\": [\"BatchNorm\", \"Troubleshooting\", \"Fine-tuning\", \"pretrained ResNet\", \"BatchNorm statistics shifting\", \"train.py\", \"config\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_073": {
+    "error_message": "grad_norm=948.2 at step 150, loss=nan at step 151.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "grad_norm",
+      "loss=nan",
+      "step 150",
+      "step 151",
+      "training instability",
+      "gradient explosion",
+      "NaN loss",
+      "optimizer troubleshooting",
+      "numerical instability",
+      "training divergence"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"grad_norm=948.2 at step 150, loss=nan at step 151.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"grad_norm\", \"loss=nan\", \"step 150\", \"step 151\", \"training instability\", \"gradient explosion\", \"NaN loss\", \"optimizer troubleshooting\", \"numerical instability\", \"training divergence\"]\n}\n```"
+  },
+  "ex_074": {
+    "error_message": "UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "lr_scheduler",
+      "optimizer"
+    ],
+    "keywords": [
+      "lr_scheduler.step()",
+      "optimizer.step()",
+      "UserWarning",
+      "training loop order",
+      "learning rate scheduler",
+      "optimizer step",
+      "scheduler step",
+      "training configuration",
+      "exp.yaml",
+      "step ordering"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"lr_scheduler\", \"optimizer\"],\n  \"keywords\": [\"lr_scheduler.step()\", \"optimizer.step()\", \"UserWarning\", \"training loop order\", \"learning rate scheduler\", \"optimizer step\", \"scheduler step\", \"training configuration\", \"exp.yaml\", \"step ordering\"]\n}\n```"
+  },
+  "ex_075": {
+    "error_message": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "loss spikes",
+      "epoch 5",
+      "model checkpoint",
+      "resume training",
+      "training instability",
+      "checkpoint loading",
+      "loss divergence",
+      "training resumption",
+      "optimizer state",
+      "learning rate"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Loaded model checkpoint but loss spikes from epoch 5 onward after resume.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"loss spikes\", \"epoch 5\", \"model checkpoint\", \"resume training\", \"training instability\", \"checkpoint loading\", \"loss divergence\", \"training resumption\", \"optimizer state\", \"learning rate\"]\n}\n```"
+  },
+  "ex_076": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "Adam",
+      "PyTorch"
+    ],
+    "keywords": [
+      "Adam optimizer",
+      "weight decay",
+      "L2 coupling",
+      "weight regularization",
+      "optimizer configuration",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"Adam\", \"PyTorch\"],\n  \"keywords\": [\"Adam optimizer\", \"weight decay\", \"L2 coupling\", \"weight regularization\", \"optimizer configuration\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_077": {
+    "error_message": "Gradient accumulation across two micro-batches is giving wrong results.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "gradient accumulation",
+      "micro-batches",
+      "wrong results",
+      "optimizer",
+      "train.py",
+      "config file",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Gradient accumulation across two micro-batches is giving wrong results.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"gradient accumulation\", \"micro-batches\", \"wrong results\", \"optimizer\", \"train.py\", \"config file\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_078": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "experiment.yaml",
+      "learning_rate",
+      "pretrained_layers",
+      "classifier_head",
+      "lr=1e-5",
+      "lr=1e-3",
+      "optimizer_configuration",
+      "transfer_learning"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"experiment.yaml\", \"learning_rate\", \"pretrained_layers\", \"classifier_head\", \"lr=1e-5\", \"lr=1e-3\", \"optimizer_configuration\", \"transfer_learning\"]\n}\n```"
+  },
+  "ex_079": {
+    "error_message": "RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "scalar type",
+      "Float",
+      "Half",
+      "mat2",
+      "dtype mismatch",
+      "tensor type",
+      "input argument",
+      "configs/exp.yaml",
+      "train.py"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"scalar type\", \"Float\", \"Half\", \"mat2\", \"dtype mismatch\", \"tensor type\", \"input argument\", \"configs/exp.yaml\", \"train.py\"]\n}\n```"
+  },
+  "ex_080": {
+    "error_message": "RuntimeError: expected scalar type Long but found Float for argument 'target'",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "scalar type",
+      "Long",
+      "Float",
+      "target",
+      "argument type mismatch",
+      "dtype",
+      "train.py",
+      "config file",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: expected scalar type Long but found Float for argument 'target'\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"scalar type\", \"Long\", \"Float\", \"target\", \"argument type mismatch\", \"dtype\", \"train.py\", \"config file\", \"YAML\"]\n}\n```"
+  },
+  "ex_081": {
+    "error_message": "Training on H100 \u2013 float16 gets NaN after 100 steps, bfloat16 is stable.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "H100",
+      "float16",
+      "bfloat16"
+    ],
+    "keywords": [
+      "NaN",
+      "float16",
+      "bfloat16",
+      "training instability",
+      "H100",
+      "numerical precision",
+      "mixed precision",
+      "100 steps",
+      "dtype",
+      "training convergence"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training on H100 \u2013 float16 gets NaN after 100 steps, bfloat16 is stable.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"H100\", \"float16\", \"bfloat16\"],\n  \"keywords\": [\"NaN\", \"float16\", \"bfloat16\", \"training instability\", \"H100\", \"numerical precision\", \"mixed precision\", \"100 steps\", \"dtype\", \"training convergence\"]\n}\n```"
+  },
+  "ex_082": {
+    "error_message": "Need a zeros tensor of type float16 on GPU without creating it on CPU first.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "GPU",
+      "CUDA"
+    ],
+    "keywords": [
+      "zeros tensor",
+      "float16",
+      "GPU",
+      "CPU",
+      "device placement",
+      "tensor creation",
+      "dtype",
+      "memory allocation"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Need a zeros tensor of type float16 on GPU without creating it on CPU first.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"GPU\", \"CUDA\"],\n  \"keywords\": [\"zeros tensor\", \"float16\", \"GPU\", \"CPU\", \"device placement\", \"tensor creation\", \"dtype\", \"memory allocation\"]\n}\n```"
+  },
+  "ex_083": {
+    "error_message": "DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "GPU",
+      "Python"
+    ],
+    "keywords": [
+      "DDP",
+      "Rank 0",
+      "hangs",
+      "init done",
+      "4 GPUs",
+      "distributed training",
+      "deadlock",
+      "synchronization",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"GPU\", \"Python\"],\n  \"keywords\": [\"DDP\", \"Rank 0\", \"hangs\", \"init done\", \"4 GPUs\", \"distributed training\", \"deadlock\", \"synchronization\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_084": {
+    "error_message": "RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "NCCL",
+      "Distributed Training"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "NCCL error",
+      "ncclAllReduce",
+      "unhandled system error",
+      "NCCL version 2.16.2",
+      "distributed",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"NCCL\", \"Distributed Training\"],\n  \"keywords\": [\"RuntimeError\", \"NCCL error\", \"ncclAllReduce\", \"unhandled system error\", \"NCCL version 2.16.2\", \"distributed\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_085": {
+    "error_message": "DDP training but all ranks see identical batches.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "YAML"
+    ],
+    "keywords": [
+      "DDP",
+      "distributed training",
+      "ranks",
+      "identical batches",
+      "data distribution",
+      "experiment.yaml",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP training but all ranks see identical batches.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"YAML\"],\n  \"keywords\": [\"DDP\", \"distributed training\", \"ranks\", \"identical batches\", \"data distribution\", \"experiment.yaml\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_086": {
+    "error_message": "DDP deadlock when rank 0 and rank 1 take different if-else branches.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "Python"
+    ],
+    "keywords": [
+      "DDP deadlock",
+      "rank 0",
+      "rank 1",
+      "if-else branches",
+      "distributed training",
+      "synchronization",
+      "train.py",
+      "configs/exp.yaml",
+      "distributed data parallel"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP deadlock when rank 0 and rank 1 take different if-else branches.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"Python\"],\n  \"keywords\": [\"DDP deadlock\", \"rank 0\", \"rank 1\", \"if-else branches\", \"distributed training\", \"synchronization\", \"train.py\", \"configs/exp.yaml\", \"distributed data parallel\"]\n}\n```"
+  },
+  "ex_087": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "DDP",
+      "NVIDIA A100 GPUs",
+      "PyTorch"
+    ],
+    "keywords": [
+      "DDP training",
+      "NVIDIA A100",
+      "distributed training",
+      "8 GPUs",
+      "experiment.yaml",
+      "Starting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"DDP\", \"NVIDIA A100 GPUs\", \"PyTorch\"],\n  \"keywords\": [\"DDP training\", \"NVIDIA A100\", \"distributed training\", \"8 GPUs\", \"experiment.yaml\", \"Starting\"]\n}\n```"
+  },
+  "ex_088": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "Attention Mechanism",
+      "Multi-Head Attention"
+    ],
+    "keywords": [
+      "scaled dot product attention",
+      "query",
+      "key",
+      "value",
+      "softmax",
+      "attention weights",
+      "embedding",
+      "projection",
+      "multi-head attention block"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"Attention Mechanism\", \"Multi-Head Attention\"],\n  \"keywords\": [\"scaled dot product attention\", \"query\", \"key\", \"value\", \"softmax\", \"attention weights\", \"embedding\", \"projection\", \"multi-head attention block\"]\n}\n```"
+  },
+  "ex_089": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "MultiheadAttention"
+    ],
+    "keywords": [
+      "MultiheadAttention",
+      "Input Embedding",
+      "Query",
+      "Key",
+      "Value",
+      "Scaled Attention",
+      "Softmax",
+      "Output Projection",
+      "attention mechanism",
+      "transformer architecture"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"MultiheadAttention\"],\n  \"keywords\": [\"MultiheadAttention\", \"Input Embedding\", \"Query\", \"Key\", \"Value\", \"Scaled Attention\", \"Softmax\", \"Output Projection\", \"attention mechanism\", \"transformer architecture\"]\n}\n```"
+  },
+  "ex_090": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "MultiheadAttention",
+      "Transformer"
+    ],
+    "keywords": [
+      "MultiheadAttention",
+      "causal mask",
+      "decoder",
+      "variant",
+      "Query",
+      "Key",
+      "Value",
+      "Scaled Attention",
+      "Softmax",
+      "Output Projection",
+      "attention mechanism"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"MultiheadAttention\", \"Transformer\"],\n  \"keywords\": [\"MultiheadAttention\", \"causal mask\", \"decoder\", \"variant\", \"Query\", \"Key\", \"Value\", \"Scaled Attention\", \"Softmax\", \"Output Projection\", \"attention mechanism\"]\n}\n```"
+  },
+  "ex_091": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "batch_size",
+      "precision",
+      "float32",
+      "image_size",
+      "GPU",
+      "V100",
+      "16GB",
+      "experiment.yaml",
+      "configuration"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"batch_size\", \"precision\", \"float32\", \"image_size\", \"GPU\", \"V100\", \"16GB\", \"experiment.yaml\", \"configuration\"]\n}\n```"
+  },
+  "ex_092": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "YAML",
+      "PyTorch"
+    ],
+    "keywords": [
+      "num_workers",
+      "gpu_utilization",
+      "batch_size",
+      "experiment.yaml",
+      "configuration",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"YAML\", \"PyTorch\"],\n  \"keywords\": [\"num_workers\", \"gpu_utilization\", \"batch_size\", \"experiment.yaml\", \"configuration\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_093": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "fp16",
+      "use_grad_scale",
+      "learning_rate",
+      "experiment.yaml",
+      "configuration",
+      "training_parameters",
+      "gradient_scaling",
+      "mixed_precision"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"fp16\", \"use_grad_scale\", \"learning_rate\", \"experiment.yaml\", \"configuration\", \"training_parameters\", \"gradient_scaling\", \"mixed_precision\"]\n}\n```"
+  },
+  "ex_094": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "YAML",
+      "PyTorch"
+    ],
+    "keywords": [
+      "learning_rate",
+      "optimizer",
+      "warmup_step",
+      "experiment.yaml",
+      "adamw",
+      "config"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"YAML\", \"PyTorch\"],\n  \"keywords\": [\"learning_rate\", \"optimizer\", \"warmup_step\", \"experiment.yaml\", \"adamw\", \"config\"]\n}\n```"
+  },
+  "ex_095": {
+    "error_message": "Need to save model, optimizer, scheduler, and current epoch.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "checkpointing",
+      "model saving",
+      "optimizer",
+      "scheduler",
+      "epoch",
+      "train.py",
+      "config",
+      "YAML",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Need to save model, optimizer, scheduler, and current epoch.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"checkpointing\", \"model saving\", \"optimizer\", \"scheduler\", \"epoch\", \"train.py\", \"config\", \"YAML\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_096": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "BERT"
+    ],
+    "keywords": [
+      "train.py",
+      "config",
+      "configs/exp.yaml",
+      "BERT-Large",
+      "batch_size",
+      "OOMing",
+      "layer 18",
+      "out of memory"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"BERT\"],\n  \"keywords\": [\"train.py\", \"config\", \"configs/exp.yaml\", \"BERT-Large\", \"batch_size\", \"OOMing\", \"layer 18\", \"out of memory\"]\n}\n```"
+  },
+  "ex_097": {
+    "error_message": "FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.load"
+    ],
+    "keywords": [
+      "torch.load",
+      "weights_only",
+      "FutureWarning",
+      "arbitrary code execution",
+      "train.py",
+      "configs/exp.yaml",
+      "security risk"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.load\"],\n  \"keywords\": [\"torch.load\", \"weights_only\", \"FutureWarning\", \"arbitrary code execution\", \"train.py\", \"configs/exp.yaml\", \"security risk\"]\n}\n```"
+  },
+  "ex_098": {
+    "error_message": "Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch._dynamo",
+      "TorchDynamo"
+    ],
+    "keywords": [
+      "InternalTorchDynamoError",
+      "Graph break",
+      "unsupported Python operation",
+      "model forward",
+      "torch.dynamo.exc",
+      "train.py",
+      "config file",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch._dynamo\", \"TorchDynamo\"],\n  \"keywords\": [\"InternalTorchDynamoError\", \"Graph break\", \"unsupported Python operation\", \"model forward\", \"torch.dynamo.exc\", \"train.py\", \"config file\", \"YAML\"]\n}\n```"
+  },
+  "ex_099": {
+    "error_message": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.compile",
+      "YAML configuration"
+    ],
+    "keywords": [
+      "torch.compile",
+      "encoder",
+      "decoder",
+      "dynamic shapes",
+      "selective compilation",
+      "config file",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Want to compile the encoder but not the decoder due to dynamic shapes.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.compile\", \"YAML configuration\"],\n  \"keywords\": [\"torch.compile\", \"encoder\", \"decoder\", \"dynamic shapes\", \"selective compilation\", \"config file\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_100": {
+    "error_message": "Validation accuracy drops from 88% to 76% when I forget model.eval().",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "model.eval()",
+      "validation accuracy",
+      "training mode",
+      "inference mode",
+      "dropout",
+      "batch normalization",
+      "model state"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Validation accuracy drops from 88% to 76% when I forget model.eval().\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"model.eval()\", \"validation accuracy\", \"training mode\", \"inference mode\", \"dropout\", \"batch normalization\", \"model state\"]\n}\n```"
+  },
+  "ex_101": {
+    "error_message": "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has 10.76 GiB total; 8.45 GiB already allocated; 1.23 GiB free.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "Python"
+    ],
+    "keywords": [
+      "CUDA out of memory",
+      "RuntimeError",
+      "allocate 2.00 GiB",
+      "GPU memory",
+      "train.py",
+      "configs/exp.yaml",
+      "GPU 0",
+      "10.76 GiB total",
+      "8.45 GiB allocated",
+      "1.23 GiB free"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has 10.76 GiB total; 8.45 GiB already allocated; 1.23 GiB free.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"Python\"],\n  \"keywords\": [\"CUDA out of memory\", \"RuntimeError\", \"allocate 2.00 GiB\", \"GPU memory\", \"train.py\", \"configs/exp.yaml\", \"GPU 0\", \"10.76 GiB total\", \"8.45 GiB allocated\", \"1.23 GiB free\"]\n}\n```"
+  },
+  "ex_102": {
+    "error_message": "After del tensor and torch.cuda.empty_cache(): memory_allocated=0.3 GB, memory_reserved=8.9 GB",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "torch.cuda"
+    ],
+    "keywords": [
+      "del tensor",
+      "torch.cuda.empty_cache()",
+      "memory_allocated",
+      "memory_reserved",
+      "CUDA memory",
+      "GPU memory leak",
+      "memory fragmentation"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"After del tensor and torch.cuda.empty_cache(): memory_allocated=0.3 GB, memory_reserved=8.9 GB\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"torch.cuda\"],\n  \"keywords\": [\"del tensor\", \"torch.cuda.empty_cache()\", \"memory_allocated\", \"memory_reserved\", \"CUDA memory\", \"GPU memory leak\", \"memory fragmentation\"]\n}\n```"
+  },
+  "ex_103": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "CUDA"
+    ],
+    "keywords": [
+      "peak memory",
+      "forward pass",
+      "backward pass",
+      "memory comparison",
+      "train.py",
+      "config",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"CUDA\"],\n  \"keywords\": [\"peak memory\", \"forward pass\", \"backward pass\", \"memory comparison\", \"train.py\", \"config\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_104": {
+    "error_message": "Training ResNet-50 with batch_size=128 OOMs. Tried reducing to 64 but still too large.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "ResNet-50"
+    ],
+    "keywords": [
+      "CUDA memory",
+      "out of memory",
+      "OOM",
+      "batch_size",
+      "ResNet-50",
+      "training",
+      "memory troubleshooting",
+      "batch reduction",
+      "GPU memory",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training ResNet-50 with batch_size=128 OOMs. Tried reducing to 64 but still too large.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"ResNet-50\"],\n  \"keywords\": [\"CUDA memory\", \"out of memory\", \"OOM\", \"batch_size\", \"ResNet-50\", \"training\", \"memory troubleshooting\", \"batch reduction\", \"GPU memory\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_105": {
+    "error_message": "After empty_cache() GPU memory still shows 6 GB used by other processes.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "Python"
+    ],
+    "keywords": [
+      "empty_cache()",
+      "GPU memory",
+      "CUDA memory management",
+      "memory leak",
+      "other processes",
+      "memory troubleshooting",
+      "torch.cuda.empty_cache()"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"After empty_cache() GPU memory still shows 6 GB used by other processes.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"Python\"],\n  \"keywords\": [\"empty_cache()\", \"GPU memory\", \"CUDA memory management\", \"memory leak\", \"other processes\", \"memory troubleshooting\", \"torch.cuda.empty_cache()\"]\n}\n```"
+  },
+  "ex_106": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "CUDA",
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "CUDA Memory",
+      "reserved memory",
+      "Epoch",
+      "GPU memory allocation",
+      "memory growth",
+      "train.py",
+      "config file",
+      "YAML configuration"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"CUDA\", \"PyTorch\", \"Python\"],\n  \"keywords\": [\"CUDA Memory\", \"reserved memory\", \"Epoch\", \"GPU memory allocation\", \"memory growth\", \"train.py\", \"config file\", \"YAML configuration\"]\n}\n```"
+  },
+  "ex_107": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16"
+    ],
+    "keywords": [
+      "fp16",
+      "training",
+      "memory reduction",
+      "experiment.yaml",
+      "mixed precision",
+      "speed up",
+      "AMP troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\"],\n  \"keywords\": [\"fp16\", \"training\", \"memory reduction\", \"experiment.yaml\", \"mixed precision\", \"speed up\", \"AMP troubleshooting\"]\n}\n```"
+  },
+  "ex_108": {
+    "error_message": "loss=nan after epoch 1 with fp16 autocast enabled.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16",
+      "autocast"
+    ],
+    "keywords": [
+      "loss=nan",
+      "epoch 1",
+      "fp16 autocast",
+      "numerical instability",
+      "mixed precision training",
+      "autocast enabled",
+      "NaN loss",
+      "training failure"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"loss=nan after epoch 1 with fp16 autocast enabled.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\", \"autocast\"],\n  \"keywords\": [\"loss=nan\", \"epoch 1\", \"fp16 autocast\", \"numerical instability\", \"mixed precision training\", \"autocast enabled\", \"NaN loss\", \"training failure\"]\n}\n```"
+  },
+  "ex_109": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "GradScaler",
+      "PyTorch"
+    ],
+    "keywords": [
+      "GradScaler",
+      "scale",
+      "65536",
+      "32768",
+      "16384",
+      "8192",
+      "decreasing",
+      "train.py",
+      "config",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"GradScaler\", \"PyTorch\"],\n  \"keywords\": [\"GradScaler\", \"scale\", \"65536\", \"32768\", \"16384\", \"8192\", \"decreasing\", \"train.py\", \"config\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_110": {
+    "error_message": "Training on A100 GPU, getting NaN with fp16.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "CUDA",
+      "A100 GPU",
+      "fp16",
+      "AMP"
+    ],
+    "keywords": [
+      "NaN",
+      "fp16",
+      "A100 GPU",
+      "training",
+      "mixed precision",
+      "numerical instability",
+      "gradient overflow",
+      "loss explosion"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training on A100 GPU, getting NaN with fp16.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"CUDA\", \"A100 GPU\", \"fp16\", \"AMP\"],\n  \"keywords\": [\"NaN\", \"fp16\", \"A100 GPU\", \"training\", \"mixed precision\", \"numerical instability\", \"gradient overflow\", \"loss explosion\"]\n}\n```"
+  },
+  "ex_111": {
+    "error_message": "Code uses torch.autocast but loss.backward() gives underflow warnings.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.autocast",
+      "AMP"
+    ],
+    "keywords": [
+      "torch.autocast",
+      "loss.backward()",
+      "underflow warnings",
+      "automatic mixed precision",
+      "gradient underflow",
+      "numerical stability",
+      "backward pass",
+      "training"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Code uses torch.autocast but loss.backward() gives underflow warnings.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.autocast\", \"AMP\"],\n  \"keywords\": [\"torch.autocast\", \"loss.backward()\", \"underflow warnings\", \"automatic mixed precision\", \"gradient underflow\", \"numerical stability\", \"backward pass\", \"training\"]\n}\n```"
+  },
+  "ex_112": {
+    "error_message": "Custom loss class with matrix inverse causes NaN in fp16.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "AMP",
+      "fp16"
+    ],
+    "keywords": [
+      "custom loss class",
+      "matrix inverse",
+      "NaN",
+      "fp16",
+      "floating point precision",
+      "numerical stability",
+      "train.py",
+      "config file",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Custom loss class with matrix inverse causes NaN in fp16.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"AMP\", \"fp16\"],\n  \"keywords\": [\"custom loss class\", \"matrix inverse\", \"NaN\", \"fp16\", \"floating point precision\", \"numerical stability\", \"train.py\", \"config file\", \"YAML\"]\n}\n```"
+  },
+  "ex_113": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "GPU"
+    ],
+    "keywords": [
+      "DataLoader",
+      "batch_size",
+      "num_workers",
+      "GPU Utilization",
+      "experiment.yaml",
+      "dataset"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"GPU\"],\n  \"keywords\": [\"DataLoader\", \"batch_size\", \"num_workers\", \"GPU Utilization\", \"experiment.yaml\", \"dataset\"]\n}\n```"
+  },
+  "ex_114": {
+    "error_message": "RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "DataLoader worker",
+      "SIGBUS",
+      "Bus error",
+      "shared memory",
+      "shm",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"DataLoader worker\", \"SIGBUS\", \"Bus error\", \"shared memory\", \"shm\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_115": {
+    "error_message": "Dataset.__getitem__ does .cuda() before returning. Workers hang.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "CUDA"
+    ],
+    "keywords": [
+      "Dataset.__getitem__",
+      "cuda()",
+      "workers hang",
+      "dataloader",
+      "multiprocessing",
+      "device placement",
+      "training script",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Dataset.__getitem__ does .cuda() before returning. Workers hang.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"CUDA\"],\n  \"keywords\": [\"Dataset.__getitem__\", \"cuda()\", \"workers hang\", \"dataloader\", \"multiprocessing\", \"device placement\", \"training script\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_116": {
+    "error_message": "Training with GPU but data transfer is slow.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "GPU",
+      "DataLoader"
+    ],
+    "keywords": [
+      "data transfer",
+      "slow",
+      "GPU",
+      "training",
+      "dataloader",
+      "performance",
+      "bottleneck",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training with GPU but data transfer is slow.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"GPU\", \"DataLoader\"],\n  \"keywords\": [\"data transfer\", \"slow\", \"GPU\", \"training\", \"dataloader\", \"performance\", \"bottleneck\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_117": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader"
+    ],
+    "keywords": [
+      "DataLoader",
+      "troubleshooting",
+      "workers",
+      "reinitialization",
+      "epoch",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\"],\n  \"keywords\": [\"DataLoader\", \"troubleshooting\", \"workers\", \"reinitialization\", \"epoch\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_118": {
+    "error_message": "Validation metrics change between runs even with torch.manual_seed.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DataLoader",
+      "torch.manual_seed"
+    ],
+    "keywords": [
+      "validation metrics",
+      "torch.manual_seed",
+      "reproducibility",
+      "non-deterministic behavior",
+      "experiment.yaml",
+      "random seed",
+      "metric variance",
+      "run consistency"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Validation metrics change between runs even with torch.manual_seed.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DataLoader\", \"torch.manual_seed\"],\n  \"keywords\": [\"validation metrics\", \"torch.manual_seed\", \"reproducibility\", \"non-deterministic behavior\", \"experiment.yaml\", \"random seed\", \"metric variance\", \"run consistency\"]\n}\n```"
+  },
+  "ex_119": {
+    "error_message": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "batch normalization",
+      "input size",
+      "torch.Size",
+      "channel",
+      "training",
+      "configs/exp.yaml",
+      "value per channel"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch\"],\n  \"keywords\": [\"RuntimeError\", \"batch normalization\", \"input size\", \"torch.Size\", \"channel\", \"training\", \"configs/exp.yaml\", \"value per channel\"]\n}\n```"
+  },
+  "ex_120": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "train.py",
+      "config",
+      "exp.yaml",
+      "model.eval()",
+      "Train acc",
+      "Val acc",
+      "overfitting",
+      "validation accuracy",
+      "training accuracy",
+      "92%",
+      "74%"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"YAML\"],\n  \"keywords\": [\"train.py\", \"config\", \"exp.yaml\", \"model.eval()\", \"Train acc\", \"Val acc\", \"overfitting\", \"validation accuracy\", \"training accuracy\", \"92%\", \"74%\"]\n}\n```"
+  },
+  "ex_121": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch"
+    ],
+    "keywords": [
+      "batch size",
+      "3D medical images",
+      "memory constraints",
+      "training configuration",
+      "YAML config",
+      "batch norm troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\"],\n  \"keywords\": [\"batch size\", \"3D medical images\", \"memory constraints\", \"training configuration\", \"YAML config\", \"batch norm troubleshooting\"]\n}\n```"
+  },
+  "ex_122": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "ResNet",
+      "BatchNorm"
+    ],
+    "keywords": [
+      "BatchNorm",
+      "statistics shifting",
+      "fine-tuning",
+      "pretrained ResNet",
+      "train.py",
+      "config",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"ResNet\", \"BatchNorm\"],\n  \"keywords\": [\"BatchNorm\", \"statistics shifting\", \"fine-tuning\", \"pretrained ResNet\", \"train.py\", \"config\", \"YAML\"]\n}\n```"
+  },
+  "ex_123": {
+    "error_message": "grad_norm=948.2 at step 150, loss=nan at step 151.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "grad_norm",
+      "loss=nan",
+      "step 150",
+      "step 151",
+      "training instability",
+      "gradient explosion",
+      "NaN loss",
+      "optimizer troubleshooting",
+      "numerical instability",
+      "training divergence"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"grad_norm=948.2 at step 150, loss=nan at step 151.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"grad_norm\", \"loss=nan\", \"step 150\", \"step 151\", \"training instability\", \"gradient explosion\", \"NaN loss\", \"optimizer troubleshooting\", \"numerical instability\", \"training divergence\"]\n}\n```"
+  },
+  "ex_124": {
+    "error_message": "UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "lr_scheduler",
+      "optimizer"
+    ],
+    "keywords": [
+      "lr_scheduler.step()",
+      "optimizer.step()",
+      "UserWarning",
+      "training loop order",
+      "learning rate scheduler",
+      "optimizer step",
+      "scheduler step",
+      "training configuration",
+      "exp.yaml",
+      "step ordering"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"lr_scheduler\", \"optimizer\"],\n  \"keywords\": [\"lr_scheduler.step()\", \"optimizer.step()\", \"UserWarning\", \"training loop order\", \"learning rate scheduler\", \"optimizer step\", \"scheduler step\", \"training configuration\", \"exp.yaml\", \"step ordering\"]\n}\n```"
+  },
+  "ex_125": {
+    "error_message": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "loss spikes",
+      "epoch 5",
+      "model checkpoint",
+      "resume training",
+      "training instability",
+      "checkpoint loading",
+      "loss divergence",
+      "training resumption",
+      "optimizer state",
+      "learning rate"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Loaded model checkpoint but loss spikes from epoch 5 onward after resume.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"loss spikes\", \"epoch 5\", \"model checkpoint\", \"resume training\", \"training instability\", \"checkpoint loading\", \"loss divergence\", \"training resumption\", \"optimizer state\", \"learning rate\"]\n}\n```"
+  },
+  "ex_126": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "Adam",
+      "PyTorch"
+    ],
+    "keywords": [
+      "Adam optimizer",
+      "weight decay",
+      "L2 coupling",
+      "weight regularization",
+      "optimizer configuration",
+      "experiment.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"Adam\", \"PyTorch\"],\n  \"keywords\": [\"Adam optimizer\", \"weight decay\", \"L2 coupling\", \"weight regularization\", \"optimizer configuration\", \"experiment.yaml\"]\n}\n```"
+  },
+  "ex_127": {
+    "error_message": "Gradient accumulation across two micro-batches is giving wrong results.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "gradient accumulation",
+      "micro-batches",
+      "wrong results",
+      "optimizer",
+      "train.py",
+      "config file",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Gradient accumulation across two micro-batches is giving wrong results.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"gradient accumulation\", \"micro-batches\", \"wrong results\", \"optimizer\", \"train.py\", \"config file\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_128": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "experiment.yaml",
+      "learning_rate",
+      "pretrained_layers",
+      "classifier_head",
+      "lr=1e-5",
+      "lr=1e-3",
+      "optimizer_configuration",
+      "transfer_learning"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"experiment.yaml\", \"learning_rate\", \"pretrained_layers\", \"classifier_head\", \"lr=1e-5\", \"lr=1e-3\", \"optimizer_configuration\", \"transfer_learning\"]\n}\n```"
+  },
+  "ex_129": {
+    "error_message": "RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "scalar type",
+      "Float",
+      "Half",
+      "mat2",
+      "dtype mismatch",
+      "tensor type",
+      "input argument",
+      "configs/exp.yaml",
+      "train.py"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"scalar type\", \"Float\", \"Half\", \"mat2\", \"dtype mismatch\", \"tensor type\", \"input argument\", \"configs/exp.yaml\", \"train.py\"]\n}\n```"
+  },
+  "ex_130": {
+    "error_message": "RuntimeError: expected scalar type Long but found Float for argument 'target'",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "scalar type",
+      "Long",
+      "Float",
+      "target",
+      "argument",
+      "type mismatch",
+      "train.py",
+      "config",
+      "yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: expected scalar type Long but found Float for argument 'target'\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"RuntimeError\", \"scalar type\", \"Long\", \"Float\", \"target\", \"argument\", \"type mismatch\", \"train.py\", \"config\", \"yaml\"]\n}\n```"
+  },
+  "ex_131": {
+    "error_message": "Training on H100 \u2013 float16 gets NaN after 100 steps, bfloat16 is stable.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "H100",
+      "float16",
+      "bfloat16"
+    ],
+    "keywords": [
+      "NaN",
+      "float16",
+      "bfloat16",
+      "training instability",
+      "H100",
+      "numerical precision",
+      "mixed precision",
+      "100 steps",
+      "dtype",
+      "training convergence"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Training on H100 \u2013 float16 gets NaN after 100 steps, bfloat16 is stable.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"H100\", \"float16\", \"bfloat16\"],\n  \"keywords\": [\"NaN\", \"float16\", \"bfloat16\", \"training instability\", \"H100\", \"numerical precision\", \"mixed precision\", \"100 steps\", \"dtype\", \"training convergence\"]\n}\n```"
+  },
+  "ex_132": {
+    "error_message": "Need a zeros tensor of type float16 on GPU without creating it on CPU first.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "GPU",
+      "YAML configuration"
+    ],
+    "keywords": [
+      "zeros tensor",
+      "float16",
+      "GPU",
+      "CPU",
+      "device placement",
+      "tensor creation",
+      "dtype",
+      "train.py",
+      "config"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Need a zeros tensor of type float16 on GPU without creating it on CPU first.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"GPU\", \"YAML configuration\"],\n  \"keywords\": [\"zeros tensor\", \"float16\", \"GPU\", \"CPU\", \"device placement\", \"tensor creation\", \"dtype\", \"train.py\", \"config\"]\n}\n```"
+  },
+  "ex_133": {
+    "error_message": "DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "CUDA",
+      "GPU"
+    ],
+    "keywords": [
+      "DDP",
+      "Rank 0",
+      "hangs",
+      "init done",
+      "4 GPUs",
+      "distributed training",
+      "deadlock",
+      "synchronization",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"CUDA\", \"GPU\"],\n  \"keywords\": [\"DDP\", \"Rank 0\", \"hangs\", \"init done\", \"4 GPUs\", \"distributed training\", \"deadlock\", \"synchronization\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_134": {
+    "error_message": "RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "NCCL",
+      "Distributed Training"
+    ],
+    "keywords": [
+      "RuntimeError",
+      "NCCL error",
+      "ncclAllReduce",
+      "unhandled system error",
+      "NCCL version 2.16.2",
+      "distributed",
+      "train.py",
+      "configs/exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"NCCL\", \"Distributed Training\"],\n  \"keywords\": [\"RuntimeError\", \"NCCL error\", \"ncclAllReduce\", \"unhandled system error\", \"NCCL version 2.16.2\", \"distributed\", \"train.py\", \"configs/exp.yaml\"]\n}\n```"
+  },
+  "ex_135": {
+    "error_message": "DDP training but all ranks see identical batches.",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "YAML"
+    ],
+    "keywords": [
+      "DDP",
+      "distributed training",
+      "ranks",
+      "identical batches",
+      "data distribution",
+      "experiment.yaml",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP training but all ranks see identical batches.\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"YAML\"],\n  \"keywords\": [\"DDP\", \"distributed training\", \"ranks\", \"identical batches\", \"data distribution\", \"experiment.yaml\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_136": {
+    "error_message": "DDP deadlock when rank 0 and rank 1 take different if-else branches.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "DDP",
+      "Python"
+    ],
+    "keywords": [
+      "DDP deadlock",
+      "rank 0",
+      "rank 1",
+      "if-else branches",
+      "distributed training",
+      "synchronization",
+      "train.py",
+      "configs/exp.yaml",
+      "distributed data parallel"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"DDP deadlock when rank 0 and rank 1 take different if-else branches.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"DDP\", \"Python\"],\n  \"keywords\": [\"DDP deadlock\", \"rank 0\", \"rank 1\", \"if-else branches\", \"distributed training\", \"synchronization\", \"train.py\", \"configs/exp.yaml\", \"distributed data parallel\"]\n}\n```"
+  },
+  "ex_137": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "DDP",
+      "NVIDIA A100 GPUs",
+      "PyTorch"
+    ],
+    "keywords": [
+      "DDP training",
+      "NVIDIA A100",
+      "distributed training",
+      "8 GPUs",
+      "experiment.yaml",
+      "Starting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"DDP\", \"NVIDIA A100 GPUs\", \"PyTorch\"],\n  \"keywords\": [\"DDP training\", \"NVIDIA A100\", \"distributed training\", \"8 GPUs\", \"experiment.yaml\", \"Starting\"]\n}\n```"
+  },
+  "ex_138": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "Attention Mechanism",
+      "Multi-Head Attention"
+    ],
+    "keywords": [
+      "scaled dot product attention",
+      "query",
+      "key",
+      "value",
+      "softmax",
+      "attention weights",
+      "embedding",
+      "projection",
+      "multi-head attention block",
+      "variant"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"Attention Mechanism\", \"Multi-Head Attention\"],\n  \"keywords\": [\"scaled dot product attention\", \"query\", \"key\", \"value\", \"softmax\", \"attention weights\", \"embedding\", \"projection\", \"multi-head attention block\", \"variant\"]\n}\n```"
+  },
+  "ex_139": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "MultiheadAttention"
+    ],
+    "keywords": [
+      "MultiheadAttention",
+      "Input Embedding",
+      "Query",
+      "Key",
+      "Value",
+      "Scaled Attention",
+      "Softmax",
+      "Output Projection",
+      "attention mechanism",
+      "transformer architecture"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"MultiheadAttention\"],\n  \"keywords\": [\"MultiheadAttention\", \"Input Embedding\", \"Query\", \"Key\", \"Value\", \"Scaled Attention\", \"Softmax\", \"Output Projection\", \"attention mechanism\", \"transformer architecture\"]\n}\n```"
+  },
+  "ex_140": {
+    "error_message": "",
+    "visual_category": "architecture_diagram",
+    "software_components": [
+      "PyTorch",
+      "MultiheadAttention",
+      "Transformer"
+    ],
+    "keywords": [
+      "MultiheadAttention",
+      "causal mask",
+      "decoder",
+      "variant",
+      "Query",
+      "Key",
+      "Value",
+      "Scaled Attention",
+      "Softmax",
+      "Output Projection",
+      "attention mechanism"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"architecture_diagram\",\n  \"software_components\": [\"PyTorch\", \"MultiheadAttention\", \"Transformer\"],\n  \"keywords\": [\"MultiheadAttention\", \"causal mask\", \"decoder\", \"variant\", \"Query\", \"Key\", \"Value\", \"Scaled Attention\", \"Softmax\", \"Output Projection\", \"attention mechanism\"]\n}\n```"
+  },
+  "ex_141": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "batch_size",
+      "precision",
+      "float32",
+      "image_size",
+      "GPU",
+      "V100",
+      "16GB",
+      "experiment.yaml",
+      "configuration"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"batch_size\", \"precision\", \"float32\", \"image_size\", \"GPU\", \"V100\", \"16GB\", \"experiment.yaml\", \"configuration\"]\n}\n```"
+  },
+  "ex_142": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "YAML",
+      "PyTorch"
+    ],
+    "keywords": [
+      "experiment.yaml",
+      "num_workers",
+      "gpu_utilization",
+      "batch_size",
+      "configuration",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"YAML\", \"PyTorch\"],\n  \"keywords\": [\"experiment.yaml\", \"num_workers\", \"gpu_utilization\", \"batch_size\", \"configuration\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_143": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "PyTorch",
+      "YAML"
+    ],
+    "keywords": [
+      "fp16",
+      "use_grad_scale",
+      "learning_rate",
+      "experiment.yaml",
+      "configuration",
+      "training_parameters",
+      "gradient_scaling",
+      "mixed_precision"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"PyTorch\", \"YAML\"],\n  \"keywords\": [\"fp16\", \"use_grad_scale\", \"learning_rate\", \"experiment.yaml\", \"configuration\", \"training_parameters\", \"gradient_scaling\", \"mixed_precision\"]\n}\n```"
+  },
+  "ex_144": {
+    "error_message": "",
+    "visual_category": "config_file",
+    "software_components": [
+      "YAML",
+      "PyTorch"
+    ],
+    "keywords": [
+      "learning_rate",
+      "optimizer",
+      "warmup_step",
+      "experiment.yaml",
+      "adamw",
+      "config"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"config_file\",\n  \"software_components\": [\"YAML\", \"PyTorch\"],\n  \"keywords\": [\"learning_rate\", \"optimizer\", \"warmup_step\", \"experiment.yaml\", \"adamw\", \"config\"]\n}\n```"
+  },
+  "ex_145": {
+    "error_message": "Need to save model, optimizer, scheduler, and current epoch.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "checkpointing",
+      "model saving",
+      "optimizer",
+      "scheduler",
+      "epoch",
+      "train.py",
+      "config",
+      "YAML",
+      "troubleshooting"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Need to save model, optimizer, scheduler, and current epoch.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"checkpointing\", \"model saving\", \"optimizer\", \"scheduler\", \"epoch\", \"train.py\", \"config\", \"YAML\", \"troubleshooting\"]\n}\n```"
+  },
+  "ex_146": {
+    "error_message": "",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "Python",
+      "PyTorch",
+      "BERT"
+    ],
+    "keywords": [
+      "train.py",
+      "config",
+      "configs/exp.yaml",
+      "BERT-Large",
+      "batch_size",
+      "OOMing",
+      "layer 18",
+      "out of memory"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"Python\", \"PyTorch\", \"BERT\"],\n  \"keywords\": [\"train.py\", \"config\", \"configs/exp.yaml\", \"BERT-Large\", \"batch_size\", \"OOMing\", \"layer 18\", \"out of memory\"]\n}\n```"
+  },
+  "ex_147": {
+    "error_message": "FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.load"
+    ],
+    "keywords": [
+      "torch.load",
+      "weights_only",
+      "FutureWarning",
+      "arbitrary code execution",
+      "train.py",
+      "configs/exp.yaml",
+      "security risk"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.load\"],\n  \"keywords\": [\"torch.load\", \"weights_only\", \"FutureWarning\", \"arbitrary code execution\", \"train.py\", \"configs/exp.yaml\", \"security risk\"]\n}\n```"
+  },
+  "ex_148": {
+    "error_message": "Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch._dynamo",
+      "TorchDynamo"
+    ],
+    "keywords": [
+      "InternalTorchDynamoError",
+      "Graph break",
+      "unsupported Python operation",
+      "model forward",
+      "torch.dynamo.exc",
+      "train.py",
+      "config file",
+      "YAML"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch._dynamo\", \"TorchDynamo\"],\n  \"keywords\": [\"InternalTorchDynamoError\", \"Graph break\", \"unsupported Python operation\", \"model forward\", \"torch.dynamo.exc\", \"train.py\", \"config file\", \"YAML\"]\n}\n```"
+  },
+  "ex_149": {
+    "error_message": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "torch.compile",
+      "YAML configuration"
+    ],
+    "keywords": [
+      "torch.compile",
+      "encoder",
+      "decoder",
+      "dynamic shapes",
+      "selective compilation",
+      "config file",
+      "exp.yaml"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Want to compile the encoder but not the decoder due to dynamic shapes.\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"torch.compile\", \"YAML configuration\"],\n  \"keywords\": [\"torch.compile\", \"encoder\", \"decoder\", \"dynamic shapes\", \"selective compilation\", \"config file\", \"exp.yaml\"]\n}\n```"
+  },
+  "ex_150": {
+    "error_message": "Validation accuracy drops from 88% to 76% when I forget model.eval().",
+    "visual_category": "terminal_output",
+    "software_components": [
+      "PyTorch",
+      "Python"
+    ],
+    "keywords": [
+      "model.eval()",
+      "validation accuracy",
+      "training mode",
+      "inference mode",
+      "dropout",
+      "batch normalization",
+      "model state"
+    ],
+    "raw_description": "```json\n{\n  \"error_message\": \"Validation accuracy drops from 88% to 76% when I forget model.eval().\",\n  \"visual_category\": \"terminal_output\",\n  \"software_components\": [\"PyTorch\", \"Python\"],\n  \"keywords\": [\"model.eval()\", \"validation accuracy\", \"training mode\", \"inference mode\", \"dropout\", \"batch normalization\", \"model state\"]\n}\n```"
+  }
+}

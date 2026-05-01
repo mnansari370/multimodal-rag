@@ -1,0 +1,31 @@
+# Full pipeline config using Anthropic Claude for both VLP and generation.
+# This is the main config for the complete system (with all components enabled).
+# Run: python scripts/run_pipeline.py --config configs/pipeline_claude.yaml
+
+retriever_type: hybrid
+retrieval_top_k: 50
+
+use_reranker: true
+reranker_top_k: 20
+
+# Coverage pruning is the strongest strategy for citation quality (Section 6).
+pruning_strategy: coverage
+pruning_threshold: 0.0
+context_top_k: 5
+mmr_lambda: 0.7
+
+# Claude Haiku is fast and cheap for generation; switch to claude-sonnet-4-6
+# for higher answer quality (at higher cost).
+generator_backend: anthropic
+generator_model: claude-haiku-4-5-20251001
+max_new_tokens: 500
+
+# VLP is enabled when a screenshot is provided.
+# Claude Haiku handles vision well and is consistent with the generator backend.
+use_vlp: true
+vlp_backend: anthropic
+vlp_model: null   # null = use backend default (claude-haiku-4-5-20251001)
+
+bm25_path: data/embeddings/bm25.pkl
+faiss_path: data/embeddings/dense.faiss
+chunks_path: data/embeddings/chunks.jsonl

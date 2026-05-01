@@ -1,25 +1,28 @@
 """
-Vision-Language Parser (VLP).
+Vision-Language Parser (Module 2 of the pipeline).
 
-When a user uploads a screenshot, this module uses a Vision-Language Model
-to produce a structured text interpretation of the image. We treat the VLM
-as a 'screenshot-to-text' preprocessing step rather than building a
-multimodal retriever from scratch — this keeps the rest of the pipeline
-text-based and makes ablation studies clean.
+When a user uploads a screenshot, this module runs a Vision-Language Model
+on it and returns a structured interpretation: the error message, visual
+category, software components mentioned, and retrieval keywords.
 
-The output is a structured dict containing:
-  - error_message: the main error text or warning visible in the image
-  - visual_category: type of image (stack trace, plot, UI error, architecture diagram, config)
-  - software_components: any framework/library names detected
-  - keywords: retrieval-friendly terms extracted from the image
+That structured text is then injected into the query by the reformulator
+(Module 3), which measurably improves retrieval because the reformulated
+query contains actual error terms rather than vague natural language.
 
-Supports two VLMs:
-  - InternVL2-2B / InternVL2-8B (recommended for HPC — efficient, strong)
-  - LLaVA-1.6-7B (fallback option)
+Supported backends:
+  - anthropic  : Claude claude-haiku-4-5-20251001 via API (recommended, fast)
+  - openai     : GPT-4o-mini via API (alternative)
+  - internvl2  : InternVL2-2B or 7B running locally on GPU (no API cost)
+
+The VLP runs once per screenshot. Output is cached in the PipelineOutput
+so downstream stages don't re-run it.
 """
 
+import os
 import re
+import io
 import json
+import base64
 import logging
 from pathlib import Path
 from dataclasses import dataclass, field, asdict
@@ -33,21 +36,23 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class VLPOutput:
-    """Structured output from the Vision-Language Parser."""
+    """Structured result from the vision-language parser."""
     error_message: str = ""
-    visual_category: str = ""          # stack_trace | config | plot | ui_error | diagram | other
+    visual_category: str = ""
     software_components: list[str] = field(default_factory=list)
     keywords: list[str] = field(default_factory=list)
-    raw_description: str = ""          # full VLM output before parsing
+    raw_description: str = ""
 
     def to_dict(self) -> dict:
         return asdict(self)
 
     def to_query_string(self) -> str:
-        """Flatten into a string suitable for query reformulation."""
+        """Flatten all fields into a single retrieval string."""
         parts = []
         if self.error_message:
             parts.append(self.error_message)
+        if self.visual_category:
+            parts.append(self.visual_category)
         if self.software_components:
             parts.append(" ".join(self.software_components))
         if self.keywords:
@@ -55,39 +60,139 @@ class VLPOutput:
         return " ".join(parts)
 
 
-# ─── Prompt used to instruct the VLM ─────────────────────────────────────────
+# The exact prompt sent to the VLM. Returning JSON makes parsing reliable
+# across all backends and avoids brittle regex on free-form prose.
+VLP_PROMPT = """Analyze this technical screenshot carefully. It is from a PyTorch
+troubleshooting context.
 
-VLP_PROMPT = """You are analyzing a technical screenshot for a troubleshooting system.
-
-Examine this image carefully and respond with a JSON object containing exactly these fields:
-
+Return ONLY valid JSON with exactly these four fields:
 {
-  "error_message": "the main error, warning, or exception message visible (empty string if none)",
-  "visual_category": "one of: stack_trace | config_file | plot_or_graph | ui_error | architecture_diagram | terminal_output | other",
-  "software_components": ["list of framework or library names you recognize, e.g. PyTorch, CUDA, Kubernetes"],
-  "keywords": ["5 to 10 specific technical terms useful for searching documentation"]
+  "error_message": "the main visible error, warning, or issue — copy exact text if present, else empty string",
+  "visual_category": "one of: stack_trace | config_file | terminal_output | architecture_diagram | training_plot | notebook_error | other",
+  "software_components": ["list of frameworks/libraries/tools visible, e.g. PyTorch, CUDA, DataLoader, AMP, DDP"],
+  "keywords": ["5 to 12 precise retrieval terms drawn from the screenshot — error names, function names, parameter names, tensor shapes"]
 }
 
-Be specific. Include full error strings, version numbers, and parameter names if visible.
-Return only the JSON object — no explanation text."""
+Be specific. Include exact error strings, tensor shapes, and parameter names when you can read them.
+Do not include any text outside the JSON object.
+"""
 
 
-def _parse_vlp_response(raw: str) -> dict:
-    """Extract the JSON block from the VLM's response text."""
-    # Try to find a JSON block — the model sometimes wraps it in markdown
-    json_match = re.search(r"\{.*\}", raw, re.DOTALL)
-    if not json_match:
+def _parse_vlp_json(raw: str) -> dict:
+    """Pull the JSON object out of raw VLM output, handling markdown fences."""
+    raw = raw.strip()
+    # Strip markdown code fences if the model wrapped the JSON
+    match = re.search(r"\{.*\}", raw, re.DOTALL)
+    if not match:
         return {}
     try:
-        return json.loads(json_match.group())
+        return json.loads(match.group())
     except json.JSONDecodeError:
+        logger.warning("VLP JSON parse failed on: %s", raw[:200])
         return {}
 
 
-# ─── Model backends ───────────────────────────────────────────────────────────
+def _image_to_base64_png(image: Image.Image) -> str:
+    """Convert a PIL image to a base64-encoded PNG string."""
+    buf = io.BytesIO()
+    image.convert("RGB").save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+
+# ─── Backend: Anthropic Claude (recommended) ─────────────────────────────────
+
+class _ClaudeVisionBackend:
+    """
+    Uses claude-haiku-4-5-20251001 via the Anthropic API.
+
+    Haiku is fast and cheap for the VLP step, which just needs to extract
+    structured cues from the image — it doesn't need Sonnet-level reasoning.
+    """
+
+    def __init__(self, model_name: str = "claude-haiku-4-5-20251001"):
+        self.model_name = model_name
+
+    def describe(self, image: Image.Image) -> str:
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "ANTHROPIC_API_KEY not set. Export it before running the VLP."
+            )
+
+        import anthropic
+
+        b64_data = _image_to_base64_png(image)
+        client = anthropic.Anthropic(api_key=api_key)
+
+        msg = client.messages.create(
+            model=self.model_name,
+            max_tokens=400,
+            temperature=0,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": "image/png",
+                                "data": b64_data,
+                            },
+                        },
+                        {"type": "text", "text": VLP_PROMPT},
+                    ],
+                }
+            ],
+        )
+        return msg.content[0].text.strip()
+
+
+# ─── Backend: OpenAI GPT-4o-mini ─────────────────────────────────────────────
+
+class _OpenAIVisionBackend:
+    """Uses GPT-4o-mini via the OpenAI API."""
+
+    def __init__(self, model_name: str = "gpt-4o-mini"):
+        self.model_name = model_name
+
+    def describe(self, image: Image.Image) -> str:
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError("OPENAI_API_KEY is not set.")
+
+        from openai import OpenAI
+
+        b64_data = _image_to_base64_png(image)
+        data_url = f"data:image/png;base64,{b64_data}"
+
+        client = OpenAI(api_key=api_key)
+        response = client.chat.completions.create(
+            model=self.model_name,
+            temperature=0.0,
+            max_tokens=400,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": VLP_PROMPT},
+                        {"type": "image_url", "image_url": {"url": data_url}},
+                    ],
+                }
+            ],
+        )
+        return response.choices[0].message.content.strip()
+
+
+# ─── Backend: InternVL2 (local GPU) ──────────────────────────────────────────
 
 class _InternVL2Backend:
-    """InternVL2 backend. Handles both 2B and 8B variants."""
+    """
+    Runs InternVL2-2B or 7B locally on GPU.
+
+    Use this when you don't want API costs and have a GPU available.
+    The 2B model is fast; 7B gives better extraction for complex screenshots.
+    """
 
     def __init__(self, model_name: str = "OpenGVLab/InternVL2-2B"):
         self.model_name = model_name
@@ -97,17 +202,20 @@ class _InternVL2Backend:
     def _load(self):
         if self._model is not None:
             return
+
         import torch
         from transformers import AutoTokenizer, AutoModel
 
-        logger.info(f"Loading VLM: {self.model_name}")
+        logger.info("Loading VLM: %s", self.model_name)
         self._tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name, trust_remote_code=True
+            self.model_name,
+            trust_remote_code=True,
+            use_fast=False,
         )
         self._model = AutoModel.from_pretrained(
             self.model_name,
-            torch_dtype=torch.float16,
-            device_map="auto",
+            torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+            device_map="auto" if torch.cuda.is_available() else None,
             trust_remote_code=True,
         ).eval()
 
@@ -118,101 +226,66 @@ class _InternVL2Backend:
 
         self._load()
 
-        # InternVL2 expects a specific image transform
-        IMAGENET_MEAN = (0.485, 0.456, 0.406)
-        IMAGENET_STD = (0.229, 0.224, 0.225)
         transform = T.Compose([
             T.Resize((448, 448), interpolation=InterpolationMode.BICUBIC),
             T.ToTensor(),
-            T.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
+            T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
         ])
 
         pixel_values = transform(image.convert("RGB")).unsqueeze(0)
         device = next(self._model.parameters()).device
-        pixel_values = pixel_values.to(device, dtype=torch.float16)
+        dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+        pixel_values = pixel_values.to(device=device, dtype=dtype)
 
-        generation_config = {
-            "max_new_tokens": 512,
-            "do_sample": False,
-            "temperature": 1.0,
-        }
-
-        response = self._model.chat(
+        return self._model.chat(
             self._tokenizer,
             pixel_values,
             VLP_PROMPT,
-            generation_config,
-        )
-        return response
-
-
-class _LLaVABackend:
-    """LLaVA-1.6 backend."""
-
-    def __init__(self, model_name: str = "llava-hf/llava-v1.6-mistral-7b-hf"):
-        self.model_name = model_name
-        self._pipe = None
-
-    def _load(self):
-        if self._pipe is not None:
-            return
-        import torch
-        from transformers import pipeline
-
-        logger.info(f"Loading VLM: {self.model_name}")
-        self._pipe = pipeline(
-            "image-to-text",
-            model=self.model_name,
-            model_kwargs={"torch_dtype": "auto"},
-            device_map="auto",
+            {"max_new_tokens": 400, "do_sample": False},
         )
 
-    def describe(self, image: Image.Image) -> str:
-        self._load()
-        prompt = f"USER: <image>\n{VLP_PROMPT}\nASSISTANT:"
-        out = self._pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 512})
-        return out[0]["generated_text"].split("ASSISTANT:")[-1].strip()
 
-
-# ─── Public API ───────────────────────────────────────────────────────────────
+# ─── Public interface ─────────────────────────────────────────────────────────
 
 class VisionLanguageParser:
     """
-    Wraps a VLM and produces structured VLPOutput from screenshots.
+    Module 2: Vision-Language Parser.
+
+    Takes a screenshot and returns a structured VLPOutput dict that the
+    query reformulator (Module 3) uses to improve retrieval.
 
     Usage:
-        vlp = VisionLanguageParser(backend="internvl2")
+        vlp = VisionLanguageParser(backend="anthropic")
         result = vlp.parse(image_path="screenshot.png")
         print(result.error_message)
-        print(result.to_query_string())
     """
 
     BACKENDS = {
+        "anthropic": _ClaudeVisionBackend,
+        "openai": _OpenAIVisionBackend,
         "internvl2": _InternVL2Backend,
-        "llava": _LLaVABackend,
     }
 
-    def __init__(
-        self,
-        backend: str = "internvl2",
-        model_name: Optional[str] = None,
-    ):
+    def __init__(self, backend: str = "anthropic", model_name: Optional[str] = None):
         if backend not in self.BACKENDS:
-            raise ValueError(f"Unknown backend '{backend}'. Choose from: {list(self.BACKENDS)}")
-
-        BackendClass = self.BACKENDS[backend]
-        self._backend = BackendClass(model_name) if model_name else BackendClass()
+            raise ValueError(
+                f"Unknown VLP backend '{backend}'. "
+                f"Choose from: {list(self.BACKENDS)}"
+            )
+        cls = self.BACKENDS[backend]
+        self._backend = cls(model_name) if model_name else cls()
+        logger.info("VLP initialized with backend=%s", backend)
 
     def parse(
         self,
-        image: Image.Image | str | None = None,
-        image_path: str | None = None,
+        image: Optional[Image.Image] = None,
+        image_path: Optional[str] = None,
     ) -> VLPOutput:
         """
-        Parse an image and return structured VLPOutput.
+        Parse a screenshot and return structured visual cues.
 
-        Pass either a PIL Image or a file path.
-        Returns an empty VLPOutput if no image is provided.
+        Pass either a PIL Image or a file path — not both.
+        Returns an empty VLPOutput if neither is provided.
         """
         if image is None and image_path is None:
             return VLPOutput()
@@ -222,8 +295,9 @@ class VisionLanguageParser:
         elif not isinstance(image, Image.Image):
             image = Image.fromarray(image).convert("RGB")
 
+        logger.debug("Running VLP on image (size=%s)", image.size)
         raw = self._backend.describe(image)
-        parsed = _parse_vlp_response(raw)
+        parsed = _parse_vlp_json(raw)
 
         return VLPOutput(
             error_message=parsed.get("error_message", ""),

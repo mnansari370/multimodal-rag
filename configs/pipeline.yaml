@@ -1,20 +1,26 @@
+# Default pipeline config — Anthropic Claude, hybrid retrieval, coverage pruning.
+# Identical to pipeline_claude.yaml. Use this as the baseline for all experiments.
+#
+# To override a single field from command line:
+#   python scripts/evaluate.py --config configs/pipeline.yaml
+
 retriever_type: hybrid
 retrieval_top_k: 50
-reranker_top_k: 20
 
 use_reranker: true
+reranker_top_k: 20
 
-pruning_strategy: threshold
+pruning_strategy: coverage
 pruning_threshold: 0.0
 context_top_k: 5
 mmr_lambda: 0.7
 
-generator_backend: local
-generator_model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
-max_new_tokens: 512
+generator_backend: anthropic
+generator_model: claude-haiku-4-5-20251001
+max_new_tokens: 500
 
-use_vlp: false
-vlp_backend: internvl2
+use_vlp: true
+vlp_backend: anthropic
 vlp_model: null
 
 bm25_path: data/embeddings/bm25.pkl

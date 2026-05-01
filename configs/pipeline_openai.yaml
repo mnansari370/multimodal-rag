@@ -1,0 +1,21 @@
+retriever_type: hybrid
+retrieval_top_k: 50
+use_reranker: true
+reranker_top_k: 20
+
+pruning_strategy: coverage
+pruning_threshold: 0.0
+context_top_k: 5
+mmr_lambda: 0.7
+
+generator_backend: openai
+generator_model: gpt-4o-mini
+max_new_tokens: 450
+
+use_vlp: true
+vlp_backend: openai
+vlp_model: gpt-4o-mini
+
+bm25_path: data/embeddings/bm25.pkl
+faiss_path: data/embeddings/dense.faiss
+chunks_path: data/embeddings/chunks.jsonl

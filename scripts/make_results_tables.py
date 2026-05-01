@@ -17,7 +17,7 @@ def md_table(headers, rows):
     return "\n".join(out)
 
 # Retriever table
-retr = load("results/retriever_ablation_70.json")
+retr = load("results/retriever_ablation.json")
 rows = []
 for name, m in retr.items():
     rows.append([
@@ -33,7 +33,7 @@ txt = md_table(["System", "MRR", "Recall@5", "Recall@10", "Recall@20", "Hit@10",
 (tables / "retriever_ablation.md").write_text(txt)
 
 # Chunking table
-chunk = load("results/chunking_comparison_70.json")
+chunk = load("results/chunking_comparison.json")
 rows = []
 for name, m in chunk.items():
     rows.append([name, m.get("mrr"), m.get("recall@5"), m.get("recall@10"), m.get("recall@20"), m.get("hit@10")])
@@ -41,7 +41,7 @@ txt = md_table(["Chunking", "MRR", "Recall@5", "Recall@10", "Recall@20", "Hit@10
 (tables / "chunking_comparison.md").write_text(txt)
 
 # Pruning table
-prune = load("results/pruning_ablation_70.json")
+prune = load("results/pruning_ablation.json")
 rows = []
 for r in prune:
     rows.append([
@@ -50,7 +50,7 @@ for r in prune:
         r["avg_pruned_tokens"],
         r["avg_token_reduction_pct"],
         r["avg_selected_chunks"],
-        r["avg_retrieval_rerank_prune_latency_s"],
+        r["avg_retrieve_rerank_prune_latency_s"],
     ])
 txt = md_table(["Setting", "Original tokens", "Pruned tokens", "Reduction %", "Selected chunks", "Latency s"], rows)
 (tables / "pruning_ablation.md").write_text(txt)

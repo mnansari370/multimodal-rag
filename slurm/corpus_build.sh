@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=corpus_build
+#SBATCH --job-name=rag_corpus
 #SBATCH --output=results/logs/corpus_build_%j.out
 #SBATCH --error=results/logs/corpus_build_%j.err
 #SBATCH --time=02:00:00
@@ -9,33 +9,30 @@
 #SBATCH --mem=16G
 #SBATCH --partition=batch
 
-# Download and clean PyTorch documentation corpus
-# This is a CPU-only task — no GPU needed
+# Download and clean PyTorch documentation corpus, then chunk it.
+# CPU-only task — no GPU needed.
+#
+# Steps:
+#   1. Download all PyTorch stable docs from the sitemap
+#   2. Clean and normalize each page
+#   3. Chunk using heading-based strategy (for production)
+#   4. Chunk using fixed-size strategy (for comparison ablation)
 
 cd $SLURM_SUBMIT_DIR
 
-source activate DL_env
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate multimodal_RAG
+
+mkdir -p results/logs data/raw data/processed
 
 echo "=== Downloading PyTorch documentation ==="
-python -m src.ingestion.downloader \
-    --output-dir data/raw \
+python scripts/ingest.py \
+    --raw-dir data/raw \
+    --processed-dir data/processed \
     --delay 0.3
 
-echo "=== Cleaning raw pages ==="
-python -m src.ingestion.cleaner \
-    --raw-dir data/raw \
-    --output-dir data/processed
-
-echo "=== Chunking (heading-based) ==="
-python -m src.chunking.chunker \
-    --processed-dir data/processed \
-    --output-file data/processed/chunks_heading.jsonl \
-    --strategy heading
-
-echo "=== Chunking (fixed-size with overlap) ==="
-python -m src.chunking.chunker \
-    --processed-dir data/processed \
-    --output-file data/processed/chunks_fixed.jsonl \
-    --strategy fixed
+echo ""
+echo "=== Corpus statistics ==="
+python scripts/validate_data.py
 
 echo "Corpus build complete."

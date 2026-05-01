@@ -1,16 +1,16 @@
 [
   {
-    "setting": "full_context_20",
+    "setting": "no_pruning_20",
     "strategy": "threshold",
     "top_k": 20,
     "threshold": -999,
     "mmr_lambda": 0.7,
     "avg_input_chunks": 20.0,
     "avg_selected_chunks": 20.0,
-    "avg_original_tokens": 7207.4,
-    "avg_pruned_tokens": 7207.4,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 7093.5,
     "avg_token_reduction_pct": 0.0,
-    "avg_retrieval_rerank_prune_latency_s": 1.724
+    "avg_retrieve_rerank_prune_latency_s": 1.798
   },
   {
     "setting": "threshold_top10",
@@ -19,11 +19,11 @@
     "threshold": 0.0,
     "mmr_lambda": 0.7,
     "avg_input_chunks": 20.0,
-    "avg_selected_chunks": 5.76,
-    "avg_original_tokens": 7207.4,
-    "avg_pruned_tokens": 2038.71,
-    "avg_token_reduction_pct": 71.68,
-    "avg_retrieval_rerank_prune_latency_s": 1.587
+    "avg_selected_chunks": 3.91,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1416.6,
+    "avg_token_reduction_pct": 79.98,
+    "avg_retrieve_rerank_prune_latency_s": 1.764
   },
   {
     "setting": "top5_diversity",
@@ -32,11 +32,11 @@
     "threshold": 0.0,
     "mmr_lambda": 0.7,
     "avg_input_chunks": 20.0,
-    "avg_selected_chunks": 5.0,
-    "avg_original_tokens": 7207.4,
-    "avg_pruned_tokens": 1793.9,
-    "avg_token_reduction_pct": 75.12,
-    "avg_retrieval_rerank_prune_latency_s": 1.515
+    "avg_selected_chunks": 4.99,
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1772.6,
+    "avg_token_reduction_pct": 75.01,
+    "avg_retrieve_rerank_prune_latency_s": 1.752
   },
   {
     "setting": "coverage_mmr_07",
@@ -46,10 +46,10 @@
     "mmr_lambda": 0.7,
     "avg_input_chunks": 20.0,
     "avg_selected_chunks": 5.0,
-    "avg_original_tokens": 7207.4,
-    "avg_pruned_tokens": 1756.93,
-    "avg_token_reduction_pct": 75.35,
-    "avg_retrieval_rerank_prune_latency_s": 1.595
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1777.9,
+    "avg_token_reduction_pct": 74.95,
+    "avg_retrieve_rerank_prune_latency_s": 1.843
   },
   {
     "setting": "coverage_mmr_05",
@@ -59,9 +59,9 @@
     "mmr_lambda": 0.5,
     "avg_input_chunks": 20.0,
     "avg_selected_chunks": 5.0,
-    "avg_original_tokens": 7207.4,
-    "avg_pruned_tokens": 1753.07,
-    "avg_token_reduction_pct": 75.34,
-    "avg_retrieval_rerank_prune_latency_s": 1.629
+    "avg_original_tokens": 7093.5,
+    "avg_pruned_tokens": 1769.6,
+    "avg_token_reduction_pct": 75.09,
+    "avg_retrieve_rerank_prune_latency_s": 1.85
   }
 ]

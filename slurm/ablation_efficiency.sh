@@ -10,8 +10,25 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=gpu
 
+# Context pruning ablation study (Section 6.2 of the project report).
+# Measures how different pruning strategies affect prompt token count
+# and retrieval latency. Does NOT call the generation API to keep cost down.
+#
+# Produces results/pruning_ablation.json which feeds into make_results_tables.py.
+
 cd $SLURM_SUBMIT_DIR
+
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate multimodal_RAG
 
-python scripts/run_pruning_ablation.py
+mkdir -p results/logs
+
+echo "=== Context pruning ablation ==="
+python scripts/run_pruning_ablation.py \
+    --benchmark data/benchmark/benchmark.json \
+    --output results/pruning_ablation.json
+
+echo "=== Updating results tables ==="
+python scripts/make_results_tables.py
+
+echo "Pruning ablation complete."

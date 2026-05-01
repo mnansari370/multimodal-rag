@@ -37,7 +37,7 @@ for name, chunks_path in experiments:
     print_retrieval_results(metrics, label=name)
     all_results[name] = metrics
 
-with open(ROOT / "results/chunking_comparison_70.json", "w", encoding="utf-8") as f:
+with open(ROOT / "results/chunking_comparison.json", "w", encoding="utf-8") as f:
     json.dump(all_results, f, indent=2)
 
-print("\nSaved: results/chunking_comparison_70.json")
+print("\nSaved: results/chunking_comparison.json")

@@ -2,12 +2,13 @@
   {
     "id": "ex_001",
     "query": "Why is my training crashing with CUDA out of memory?",
-    "image_path": "data/benchmark/images/cuda_oom_screenshot.png",
-    "log_snippet": "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB (GPU 0; 10.76 GiB total capacity; 8.45 GiB already allocated; 1.38 GiB free; 8.71 GiB reserved in total by PyTorch)",
-    "gold_answer": "The CUDA out of memory error occurs because the allocated memory (8.45 GiB) plus the requested allocation (2.00 GiB) exceeds available GPU memory. Solutions: reduce batch_size, enable gradient checkpointing with model.gradient_checkpointing_enable(), use mixed precision with torch.cuda.amp.autocast(), or call torch.cuda.empty_cache() between batches.",
+    "image_path": "data/benchmark/images/ex_001_cuda_memory.png",
+    "log_snippet": "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB.\nGPU 0 has 10.76 GiB total; 8.45 GiB already allocated; 1.23 GiB free.",
+    "gold_answer": "The training job is exceeding available CUDA memory. Reduce batch size, enable mixed precision (autocast + GradScaler), use gradient checkpointing, or reduce model/input size.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/notes/cuda.html",
-      "https://pytorch.org/docs/stable/amp.html"
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
     ],
     "gold_chunk_ids": [],
     "category": "cuda_memory",
@@ -15,120 +16,124 @@
   },
   {
     "id": "ex_002",
-    "query": "What is wrong with my batch normalization configuration?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
-    "gold_answer": "Batch normalization requires at least 2 samples per batch during training to compute meaningful per-channel statistics. With batch_size=1, variance is zero and the layer cannot normalize. Solutions: use batch_size >= 2, switch to GroupNorm (works with any batch size), or set BatchNorm2d(track_running_stats=False) and use eval() mode during validation.",
+    "query": "Why does memory_reserved stay high after I delete my tensors?",
+    "image_path": "data/benchmark/images/ex_002_cuda_memory.png",
+    "log_snippet": "After del tensor and torch.cuda.empty_cache():\nmemory_allocated=0.3 GB, memory_reserved=8.9 GB",
+    "gold_answer": "PyTorch uses a CUDA caching allocator. Deleted tensors free allocated memory, but reserved blocks may stay for reuse. empty_cache() releases unused cached memory to the OS.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
-      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
     ],
     "gold_chunk_ids": [],
-    "category": "batch_norm",
+    "category": "cuda_memory",
     "difficulty": "medium"
   },
   {
     "id": "ex_003",
-    "query": "How do I fix the DataLoader worker shared memory error?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: DataLoader worker (pid 12345) is killed by signal: Bus error. It is possible that dataloader's workers are out of shared memory. Please try to raise your shared memory limit.",
-    "gold_answer": "DataLoader workers use shared memory (/dev/shm) to pass data between processes. The 'Bus error' occurs when this space is exhausted. Fix by: reducing num_workers, setting pin_memory=False, reducing batch_size, or increasing Docker's shared memory via --shm-size flag. As a quick fix, set num_workers=0 to disable multiprocessing entirely.",
+    "query": "How do I measure peak GPU memory during one training step?",
+    "image_path": "data/benchmark/images/ex_003_cuda_memory.png",
+    "log_snippet": "I need to compare peak memory before and after the forward/backward pass.",
+    "gold_answer": "Use torch.cuda.reset_peak_memory_stats() before the step, then read torch.cuda.max_memory_allocated() after. This isolates the memory footprint of exactly one iteration.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/data.html"
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
     ],
     "gold_chunk_ids": [],
-    "category": "dataloader",
-    "difficulty": "medium"
+    "category": "cuda_memory",
+    "difficulty": "hard"
   },
   {
     "id": "ex_004",
-    "query": "How do I enable automatic mixed precision in PyTorch?",
-    "image_path": null,
-    "log_snippet": "",
-    "gold_answer": "Use torch.cuda.amp.autocast() and GradScaler. Wrap forward pass: with torch.cuda.amp.autocast(): output = model(input); loss = criterion(output, target). Then: scaler.scale(loss).backward(); scaler.step(optimizer); scaler.update(). GradScaler handles the loss scaling needed to prevent gradients from underflowing in float16.",
+    "query": "How does gradient checkpointing reduce GPU memory?",
+    "image_path": "data/benchmark/images/ex_004_cuda_memory.png",
+    "log_snippet": "Training ResNet-50 with batch_size=128 OOMs. Tried reducing to 64 but still too large.",
+    "gold_answer": "torch.utils.checkpoint.checkpoint() trades compute for memory by not storing all intermediate activations during forward. They are recomputed during backward.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/amp.html",
-      "https://pytorch.org/docs/stable/notes/amp_examples.html"
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_005",
+    "query": "What does torch.cuda.empty_cache actually do?",
+    "image_path": "data/benchmark/images/ex_005_cuda_memory.png",
+    "log_snippet": "After empty_cache() GPU memory still shows 6 GB used by other processes.",
+    "gold_answer": "empty_cache() releases unused cached memory held by PyTorch's allocator so other applications can use it. It does not free actively allocated tensors.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_006",
+    "query": "Why does memory usage grow across epochs even after del and empty_cache?",
+    "image_path": "data/benchmark/images/ex_006_cuda_memory.png",
+    "log_snippet": "Epoch 1: reserved=4 GB. Epoch 2: reserved=5.2 GB. Epoch 3: reserved=6.1 GB.",
+    "gold_answer": "Memory leaks often come from accumulating tensors in a list (e.g. for logging), storing gradients unnecessarily, or not detaching from the computation graph. Use .detach().item() when logging scalars.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_007",
+    "query": "How do I enable automatic mixed precision training?",
+    "image_path": "data/benchmark/images/ex_007_amp.png",
+    "log_snippet": "I want to use fp16 to speed up training and reduce memory.",
+    "gold_answer": "Wrap the forward pass and loss in torch.autocast('cuda'). Use GradScaler to scale the loss before backward and call scaler.step(optimizer) then scaler.update().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
     "category": "amp",
     "difficulty": "easy"
   },
   {
-    "id": "ex_005",
-    "query": "Why does my model produce NaN loss after a few training steps?",
-    "image_path": null,
-    "log_snippet": "loss: tensor(nan, grad_fn=<NllLossBackward0>)\ngrad norm: inf",
-    "gold_answer": "NaN loss with infinite gradients indicates gradient explosion. Fix with gradient clipping: torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) before optimizer.step(). Also check: learning rate too high (reduce by 10x), numerical instability in custom loss functions, or NaN in input data.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
-      "https://pytorch.org/docs/stable/optim.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "optimizer",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_006",
-    "query": "How do I reduce GPU memory usage during training?",
-    "image_path": null,
-    "log_snippet": "torch.cuda.memory_allocated(): 9.1 GB\ntorch.cuda.max_memory_reserved(): 9.8 GB",
-    "gold_answer": "To reduce GPU memory: (1) Enable gradient checkpointing — model.gradient_checkpointing_enable() recomputes activations during backward pass instead of storing them; (2) Use AMP with autocast to use float16; (3) Reduce batch size and accumulate gradients with loss.backward() every N steps before optimizer.step(); (4) Delete tensors no longer needed and call torch.cuda.empty_cache().",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/cuda.html",
-      "https://pytorch.org/docs/stable/checkpoint.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "cuda_memory",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_007",
-    "query": "What causes 'RuntimeError: Expected all tensors to be on the same device'?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!",
-    "gold_answer": "This error occurs when you try to perform operations between tensors on different devices. Move all tensors to the same device using .to(device) or .cuda(). Common causes: forgot to call model.to(device), mixed CPU and GPU data in a forward pass, or a buffer/parameter created as CPU tensor. Use tensor.device to inspect where each tensor lives.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/tensor_attributes.html",
-      "https://pytorch.org/docs/stable/notes/cuda.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "dtype",
-    "difficulty": "easy"
-  },
-  {
     "id": "ex_008",
-    "query": "How do I set up DistributedDataParallel for multi-GPU training?",
-    "image_path": null,
-    "log_snippet": "NCCL WARN Timeout in ncclAllReduce",
-    "gold_answer": "DDP setup requires: (1) Initialize process group — dist.init_process_group('nccl'); (2) Wrap model — model = DDP(model, device_ids=[local_rank]); (3) Use DistributedSampler in DataLoader. Each process handles one GPU. Run with torchrun --nproc_per_node=N script.py. NCCL timeout usually means a process is stuck — check all ranks reach the collective.",
+    "query": "Why do I get NaN loss with mixed precision?",
+    "image_path": "data/benchmark/images/ex_008_amp.png",
+    "log_snippet": "loss=nan after epoch 1 with fp16 autocast enabled.",
+    "gold_answer": "Float16 can overflow or underflow. GradScaler helps by scaling up the loss before backward. For numerically sensitive ops (e.g. softmax, log), autocast keeps them in float32 automatically.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
-      "https://pytorch.org/docs/stable/distributed.html"
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
-    "category": "distributed",
-    "difficulty": "hard"
+    "category": "amp",
+    "difficulty": "medium"
   },
   {
     "id": "ex_009",
-    "query": "Why does gradient checkpointing slow down my training significantly?",
-    "image_path": null,
-    "log_snippet": "Training step time without checkpointing: 0.8s\nTraining step time with checkpointing: 1.4s",
-    "gold_answer": "Gradient checkpointing trades memory for compute — it recomputes forward activations during backward pass instead of storing them. This increases step time by ~30% for most architectures (you pay for each recomputed layer). This tradeoff is worthwhile when OOM prevents training at the batch size you need. Use torch.utils.checkpoint.checkpoint() selectively on the most memory-intensive layers.",
+    "query": "Why is GradScaler reducing the scale factor every step?",
+    "image_path": "data/benchmark/images/ex_009_amp.png",
+    "log_snippet": "GradScaler scale: 65536 → 32768 → 16384 → 8192 (decreasing each step)",
+    "gold_answer": "The scale factor drops when GradScaler detects inf/NaN in gradients. This means float16 is overflowing during backward. Check for large activation values or learning rate too high.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/checkpoint.html"
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
-    "category": "cuda_memory",
-    "difficulty": "medium"
+    "category": "amp",
+    "difficulty": "hard"
   },
   {
     "id": "ex_010",
-    "query": "How do I use GradScaler correctly with mixed precision?",
-    "image_path": null,
-    "log_snippet": "Warning: Grad overflow detected for param weight in layer Linear. Skipping optimizer step.",
-    "gold_answer": "GradScaler detects gradient overflow (inf/nan) and skips the optimizer step for that iteration — this is expected behavior during AMP warmup. The scaler automatically decreases the loss scale when overflow is detected and increases it when steps are consistently healthy. The skipped steps will not corrupt your model. Ensure you call scaler.update() every step.",
+    "query": "Should I use bfloat16 or float16 for mixed precision?",
+    "image_path": "data/benchmark/images/ex_010_amp.png",
+    "log_snippet": "Training on A100 GPU, getting NaN with fp16.",
+    "gold_answer": "bfloat16 has a wider exponent range than float16, making it more numerically stable on A100/H100 GPUs. Use torch.autocast('cuda', dtype=torch.bfloat16) if your hardware supports it.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/amp.html"
     ],
@@ -138,216 +143,219 @@
   },
   {
     "id": "ex_011",
-    "query": "What is the correct way to implement learning rate warmup with a scheduler?",
-    "image_path": null,
-    "log_snippet": "lr: 0.000000 (not increasing from zero)",
-    "gold_answer": "For learning rate warmup, use LinearLR as a warmup scheduler and chain it with your main scheduler using SequentialLR. Example: warmup = LinearLR(optimizer, start_factor=0.001, end_factor=1.0, total_iters=warmup_steps); main = CosineAnnealingLR(optimizer, T_max=total_steps - warmup_steps); scheduler = SequentialLR(optimizer, [warmup, main], milestones=[warmup_steps]).",
+    "query": "Why do I still need GradScaler if I use autocast?",
+    "image_path": "data/benchmark/images/ex_011_amp.png",
+    "log_snippet": "Code uses torch.autocast but loss.backward() gives underflow warnings.",
+    "gold_answer": "autocast selects lower precision for forward ops. GradScaler prevents gradient underflow during backward by scaling the loss up before backward and unscaling before optimizer.step().",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/optim.html"
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
-    "category": "optimizer",
-    "difficulty": "medium"
+    "category": "amp",
+    "difficulty": "easy"
   },
   {
     "id": "ex_012",
-    "query": "How do I profile my PyTorch model to find bottlenecks?",
-    "image_path": null,
-    "log_snippet": "Training iteration: 2.3s\nDataLoading: unknown",
-    "gold_answer": "Use torch.profiler.profile() to measure time by operation: with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof: run_training_step(). Then print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10)). Also check DataLoader bottleneck by timing data loading vs forward/backward pass separately.",
+    "query": "How do I use mixed precision with a custom loss function?",
+    "image_path": "data/benchmark/images/ex_012_amp.png",
+    "log_snippet": "Custom loss class with matrix inverse causes NaN in fp16.",
+    "gold_answer": "Operations like matrix inverse are numerically sensitive in float16. Keep them in float32 by using .float() inside the critical section or wrapping them with torch.autocast(enabled=False).",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/profiler.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_013",
-    "query": "Why does BatchNorm behave differently in train vs eval mode?",
-    "image_path": null,
-    "log_snippet": "validation loss much higher than training loss despite same data",
-    "gold_answer": "During training, BatchNorm normalizes using the current batch mean/variance. During eval (model.eval()), it uses running statistics accumulated during training. If model stays in training mode during validation, batch statistics from the small val batch cause unstable normalization. Always call model.eval() before validation and model.train() before training. Also freeze BN with model.apply(freeze_bn) when fine-tuning.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "batch_norm",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_014",
-    "query": "How do I fix the 'RuntimeError: NCCL error: unhandled system error' in DDP?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: NCCL error in: /opt/conda/conda-bld/pytorch.../THCCachingAllocator.cpp:961, unhandled system error, NCCL version 2.10.3\nncclSystemError: System call (socket) failed.",
-    "gold_answer": "NCCL socket errors in DDP are usually caused by firewall rules blocking inter-GPU communication ports, or processes on different nodes being unable to reach each other. Set NCCL_SOCKET_IFNAME to specify the network interface (e.g., eth0). Also set NCCL_DEBUG=INFO to get detailed diagnostic output. Ensure all nodes have the same NCCL version.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/distributed.html",
-      "https://pytorch.org/docs/stable/notes/ddp.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "distributed",
-    "difficulty": "hard"
-  },
-  {
-    "id": "ex_015",
-    "query": "What is gradient accumulation and how do I implement it correctly?",
-    "image_path": null,
-    "log_snippet": "batch_size: 8\ntarget_effective_batch_size: 64",
-    "gold_answer": "Gradient accumulation simulates a larger batch size by accumulating gradients over N steps before updating weights. Implementation: set optimizer.zero_grad() outside the loop, call loss = loss / accumulation_steps to normalize, call loss.backward() every step, and only call optimizer.step() and optimizer.zero_grad() every N steps. This achieves effective batch size of N * actual_batch_size.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/optim.html",
-      "https://pytorch.org/docs/stable/generated/torch.optim.Optimizer.zero_grad.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "optimizer",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_016",
-    "query": "Why am I getting 'RuntimeError: Expected scalar type Float but found Half'?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: expected scalar type Float but found Half in tensor at /pytorch/aten/src/ATen/native/Loss.cpp:257",
-    "gold_answer": "This dtype mismatch occurs when mixing float32 and float16 operations outside of an autocast context. Inside torch.autocast, PyTorch manages dtype conversion automatically. Outside it, you must explicitly cast: loss_fn(output.float(), target.float()). If using AMP, make sure your entire forward pass is inside the autocast block.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/amp.html",
-      "https://pytorch.org/docs/stable/tensor_attributes.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "dtype",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_017",
-    "query": "How do I use torch.no_grad() correctly?",
-    "image_path": null,
-    "log_snippet": "memory usage not decreasing during validation despite no_grad",
-    "gold_answer": "torch.no_grad() disables gradient computation but does not affect memory used by activations themselves. For lower memory during validation, combine it with smaller batch sizes. Use it as a context manager: with torch.no_grad(): outputs = model(inputs). Do not use model(inputs).detach() as a substitute — that still computes but detaches the graph. For inference-only deployments, also call model.eval() to disable dropout.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
-      "https://pytorch.org/docs/stable/autograd.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_018",
-    "query": "How do I reproduce results exactly in PyTorch?",
-    "image_path": null,
-    "log_snippet": "results differ between runs despite same random seed",
-    "gold_answer": "Full reproducibility requires: torch.manual_seed(seed), torch.cuda.manual_seed_all(seed), np.random.seed(seed), random.seed(seed), and setting torch.backends.cudnn.deterministic = True plus torch.backends.cudnn.benchmark = False. Note: deterministic mode can be ~20% slower. Some CUDA operations have no deterministic implementation — these will raise RuntimeError if you also set torch.use_deterministic_algorithms(True).",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/randomness.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_019",
-    "query": "Why is my model training fast on one GPU but slow on multiple GPUs with DDP?",
-    "image_path": null,
-    "log_snippet": "1 GPU: 3.2 iter/s\n4 GPU DDP: 2.8 iter/s (expected 12.8)",
-    "gold_answer": "Poor DDP scaling usually comes from: communication overhead dominating compute (model too small for multi-GPU), DataLoader being a bottleneck (increase num_workers, use persistent_workers=True), or synchronization stalls (all-reduce after every backward step). Profile with NCCL_DEBUG=INFO. For small models, DataParallel on one machine may outperform DDP. Check GPU utilization with nvidia-smi — if not near 100%, DataLoader is likely the bottleneck.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/ddp.html",
-      "https://pytorch.org/docs/stable/data.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "distributed",
-    "difficulty": "hard"
-  },
-  {
-    "id": "ex_020",
-    "query": "How do I save and load a model checkpoint correctly in PyTorch?",
-    "image_path": null,
-    "log_snippet": "checkpoint saved but model gives different results after loading",
-    "gold_answer": "Save and load state_dict, not the full model: torch.save({'epoch': epoch, 'model_state_dict': model.state_dict(), 'optimizer_state_dict': optimizer.state_dict(), 'loss': loss}, path). Load with: checkpoint = torch.load(path); model.load_state_dict(checkpoint['model_state_dict']); optimizer.load_state_dict(checkpoint['optimizer_state_dict']). For DDP models, wrap before loading or strip the 'module.' prefix from keys.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/serialization.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_021",
-    "query": "What causes 'RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation'?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [512, 1024]], which is output 0 of AsStridedBackward0",
-    "gold_answer": "Inplace operations modify a tensor's data in place, which invalidates the saved reference needed for autograd. Replace inplace ops: tensor += x → tensor = tensor + x, tensor.relu_() → F.relu(tensor), tensor[mask] = 0 → use torch.where() instead. If inside a loop, ensure you're not overwriting a tensor that's still in the computation graph.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/autograd.html",
-      "https://pytorch.org/docs/stable/notes/autograd.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "hard"
-  },
-  {
-    "id": "ex_022",
-    "query": "How does MultiheadAttention work in PyTorch and what are common configuration mistakes?",
-    "image_path": "data/benchmark/images/attention_diagram.png",
-    "log_snippet": "",
-    "gold_answer": "PyTorch's MultiheadAttention(embed_dim, num_heads) requires embed_dim to be divisible by num_heads (head_dim = embed_dim // num_heads). Input shape is (seq_len, batch, embed_dim) by default, or (batch, seq_len, embed_dim) with batch_first=True. Common mistakes: forgetting key_padding_mask when sequences have different lengths, using attn_mask with wrong shape (num_heads * batch, seq_len, seq_len for custom masks).",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
-      "https://pytorch.org/docs/stable/generated/torch.nn.Transformer.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "architecture",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_023",
-    "query": "Why is autocast not reducing memory usage as expected?",
-    "image_path": null,
-    "log_snippet": "Memory before autocast: 4.2 GB\nMemory after enabling autocast: 4.1 GB",
-    "gold_answer": "autocast alone reduces compute precision for activations but does not save as much memory as expected because: (1) model parameters remain in float32 unless you explicitly call model.half() or model.bfloat16(); (2) optimizer states (Adam moments) remain float32. For full memory reduction, use autocast for forward pass and convert model weights: model.to(torch.float16) or use bfloat16 which is more numerically stable on A100s.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/amp.html",
-      "https://pytorch.org/docs/stable/notes/amp_examples.html"
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
     "category": "amp",
     "difficulty": "hard"
   },
   {
-    "id": "ex_024",
-    "query": "How do I correctly use SyncBatchNorm across multiple GPUs?",
-    "image_path": null,
-    "log_snippet": "torch.nn.modules.batchnorm._NormBase.forward: Expected more than 1 value per channel when training",
-    "gold_answer": "SyncBatchNorm synchronizes batch statistics across all GPUs in DDP, allowing small per-GPU batch sizes. Convert a model: model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model) before wrapping with DDP. This is essential when per-GPU batch size is 1-2. Note: SyncBatchNorm is slower than regular BatchNorm due to the all-reduce communication — only use it when batch size per GPU is too small for stable statistics.",
+    "id": "ex_013",
+    "query": "What does num_workers do in PyTorch DataLoader?",
+    "image_path": "data/benchmark/images/ex_013_dataloader.png",
+    "log_snippet": "DataLoader(dataset, batch_size=64, num_workers=0) — GPU utilization: 20%",
+    "gold_answer": "num_workers controls how many subprocesses load batches in parallel. num_workers=0 uses the main process. Increasing it can improve throughput when preprocessing is CPU-bound.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.SyncBatchNorm.html",
-      "https://pytorch.org/docs/stable/notes/ddp.html"
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_014",
+    "query": "How do I fix the DataLoader bus error due to shared memory?",
+    "image_path": "data/benchmark/images/ex_014_dataloader.png",
+    "log_snippet": "RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).",
+    "gold_answer": "Insufficient /dev/shm is common in Docker containers. Reduce num_workers or batch_size, set pin_memory=False, or increase container shm_size.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_015",
+    "query": "Why should DataLoader workers not return CUDA tensors?",
+    "image_path": "data/benchmark/images/ex_015_dataloader.png",
+    "log_snippet": "Dataset.__getitem__ does .cuda() before returning. Workers hang.",
+    "gold_answer": "CUDA has subtle multiprocessing rules. Worker processes can conflict over CUDA context initialization. Return CPU tensors from __getitem__ and move them to GPU in the training loop.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_016",
+    "query": "What does pin_memory=True do and when should I use it?",
+    "image_path": "data/benchmark/images/ex_016_dataloader.png",
+    "log_snippet": "Training with GPU but data transfer is slow.",
+    "gold_answer": "pin_memory=True allocates tensors in page-locked host memory, enabling faster async CPU-to-GPU transfers. Use it with CUDA training when data loading is a bottleneck.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_017",
+    "query": "What does persistent_workers=True do?",
+    "image_path": "data/benchmark/images/ex_017_dataloader.png",
+    "log_snippet": "DataLoader spends time reinitializing workers at the start of each epoch.",
+    "gold_answer": "persistent_workers=True keeps worker processes alive between epochs, avoiding the overhead of spawning and initializing them each epoch. Useful when worker startup is slow.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_018",
+    "query": "Why does my validation DataLoader shuffle=True hurt reproducibility?",
+    "image_path": "data/benchmark/images/ex_018_dataloader.png",
+    "log_snippet": "Validation metrics change between runs even with torch.manual_seed.",
+    "gold_answer": "shuffle=True in the DataLoader uses a random sampler. For reproducible validation, set shuffle=False. Use shuffle only for training to help the optimizer generalize.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_019",
+    "query": "Why does BatchNorm fail with batch size 1?",
+    "image_path": "data/benchmark/images/ex_019_batch_norm.png",
+    "log_snippet": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "gold_answer": "BatchNorm needs enough values per channel to estimate meaningful statistics during training. Use a larger batch or switch to GroupNorm, LayerNorm, or InstanceNorm for small batches.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_020",
+    "query": "Why does model accuracy drop when I call model.eval()?",
+    "image_path": "data/benchmark/images/ex_020_batch_norm.png",
+    "log_snippet": "Train acc: 92%, Val acc: 74% after calling model.eval().",
+    "gold_answer": "In training mode, BatchNorm uses batch statistics. In eval mode, it uses running_mean and running_var accumulated during training. If these diverge, performance drops.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_021",
+    "query": "When should I use GroupNorm instead of BatchNorm?",
+    "image_path": "data/benchmark/images/ex_021_batch_norm.png",
+    "log_snippet": "Small batch size (2-4) because of large 3D medical images.",
+    "gold_answer": "GroupNorm divides channels into groups and normalizes within each group independently of batch size. It is more stable than BatchNorm when batch sizes are very small.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
     ],
     "gold_chunk_ids": [],
     "category": "batch_norm",
     "difficulty": "hard"
   },
   {
-    "id": "ex_025",
-    "query": "Why is torch.load giving a FutureWarning about weights_only?",
-    "image_path": null,
-    "log_snippet": "FutureWarning: You are using torch.load with weights_only=False which is the default value... This will change in a future version.",
-    "gold_answer": "PyTorch is moving toward weights_only=True by default for security reasons — arbitrary pickle loading can execute malicious code. For model checkpoints (state_dicts), use torch.load(path, weights_only=True). For checkpoints that contain Python objects (optimizers with custom schedulers, etc.), you must set weights_only=False explicitly. The safe migration path is to ensure your checkpoints only contain tensors and standard Python types.",
+    "id": "ex_022",
+    "query": "How do I freeze BatchNorm layers during fine-tuning?",
+    "image_path": "data/benchmark/images/ex_022_batch_norm.png",
+    "log_snippet": "Fine-tuning pretrained ResNet — BatchNorm statistics shifting.",
+    "gold_answer": "Call model.eval() on the specific BatchNorm modules, or set their track_running_stats=False. This keeps running statistics fixed during fine-tuning.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/serialization.html"
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
     ],
     "gold_chunk_ids": [],
-    "category": "general",
+    "category": "batch_norm",
     "difficulty": "easy"
   },
   {
-    "id": "ex_026",
-    "query": "How do I implement a custom learning rate scheduler?",
-    "image_path": null,
-    "log_snippet": "scheduler step timing error: expected to be called after optimizer step",
-    "gold_answer": "Implement a custom scheduler by subclassing LRScheduler and overriding get_lr(). Always call scheduler.step() AFTER optimizer.step() — calling it before is deprecated and produces a warning. For one-cycle policies or complex schedules, use LambdaLR with a lambda function: scheduler = LambdaLR(optimizer, lr_lambda=lambda step: warmup_fn(step)). Verify by plotting the lr history with [scheduler.get_last_lr() for _ in range(total_steps)].",
+    "id": "ex_023",
+    "query": "How do I clip exploding gradients in PyTorch?",
+    "image_path": "data/benchmark/images/ex_023_optimizer.png",
+    "log_snippet": "grad_norm=948.2 at step 150, loss→nan at step 151.",
+    "gold_answer": "Call torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) after loss.backward() and before optimizer.step(). This limits gradient norm to prevent divergence.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/optim.html"
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_024",
+    "query": "What is the correct order for optimizer.step and scheduler.step?",
+    "image_path": "data/benchmark/images/ex_024_optimizer.png",
+    "log_snippet": "UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.",
+    "gold_answer": "Call optimizer.step() first to update parameters, then scheduler.step() to update the learning rate. Reversing this order causes PyTorch to skip the optimizer update and warns you.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_025",
+    "query": "How do I restore optimizer state when resuming from a checkpoint?",
+    "image_path": "data/benchmark/images/ex_025_optimizer.png",
+    "log_snippet": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "gold_answer": "Save both model.state_dict() and optimizer.state_dict() with torch.save. On resume, call optimizer.load_state_dict(checkpoint['optimizer']) before training continues.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_026",
+    "query": "How do I use AdamW with weight decay in PyTorch?",
+    "image_path": "data/benchmark/images/ex_026_optimizer.png",
+    "log_snippet": "Using Adam but want proper weight decay without L2 coupling.",
+    "gold_answer": "Use torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=0.01). AdamW decouples weight decay from the gradient update, unlike Adam with L2 regularization.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
     ],
     "gold_chunk_ids": [],
     "category": "optimizer",
@@ -355,171 +363,40 @@
   },
   {
     "id": "ex_027",
-    "query": "What causes 'RuntimeError: Expected all tensors to have the same dtype'?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: expected scalar type Long but found Float\nInput tensor dtype: torch.float32\nTarget tensor dtype: torch.int64",
-    "gold_answer": "This error typically occurs in loss functions: CrossEntropyLoss and NLLLoss expect target tensors as Long (int64), not Float. Fix: target = target.long(). Similarly, embedding layers require Long inputs. For binary classification with BCELoss, both input and target must be Float. Check tensor dtypes with tensor.dtype and cast explicitly with .to(torch.float32) or .long().",
+    "query": "How do I zero gradients correctly in PyTorch?",
+    "image_path": "data/benchmark/images/ex_027_optimizer.png",
+    "log_snippet": "Gradient accumulation across two micro-batches is giving wrong results.",
+    "gold_answer": "Call optimizer.zero_grad() before each macro-batch. For gradient accumulation, zero only every N steps. Pass set_to_none=True to reduce memory operations.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/tensor_attributes.html",
-      "https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html"
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
     ],
     "gold_chunk_ids": [],
-    "category": "dtype",
+    "category": "optimizer",
     "difficulty": "easy"
   },
   {
     "id": "ex_028",
-    "query": "How do I avoid the DataLoader bottleneck when training on large image datasets?",
-    "image_path": null,
-    "log_snippet": "GPU utilization: 42%\nDataLoader time per batch: 0.8s\nForward+backward time per batch: 0.3s",
-    "gold_answer": "GPU at 42% utilization means DataLoader is the bottleneck. Solutions in order of impact: (1) Increase num_workers to 4-8 (match CPU core count); (2) Set pin_memory=True for faster CPU→GPU transfer; (3) Set persistent_workers=True to avoid respawning workers each epoch; (4) Prefetch data to GPU before it's needed with prefetch_factor; (5) Cache decoded images to SSD or RAM disk if they fit. Profile with Pytorch Profiler to confirm DataLoader is the bottleneck.",
+    "query": "How do I apply different learning rates to different layer groups?",
+    "image_path": "data/benchmark/images/ex_028_optimizer.png",
+    "log_snippet": "Want lr=1e-5 for pretrained layers and lr=1e-3 for the classifier head.",
+    "gold_answer": "Pass a list of parameter groups to the optimizer: optimizer = Adam([{'params': backbone.parameters(), 'lr': 1e-5}, {'params': head.parameters(), 'lr': 1e-3}])",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/data.html"
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
     ],
     "gold_chunk_ids": [],
-    "category": "dataloader",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_029",
-    "query": "How do I correctly implement model inference with batched inputs of different lengths?",
-    "image_path": null,
-    "log_snippet": "RuntimeError: stack expects each tensor to be equal size, but got [512] at entry 0 and [348] at entry 1",
-    "gold_answer": "Variable-length sequences need padding for batch processing. Use torch.nn.utils.rnn.pad_sequence(sequences, batch_first=True, padding_value=0) to pad a list of tensors to the same length. Then create an attention mask: mask = (padded != padding_value). Pass the mask to your model to ignore padding positions. For DataLoader, implement a custom collate_fn that handles padding.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.utils.rnn.pad_sequence.html",
-      "https://pytorch.org/docs/stable/data.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "dataloader",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_030",
-    "query": "Why does my CUDA kernel time look short but wall time is high?",
-    "image_path": null,
-    "log_snippet": "cuda_time_total: 120ms\nwall_time: 450ms\nCPU-GPU sync calls: 180",
-    "gold_answer": "Excessive CPU-GPU synchronization is the problem. PyTorch CUDA operations are asynchronous — they launch and return immediately unless you force synchronization. Common triggers: moving tensors to CPU (.item(), .numpy(), .cpu()) inside the training loop, printing tensor values, or calling torch.cuda.synchronize(). Remove or batch these operations. The profiler shows sync overhead separately — look for CudaSynchronize entries.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/cuda.html",
-      "https://pytorch.org/docs/stable/profiler.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "cuda_memory",
+    "category": "optimizer",
     "difficulty": "hard"
   },
   {
-    "id": "ex_031",
-    "query": "Why does torch.cuda.empty_cache not increase available GPU memory for my tensors?",
-    "image_path": null,
-    "log_snippet": "Why does torch.cuda.empty_cache not increase available GPU memory for my tensors?",
-    "gold_answer": "torch.cuda.empty_cache() does not increase the amount of GPU memory available to PyTorch tensors; it releases unoccupied cached memory held by the caching allocator so it can be used by other GPU applications.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
-      "https://pytorch.org/docs/stable/notes/cuda.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "cuda_memory",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_032",
-    "query": "How can I check peak CUDA memory usage during training?",
-    "image_path": null,
-    "log_snippet": "How can I check peak CUDA memory usage during training?",
-    "gold_answer": "Use torch.cuda.memory_allocated, torch.cuda.max_memory_allocated, memory_reserved, and max_memory_reserved to inspect allocated and reserved GPU memory. Reset peak statistics before measuring a region.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html",
-      "https://pytorch.org/docs/stable/notes/cuda.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "cuda_memory",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_033",
-    "query": "How do I use autocast for mixed precision training in PyTorch?",
-    "image_path": null,
-    "log_snippet": "How do I use autocast for mixed precision training in PyTorch?",
-    "gold_answer": "Use torch.autocast or torch.cuda.amp.autocast around the forward pass and loss computation so selected operations run in lower precision automatically.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/amp.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "amp",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_034",
-    "query": "Why should I use GradScaler with float16 mixed precision?",
-    "image_path": null,
-    "log_snippet": "Why should I use GradScaler with float16 mixed precision?",
-    "gold_answer": "GradScaler helps prevent gradient underflow in float16 training by scaling the loss before backward and unscaling before optimizer updates.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/amp.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "amp",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_035",
-    "query": "What does num_workers do in a PyTorch DataLoader?",
-    "image_path": null,
-    "log_snippet": "What does num_workers do in a PyTorch DataLoader?",
-    "gold_answer": "num_workers controls how many subprocesses are used for data loading. num_workers=0 loads data in the main process; higher values use worker processes.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/data.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "dataloader",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_036",
-    "query": "When should I set pin_memory=True in DataLoader?",
-    "image_path": null,
-    "log_snippet": "When should I set pin_memory=True in DataLoader?",
-    "gold_answer": "pin_memory=True copies tensors into page-locked host memory, which can speed up host-to-GPU transfers when using CUDA.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/data.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "dataloader",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_037",
-    "query": "How do I clip gradients in PyTorch?",
-    "image_path": null,
-    "log_snippet": "How do I clip gradients in PyTorch?",
-    "gold_answer": "Use torch.nn.utils.clip_grad_norm_ or clip_grad_value_ after loss.backward() and before optimizer.step() to limit gradient magnitude.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "optimizer",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_038",
-    "query": "What is the correct order for optimizer.step and scheduler.step?",
-    "image_path": null,
-    "log_snippet": "What is the correct order for optimizer.step and scheduler.step?",
-    "gold_answer": "For most PyTorch schedulers, call optimizer.step() before scheduler.step() during training unless a scheduler's documentation states otherwise.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/optim.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "optimizer",
-    "difficulty": "medium"
-  },
-  {
-    "id": "ex_039",
-    "query": "Why do I get expected scalar type Float but found Half?",
-    "image_path": null,
-    "log_snippet": "Why do I get expected scalar type Float but found Half?",
-    "gold_answer": "This usually means model parameters and input tensors use different dtypes. Move both model and input to compatible dtypes using .float(), .half(), or autocast.",
+    "id": "ex_029",
+    "query": "Why do I get expected scalar type Float but found Half error?",
+    "image_path": "data/benchmark/images/ex_029_dtype.png",
+    "log_snippet": "RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'",
+    "gold_answer": "Model parameters and input tensors are using different dtypes. Cast inputs to float32 with .float() or cast the model to float16 with model.half() to make them consistent.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/tensors.html",
       "https://pytorch.org/docs/stable/amp.html"
@@ -529,80 +406,173 @@
     "difficulty": "easy"
   },
   {
-    "id": "ex_040",
-    "query": "How do I create tensors with a specific dtype and device?",
-    "image_path": null,
-    "log_snippet": "How do I create tensors with a specific dtype and device?",
-    "gold_answer": "Pass dtype= and device= when constructing tensors or use tensor.to(device=..., dtype=...) to move and cast existing tensors.",
+    "id": "ex_030",
+    "query": "Why does CrossEntropyLoss complain about the target dtype?",
+    "image_path": "data/benchmark/images/ex_030_dtype.png",
+    "log_snippet": "RuntimeError: expected scalar type Long but found Float for argument 'target'",
+    "gold_answer": "CrossEntropyLoss expects integer class indices (Long dtype) for the target. Cast labels with labels.long() before passing them to the loss function.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/tensors.html"
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
     "category": "dtype",
     "difficulty": "medium"
   },
   {
-    "id": "ex_041",
-    "query": "Why does DistributedDataParallel hang at startup?",
-    "image_path": null,
-    "log_snippet": "Why does DistributedDataParallel hang at startup?",
-    "gold_answer": "DDP can hang if ranks, world size, backend, or initialization method are misconfigured, or if not all processes enter the same collective operations.",
+    "id": "ex_031",
+    "query": "When should I prefer bfloat16 over float16?",
+    "image_path": "data/benchmark/images/ex_031_dtype.png",
+    "log_snippet": "Training on H100 — float16 gets NaN after 100 steps, bfloat16 is stable.",
+    "gold_answer": "bfloat16 has the same exponent range as float32 (8 bits), making it numerically stable for gradients. float16 has only 5 exponent bits and is more prone to overflow. Use bf16 on A100/H100.",
     "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_032",
+    "query": "How do I create a tensor with a specific dtype and device?",
+    "image_path": "data/benchmark/images/ex_032_dtype.png",
+    "log_snippet": "Need a zeros tensor of type float16 on GPU without creating it on CPU first.",
+    "gold_answer": "Use torch.zeros(size, dtype=torch.float16, device='cuda') to create directly on the target device and dtype. Avoids an unnecessary CPU-to-GPU copy.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_033",
+    "query": "Why does DistributedDataParallel hang at init_process_group?",
+    "image_path": "data/benchmark/images/ex_033_distributed.png",
+    "log_snippet": "DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.",
+    "gold_answer": "All ranks must call init_process_group. If one rank fails or never reaches the call, the others block. Check that all processes use the same init_method, world_size, and backend.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
       "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
-      "https://pytorch.org/docs/stable/distributed.html"
+      "https://pytorch.org/docs/stable/data.html"
     ],
     "gold_chunk_ids": [],
     "category": "distributed",
     "difficulty": "medium"
   },
   {
-    "id": "ex_042",
-    "query": "When should I use DistributedSampler with DDP?",
-    "image_path": null,
-    "log_snippet": "When should I use DistributedSampler with DDP?",
-    "gold_answer": "Use DistributedSampler so each process receives a distinct subset of the dataset. Call sampler.set_epoch(epoch) each epoch to shuffle consistently.",
+    "id": "ex_034",
+    "query": "How do I fix NCCL unhandled system error in DDP?",
+    "image_path": "data/benchmark/images/ex_034_distributed.png",
+    "log_snippet": "RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2",
+    "gold_answer": "NCCL errors typically come from networking, GPU visibility, or rank configuration. Check NCCL_SOCKET_IFNAME, firewall rules, and that all GPUs are visible. Verify world_size matches the number of processes.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/data.html",
-      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html"
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
     ],
     "gold_chunk_ids": [],
     "category": "distributed",
     "difficulty": "hard"
   },
   {
-    "id": "ex_043",
-    "query": "Why does BatchNorm behave differently in train and eval mode?",
-    "image_path": null,
-    "log_snippet": "Why does BatchNorm behave differently in train and eval mode?",
-    "gold_answer": "In training mode BatchNorm uses batch statistics and updates running estimates. In eval mode it uses running_mean and running_var.",
+    "id": "ex_035",
+    "query": "When should I use DistributedSampler with DDP?",
+    "image_path": "data/benchmark/images/ex_035_distributed.png",
+    "log_snippet": "DDP training but all ranks see identical batches.",
+    "gold_answer": "Use DistributedSampler(dataset, num_replicas=world_size, rank=rank) to partition data across ranks. Call sampler.set_epoch(epoch) each epoch to re-shuffle consistently.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html"
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
     ],
     "gold_chunk_ids": [],
-    "category": "batch_norm",
+    "category": "distributed",
     "difficulty": "medium"
   },
   {
-    "id": "ex_044",
-    "query": "What normalization layer should I use for very small batch sizes?",
-    "image_path": null,
-    "log_snippet": "What normalization layer should I use for very small batch sizes?",
-    "gold_answer": "GroupNorm is often suitable for small batches because it computes statistics over groups of channels and does not depend on batch dimension in the same way as BatchNorm.",
+    "id": "ex_036",
+    "query": "Why must all DDP processes enter the same collective operations?",
+    "image_path": "data/benchmark/images/ex_036_distributed.png",
+    "log_snippet": "DDP deadlock when rank 0 and rank 1 take different if-else branches.",
+    "gold_answer": "DDP synchronizes gradients via allreduce collectives. If ranks take different code paths and don't all call the same collective, the job deadlocks. Keep control flow symmetric across ranks.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
     ],
     "gold_chunk_ids": [],
-    "category": "batch_norm",
+    "category": "distributed",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_037",
+    "query": "Which backend should I use for GPU distributed training?",
+    "image_path": "data/benchmark/images/ex_037_distributed.png",
+    "log_snippet": "Starting DDP training on 8 NVIDIA A100 GPUs.",
+    "gold_answer": "Use NCCL as the backend for GPU distributed training — it is optimized for NVIDIA GPUs. Gloo is the fallback for CPU distributed training.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_038",
+    "query": "What does scaled dot product attention compute?",
+    "image_path": "data/benchmark/images/ex_038_architecture.png",
+    "log_snippet": "Implementing attention manually — need to match PyTorch's SDPA output.",
+    "gold_answer": "SDPA computes: softmax(Q @ K.T / sqrt(d_k)) @ V. Query-key similarities are scaled by 1/sqrt(d_k) before softmax to prevent gradient vanishing in high-dimension spaces.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
     "difficulty": "medium"
   },
   {
-    "id": "ex_045",
-    "query": "What is wrong if my YAML config sets batch_size to 512 on one GPU?",
-    "image_path": null,
-    "log_snippet": "What is wrong if my YAML config sets batch_size to 512 on one GPU?",
-    "gold_answer": "A very large batch size can exceed GPU memory. Reduce batch_size, enable mixed precision, or use gradient accumulation.",
+    "id": "ex_039",
+    "query": "What is MultiheadAttention used for in PyTorch?",
+    "image_path": "data/benchmark/images/ex_039_architecture.png",
+    "log_snippet": "nn.MultiheadAttention(embed_dim=768, num_heads=12) — need to understand output shape.",
+    "gold_answer": "MultiheadAttention jointly attends to information from multiple representation subspaces using parallel attention heads. Output shape is (seq_len, batch, embed_dim) by default.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_040",
+    "query": "How do I add a causal mask to MultiheadAttention for a decoder?",
+    "image_path": "data/benchmark/images/ex_040_architecture.png",
+    "log_snippet": "Decoder attends to future tokens — need to mask them out.",
+    "gold_answer": "Pass attn_mask to MultiheadAttention. A causal mask is a boolean upper-triangular matrix where True positions are ignored. Use torch.nn.Transformer.generate_square_subsequent_mask(seq_len).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_041",
+    "query": "Why is a batch_size of 512 on one GPU causing out-of-memory?",
+    "image_path": "data/benchmark/images/ex_041_config.png",
+    "log_snippet": "batch_size: 512\nprecision: float32\nimage_size: 1024\nGPU: V100 16GB",
+    "gold_answer": "batch_size=512 with float32 and 1024×1024 images exceeds 16GB VRAM. Reduce batch_size, enable mixed precision (fp16/bf16), or use gradient accumulation.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
       "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
@@ -610,65 +580,144 @@
     "difficulty": "easy"
   },
   {
-    "id": "ex_046",
-    "query": "Why is my model slow when num_workers is 0?",
-    "image_path": null,
-    "log_snippet": "Why is my model slow when num_workers is 0?",
-    "gold_answer": "With num_workers=0, data loading runs in the main training process and may bottleneck GPU training. Increase num_workers if the dataset pipeline is CPU-bound.",
+    "id": "ex_042",
+    "query": "Why is GPU utilization only 20% with num_workers=0?",
+    "image_path": "data/benchmark/images/ex_042_config.png",
+    "log_snippet": "num_workers: 0\ngpu_utilization: 18%\nbatch_size: 64",
+    "gold_answer": "With num_workers=0, data loading runs in the main process and stalls the GPU while preprocessing. Increase num_workers to 4-8 to load data in parallel with GPU computation.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/data.html"
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
     "category": "config",
     "difficulty": "medium"
   },
   {
-    "id": "ex_047",
-    "query": "How do I move a model to GPU in PyTorch?",
-    "image_path": null,
-    "log_snippet": "How do I move a model to GPU in PyTorch?",
-    "gold_answer": "Use model.to('cuda') or model.cuda(), and move input tensors to the same device before the forward pass.",
+    "id": "ex_043",
+    "query": "My config enables fp16 but not GradScaler. What is the risk?",
+    "image_path": "data/benchmark/images/ex_043_config.png",
+    "log_snippet": "fp16: true\nuse_grad_scaler: false\nlearning_rate: 0.001",
+    "gold_answer": "Without GradScaler, float16 gradients may underflow to zero during backward. GradScaler multiplies the loss by a scale factor before backward to keep gradients in the float16 representable range.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html",
-      "https://pytorch.org/docs/stable/tensors.html"
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_048",
-    "query": "Why do I get tensors on different devices error?",
-    "image_path": null,
-    "log_snippet": "Why do I get tensors on different devices error?",
-    "gold_answer": "The model and tensors must be on the same device. Move inputs, labels, and model parameters to the same CPU or CUDA device.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/tensors.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_049",
-    "query": "How do I save and load a PyTorch model checkpoint?",
-    "image_path": null,
-    "log_snippet": "How do I save and load a PyTorch model checkpoint?",
-    "gold_answer": "Use torch.save to save state_dicts and torch.load plus load_state_dict to restore model and optimizer states.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/serialization.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
+    "category": "config",
     "difficulty": "medium"
   },
   {
-    "id": "ex_050",
-    "query": "What is the difference between model.train() and model.eval()?",
-    "image_path": null,
-    "log_snippet": "What is the difference between model.train() and model.eval()?",
-    "gold_answer": "model.train() enables training behavior such as Dropout and BatchNorm batch statistics. model.eval() switches modules to inference behavior.",
+    "id": "ex_044",
+    "query": "Why is lr=10.0 causing unstable training in my config?",
+    "image_path": "data/benchmark/images/ex_044_config.png",
+    "log_snippet": "learning_rate: 10.0\noptimizer: adamw\nwarmup_steps: 0",
+    "gold_answer": "A learning rate of 10.0 is extremely large for AdamW. Typical values range from 1e-5 to 1e-3. A large LR causes the optimizer to overshoot minima, producing NaN or diverging loss.",
     "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "config",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_045",
+    "query": "How should I save a complete training checkpoint?",
+    "image_path": "data/benchmark/images/ex_045_checkpointing.png",
+    "log_snippet": "Need to save model, optimizer, scheduler, and current epoch.",
+    "gold_answer": "Use torch.save({'model': model.state_dict(), 'optimizer': optimizer.state_dict(), 'scheduler': scheduler.state_dict(), 'epoch': epoch}, path). Restore with torch.load and load_state_dict.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_046",
+    "query": "How can gradient checkpointing reduce memory during training?",
+    "image_path": "data/benchmark/images/ex_046_checkpointing.png",
+    "log_snippet": "Training BERT-Large with batch_size=8, OOMing at layer 18.",
+    "gold_answer": "torch.utils.checkpoint.checkpoint(fn, *inputs) saves memory by not storing all intermediate activations. Only the outputs of checkpointed segments are kept; activations are recomputed on backward.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_047",
+    "query": "Why does torch.load give a security warning?",
+    "image_path": "data/benchmark/images/ex_047_checkpointing.png",
+    "log_snippet": "FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.",
+    "gold_answer": "From PyTorch 2.0+, torch.load warns if weights_only=False. Set weights_only=True when loading model checkpoints from untrusted sources to avoid arbitrary code execution.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_048",
+    "query": "Why does torch.compile break on my custom module?",
+    "image_path": "data/benchmark/images/ex_048_torch_compile.png",
+    "log_snippet": "Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.",
+    "gold_answer": "torch.compile breaks graphs at Python operations it cannot capture: dynamic control flow, in-place mutations, or unsupported Python builtins. Simplify the forward pass or use torch.compile(dynamic=True).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "torch_compile",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_049",
+    "query": "How do I use torch.compile only on part of my model?",
+    "image_path": "data/benchmark/images/ex_049_torch_compile.png",
+    "log_snippet": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "gold_answer": "Call torch.compile on a submodule: self.encoder = torch.compile(self.encoder). The rest of the model runs in eager mode. Use fullgraph=False to allow graph breaks in compiled parts.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "torch_compile",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_050",
+    "query": "Why do I need model.eval() during validation?",
+    "image_path": "data/benchmark/images/ex_050_general.png",
+    "log_snippet": "Validation accuracy drops from 88% to 76% when I forget model.eval().",
+    "gold_answer": "model.eval() switches Dropout (off) and BatchNorm (use running stats) to inference behavior. Not calling it during validation means Dropout randomly zeros activations and BatchNorm uses batch stats.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_051",
+    "query": "Why does torch.no_grad reduce inference memory?",
+    "image_path": "data/benchmark/images/ex_051_general.png",
+    "log_snippet": "GPU memory: 4.2 GB with gradients, 2.1 GB with torch.no_grad().",
+    "gold_answer": "torch.no_grad disables gradient tracking, so PyTorch does not store intermediate activations for backward. This roughly halves memory during inference-only forward passes.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
       "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
     ],
     "gold_chunk_ids": [],
@@ -676,24 +725,116 @@
     "difficulty": "medium"
   },
   {
-    "id": "ex_051",
-    "query": "Why does memory_reserved stay high after tensors are deleted?",
-    "image_path": null,
-    "log_snippet": "Why does memory_reserved stay high after tensors are deleted?",
-    "gold_answer": "PyTorch uses a CUDA caching allocator. Freed tensor memory may remain reserved by PyTorch for reuse even though it is no longer allocated to active tensors.",
+    "id": "ex_052",
+    "query": "How do I make PyTorch training fully reproducible?",
+    "image_path": "data/benchmark/images/ex_052_general.png",
+    "log_snippet": "Results differ across runs even after torch.manual_seed(42).",
+    "gold_answer": "Seed torch, cuda, numpy, and python random. Set torch.backends.cudnn.deterministic=True and benchmark=False. Seed DataLoader workers with worker_init_fn. Note: some ops remain non-deterministic.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/cuda.html"
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_053",
+    "query": "When should I use torch.inference_mode instead of torch.no_grad?",
+    "image_path": "data/benchmark/images/ex_053_general.png",
+    "log_snippet": "Inference-only forward pass — want maximum memory savings.",
+    "gold_answer": "torch.inference_mode is a stricter version of no_grad that also disables version counter tracking and view recording. Use it for inference — it is slightly faster and saves more memory.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_054",
+    "query": "How do I move a model and all its parameters to GPU?",
+    "image_path": "data/benchmark/images/ex_054_general.png",
+    "log_snippet": "RuntimeError: Expected all tensors to be on the same device, but found at least two devices.",
+    "gold_answer": "Call model.to('cuda') or model.cuda() once to move all parameters. Then ensure input tensors are also on CUDA with tensor.to('cuda') before the forward pass.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_055",
+    "query": "How do I debug NaN loss during training?",
+    "image_path": "data/benchmark/images/ex_055_general.png",
+    "log_snippet": "Loss becomes nan at step 234. No NaN in inputs.",
+    "gold_answer": "Enable torch.autograd.set_detect_anomaly(True) to pinpoint where NaN first appears. Common causes: exploding gradients (use clipping), log(0) in loss, or division by zero.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_056",
+    "query": "Why does memory usage grow across epochs even after del and empty_cache (variant)?",
+    "image_path": "data/benchmark/images/ex_056_cuda_memory.png",
+    "log_snippet": "Epoch 1: reserved=4 GB. Epoch 2: reserved=5.2 GB. Epoch 3: reserved=6.1 GB.",
+    "gold_answer": "Memory leaks often come from accumulating tensors in a list (e.g. for logging), storing gradients unnecessarily, or not detaching from the computation graph. Use .detach().item() when logging scalars.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
     ],
     "gold_chunk_ids": [],
     "category": "cuda_memory",
     "difficulty": "hard"
   },
   {
-    "id": "ex_052",
-    "query": "Why can mixed precision training produce NaNs?",
-    "image_path": null,
-    "log_snippet": "Why can mixed precision training produce NaNs?",
-    "gold_answer": "Some operations or losses can overflow or underflow in lower precision. GradScaler and autocast help, but numerically sensitive operations may need float32.",
+    "id": "ex_057",
+    "query": "How do I enable automatic mixed precision training (variant)?",
+    "image_path": "data/benchmark/images/ex_057_amp.png",
+    "log_snippet": "I want to use fp16 to speed up training and reduce memory.",
+    "gold_answer": "Wrap the forward pass and loss in torch.autocast('cuda'). Use GradScaler to scale the loss before backward and call scaler.step(optimizer) then scaler.update().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_058",
+    "query": "Why do I get NaN loss with mixed precision (variant)?",
+    "image_path": "data/benchmark/images/ex_058_amp.png",
+    "log_snippet": "loss=nan after epoch 1 with fp16 autocast enabled.",
+    "gold_answer": "Float16 can overflow or underflow. GradScaler helps by scaling up the loss before backward. For numerically sensitive ops (e.g. softmax, log), autocast keeps them in float32 automatically.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_059",
+    "query": "Why is GradScaler reducing the scale factor every step (variant)?",
+    "image_path": "data/benchmark/images/ex_059_amp.png",
+    "log_snippet": "GradScaler scale: 65536 → 32768 → 16384 → 8192 (decreasing each step)",
+    "gold_answer": "The scale factor drops when GradScaler detects inf/NaN in gradients. This means float16 is overflowing during backward. Check for large activation values or learning rate too high.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/amp.html"
     ],
@@ -702,11 +843,76 @@
     "difficulty": "hard"
   },
   {
-    "id": "ex_053",
-    "query": "Why should DataLoader workers not return CUDA tensors?",
-    "image_path": null,
-    "log_snippet": "Why should DataLoader workers not return CUDA tensors?",
-    "gold_answer": "The PyTorch docs generally recommend not returning CUDA tensors from multi-process DataLoader workers because CUDA multiprocessing has subtleties. Use pinned memory instead.",
+    "id": "ex_060",
+    "query": "Should I use bfloat16 or float16 for mixed precision (variant)?",
+    "image_path": "data/benchmark/images/ex_060_amp.png",
+    "log_snippet": "Training on A100 GPU, getting NaN with fp16.",
+    "gold_answer": "bfloat16 has a wider exponent range than float16, making it more numerically stable on A100/H100 GPUs. Use torch.autocast('cuda', dtype=torch.bfloat16) if your hardware supports it.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_061",
+    "query": "Why do I still need GradScaler if I use autocast (variant)?",
+    "image_path": "data/benchmark/images/ex_061_amp.png",
+    "log_snippet": "Code uses torch.autocast but loss.backward() gives underflow warnings.",
+    "gold_answer": "autocast selects lower precision for forward ops. GradScaler prevents gradient underflow during backward by scaling the loss up before backward and unscaling before optimizer.step().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_062",
+    "query": "How do I use mixed precision with a custom loss function (variant)?",
+    "image_path": "data/benchmark/images/ex_062_amp.png",
+    "log_snippet": "Custom loss class with matrix inverse causes NaN in fp16.",
+    "gold_answer": "Operations like matrix inverse are numerically sensitive in float16. Keep them in float32 by using .float() inside the critical section or wrapping them with torch.autocast(enabled=False).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_063",
+    "query": "What does num_workers do in PyTorch DataLoader (variant)?",
+    "image_path": "data/benchmark/images/ex_063_dataloader.png",
+    "log_snippet": "DataLoader(dataset, batch_size=64, num_workers=0) — GPU utilization: 20%",
+    "gold_answer": "num_workers controls how many subprocesses load batches in parallel. num_workers=0 uses the main process. Increasing it can improve throughput when preprocessing is CPU-bound.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_064",
+    "query": "How do I fix the DataLoader bus error due to shared memory (variant)?",
+    "image_path": "data/benchmark/images/ex_064_dataloader.png",
+    "log_snippet": "RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).",
+    "gold_answer": "Insufficient /dev/shm is common in Docker containers. Reduce num_workers or batch_size, set pin_memory=False, or increase container shm_size.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_065",
+    "query": "Why should DataLoader workers not return CUDA tensors (variant)?",
+    "image_path": "data/benchmark/images/ex_065_dataloader.png",
+    "log_snippet": "Dataset.__getitem__ does .cuda() before returning. Workers hang.",
+    "gold_answer": "CUDA has subtle multiprocessing rules. Worker processes can conflict over CUDA context initialization. Return CPU tensors from __getitem__ and move them to GPU in the training loop.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/data.html"
     ],
@@ -715,12 +921,124 @@
     "difficulty": "hard"
   },
   {
-    "id": "ex_054",
-    "query": "How do I use AdamW in PyTorch?",
-    "image_path": null,
-    "log_snippet": "How do I use AdamW in PyTorch?",
-    "gold_answer": "Use torch.optim.AdamW with model parameters, learning rate, and weight_decay. AdamW decouples weight decay from gradient-based parameter updates.",
+    "id": "ex_066",
+    "query": "What does pin_memory=True do and when should I use it (variant)?",
+    "image_path": "data/benchmark/images/ex_066_dataloader.png",
+    "log_snippet": "Training with GPU but data transfer is slow.",
+    "gold_answer": "pin_memory=True allocates tensors in page-locked host memory, enabling faster async CPU-to-GPU transfers. Use it with CUDA training when data loading is a bottleneck.",
     "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_067",
+    "query": "What does persistent_workers=True do (variant)?",
+    "image_path": "data/benchmark/images/ex_067_dataloader.png",
+    "log_snippet": "DataLoader spends time reinitializing workers at the start of each epoch.",
+    "gold_answer": "persistent_workers=True keeps worker processes alive between epochs, avoiding the overhead of spawning and initializing them each epoch. Useful when worker startup is slow.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_068",
+    "query": "Why does my validation DataLoader shuffle=True hurt reproducibility (variant)?",
+    "image_path": "data/benchmark/images/ex_068_dataloader.png",
+    "log_snippet": "Validation metrics change between runs even with torch.manual_seed.",
+    "gold_answer": "shuffle=True in the DataLoader uses a random sampler. For reproducible validation, set shuffle=False. Use shuffle only for training to help the optimizer generalize.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_069",
+    "query": "Why does BatchNorm fail with batch size 1 (variant)?",
+    "image_path": "data/benchmark/images/ex_069_batch_norm.png",
+    "log_snippet": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "gold_answer": "BatchNorm needs enough values per channel to estimate meaningful statistics during training. Use a larger batch or switch to GroupNorm, LayerNorm, or InstanceNorm for small batches.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_070",
+    "query": "Why does model accuracy drop when I call model.eval() (variant)?",
+    "image_path": "data/benchmark/images/ex_070_batch_norm.png",
+    "log_snippet": "Train acc: 92%, Val acc: 74% after calling model.eval().",
+    "gold_answer": "In training mode, BatchNorm uses batch statistics. In eval mode, it uses running_mean and running_var accumulated during training. If these diverge, performance drops.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_071",
+    "query": "When should I use GroupNorm instead of BatchNorm (variant)?",
+    "image_path": "data/benchmark/images/ex_071_batch_norm.png",
+    "log_snippet": "Small batch size (2-4) because of large 3D medical images.",
+    "gold_answer": "GroupNorm divides channels into groups and normalizes within each group independently of batch size. It is more stable than BatchNorm when batch sizes are very small.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_072",
+    "query": "How do I freeze BatchNorm layers during fine-tuning (variant)?",
+    "image_path": "data/benchmark/images/ex_072_batch_norm.png",
+    "log_snippet": "Fine-tuning pretrained ResNet — BatchNorm statistics shifting.",
+    "gold_answer": "Call model.eval() on the specific BatchNorm modules, or set their track_running_stats=False. This keeps running statistics fixed during fine-tuning.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_073",
+    "query": "How do I clip exploding gradients in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_073_optimizer.png",
+    "log_snippet": "grad_norm=948.2 at step 150, loss→nan at step 151.",
+    "gold_answer": "Call torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) after loss.backward() and before optimizer.step(). This limits gradient norm to prevent divergence.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_074",
+    "query": "What is the correct order for optimizer.step and scheduler.step (variant)?",
+    "image_path": "data/benchmark/images/ex_074_optimizer.png",
+    "log_snippet": "UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.",
+    "gold_answer": "Call optimizer.step() first to update parameters, then scheduler.step() to update the learning rate. Reversing this order causes PyTorch to skip the optimizer update and warns you.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
       "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
     ],
     "gold_chunk_ids": [],
@@ -728,26 +1046,101 @@
     "difficulty": "medium"
   },
   {
-    "id": "ex_055",
-    "query": "How do I resume optimizer state from a checkpoint?",
-    "image_path": null,
-    "log_snippet": "How do I resume optimizer state from a checkpoint?",
-    "gold_answer": "Save optimizer.state_dict() with torch.save and restore it with optimizer.load_state_dict() when resuming training.",
+    "id": "ex_075",
+    "query": "How do I restore optimizer state when resuming from a checkpoint (variant)?",
+    "image_path": "data/benchmark/images/ex_075_optimizer.png",
+    "log_snippet": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "gold_answer": "Save both model.state_dict() and optimizer.state_dict() with torch.save. On resume, call optimizer.load_state_dict(checkpoint['optimizer']) before training continues.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/optim.html",
-      "https://pytorch.org/docs/stable/notes/serialization.html"
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
     ],
     "gold_chunk_ids": [],
     "category": "optimizer",
     "difficulty": "hard"
   },
   {
-    "id": "ex_056",
-    "query": "When should I use bfloat16 instead of float16?",
-    "image_path": null,
-    "log_snippet": "When should I use bfloat16 instead of float16?",
-    "gold_answer": "bfloat16 has a wider exponent range than float16 and can be more numerically stable on supported hardware, while still reducing memory and bandwidth.",
+    "id": "ex_076",
+    "query": "How do I use AdamW with weight decay in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_076_optimizer.png",
+    "log_snippet": "Using Adam but want proper weight decay without L2 coupling.",
+    "gold_answer": "Use torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=0.01). AdamW decouples weight decay from the gradient update, unlike Adam with L2 regularization.",
     "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_077",
+    "query": "How do I zero gradients correctly in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_077_optimizer.png",
+    "log_snippet": "Gradient accumulation across two micro-batches is giving wrong results.",
+    "gold_answer": "Call optimizer.zero_grad() before each macro-batch. For gradient accumulation, zero only every N steps. Pass set_to_none=True to reduce memory operations.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_078",
+    "query": "How do I apply different learning rates to different layer groups (variant)?",
+    "image_path": "data/benchmark/images/ex_078_optimizer.png",
+    "log_snippet": "Want lr=1e-5 for pretrained layers and lr=1e-3 for the classifier head.",
+    "gold_answer": "Pass a list of parameter groups to the optimizer: optimizer = Adam([{'params': backbone.parameters(), 'lr': 1e-5}, {'params': head.parameters(), 'lr': 1e-3}])",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_079",
+    "query": "Why do I get expected scalar type Float but found Half error (variant)?",
+    "image_path": "data/benchmark/images/ex_079_dtype.png",
+    "log_snippet": "RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'",
+    "gold_answer": "Model parameters and input tensors are using different dtypes. Cast inputs to float32 with .float() or cast the model to float16 with model.half() to make them consistent.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_080",
+    "query": "Why does CrossEntropyLoss complain about the target dtype (variant)?",
+    "image_path": "data/benchmark/images/ex_080_dtype.png",
+    "log_snippet": "RuntimeError: expected scalar type Long but found Float for argument 'target'",
+    "gold_answer": "CrossEntropyLoss expects integer class indices (Long dtype) for the target. Cast labels with labels.long() before passing them to the loss function.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_081",
+    "query": "When should I prefer bfloat16 over float16 (variant)?",
+    "image_path": "data/benchmark/images/ex_081_dtype.png",
+    "log_snippet": "Training on H100 — float16 gets NaN after 100 steps, bfloat16 is stable.",
+    "gold_answer": "bfloat16 has the same exponent range as float32 (8 bits), making it numerically stable for gradients. float16 has only 5 exponent bits and is more prone to overflow. Use bf16 on A100/H100.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
       "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
@@ -755,25 +1148,102 @@
     "difficulty": "hard"
   },
   {
-    "id": "ex_057",
-    "query": "Why must all DDP processes call backward consistently?",
-    "image_path": null,
-    "log_snippet": "Why must all DDP processes call backward consistently?",
-    "gold_answer": "DistributedDataParallel synchronizes gradients across processes. If processes take different control-flow paths and do not participate in expected collectives, training may hang or error.",
+    "id": "ex_082",
+    "query": "How do I create a tensor with a specific dtype and device (variant)?",
+    "image_path": "data/benchmark/images/ex_082_dtype.png",
+    "log_snippet": "Need a zeros tensor of type float16 on GPU without creating it on CPU first.",
+    "gold_answer": "Use torch.zeros(size, dtype=torch.float16, device='cuda') to create directly on the target device and dtype. Avoids an unnecessary CPU-to-GPU copy.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html"
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_083",
+    "query": "Why does DistributedDataParallel hang at init_process_group (variant)?",
+    "image_path": "data/benchmark/images/ex_083_distributed.png",
+    "log_snippet": "DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.",
+    "gold_answer": "All ranks must call init_process_group. If one rank fails or never reaches the call, the others block. Check that all processes use the same init_method, world_size, and backend.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_084",
+    "query": "How do I fix NCCL unhandled system error in DDP (variant)?",
+    "image_path": "data/benchmark/images/ex_084_distributed.png",
+    "log_snippet": "RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2",
+    "gold_answer": "NCCL errors typically come from networking, GPU visibility, or rank configuration. Check NCCL_SOCKET_IFNAME, firewall rules, and that all GPUs are visible. Verify world_size matches the number of processes.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
     ],
     "gold_chunk_ids": [],
     "category": "distributed",
     "difficulty": "hard"
   },
   {
-    "id": "ex_058",
-    "query": "What does scaled dot product attention compute?",
-    "image_path": null,
-    "log_snippet": "What does scaled dot product attention compute?",
-    "gold_answer": "Scaled dot product attention computes attention weights from query-key similarity, applies softmax, and uses those weights to combine value vectors.",
+    "id": "ex_085",
+    "query": "When should I use DistributedSampler with DDP (variant)?",
+    "image_path": "data/benchmark/images/ex_085_distributed.png",
+    "log_snippet": "DDP training but all ranks see identical batches.",
+    "gold_answer": "Use DistributedSampler(dataset, num_replicas=world_size, rank=rank) to partition data across ranks. Call sampler.set_epoch(epoch) each epoch to re-shuffle consistently.",
     "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_086",
+    "query": "Why must all DDP processes enter the same collective operations (variant)?",
+    "image_path": "data/benchmark/images/ex_086_distributed.png",
+    "log_snippet": "DDP deadlock when rank 0 and rank 1 take different if-else branches.",
+    "gold_answer": "DDP synchronizes gradients via allreduce collectives. If ranks take different code paths and don't all call the same collective, the job deadlocks. Keep control flow symmetric across ranks.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_087",
+    "query": "Which backend should I use for GPU distributed training (variant)?",
+    "image_path": "data/benchmark/images/ex_087_distributed.png",
+    "log_snippet": "Starting DDP training on 8 NVIDIA A100 GPUs.",
+    "gold_answer": "Use NCCL as the backend for GPU distributed training — it is optimized for NVIDIA GPUs. Gloo is the fallback for CPU distributed training.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_088",
+    "query": "What does scaled dot product attention compute (variant)?",
+    "image_path": "data/benchmark/images/ex_088_architecture.png",
+    "log_snippet": "Implementing attention manually — need to match PyTorch's SDPA output.",
+    "gold_answer": "SDPA computes: softmax(Q @ K.T / sqrt(d_k)) @ V. Query-key similarities are scaled by 1/sqrt(d_k) before softmax to prevent gradient vanishing in high-dimension spaces.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
       "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
     ],
     "gold_chunk_ids": [],
@@ -781,39 +1251,87 @@
     "difficulty": "medium"
   },
   {
-    "id": "ex_059",
-    "query": "What is MultiheadAttention in PyTorch?",
-    "image_path": null,
-    "log_snippet": "What is MultiheadAttention in PyTorch?",
-    "gold_answer": "MultiheadAttention jointly attends to information from different representation subspaces using multiple attention heads.",
+    "id": "ex_089",
+    "query": "What is MultiheadAttention used for in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_089_architecture.png",
+    "log_snippet": "nn.MultiheadAttention(embed_dim=768, num_heads=12) — need to understand output shape.",
+    "gold_answer": "MultiheadAttention jointly attends to information from multiple representation subspaces using parallel attention heads. Output shape is (seq_len, batch, embed_dim) by default.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html"
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
     ],
     "gold_chunk_ids": [],
     "category": "architecture",
     "difficulty": "medium"
   },
   {
-    "id": "ex_060",
-    "query": "My config uses lr=10.0 for AdamW. Why is training unstable?",
-    "image_path": null,
-    "log_snippet": "My config uses lr=10.0 for AdamW. Why is training unstable?",
-    "gold_answer": "An excessively large learning rate can cause unstable optimization. AdamW still requires an appropriate learning rate and scheduler for the task.",
+    "id": "ex_090",
+    "query": "How do I add a causal mask to MultiheadAttention for a decoder (variant)?",
+    "image_path": "data/benchmark/images/ex_090_architecture.png",
+    "log_snippet": "Decoder attends to future tokens — need to mask them out.",
+    "gold_answer": "Pass attn_mask to MultiheadAttention. A causal mask is a boolean upper-triangular matrix where True positions are ignored. Use torch.nn.Transformer.generate_square_subsequent_mask(seq_len).",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html",
-      "https://pytorch.org/docs/stable/optim.html"
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_091",
+    "query": "Why is a batch_size of 512 on one GPU causing out-of-memory (variant)?",
+    "image_path": "data/benchmark/images/ex_091_config.png",
+    "log_snippet": "batch_size: 512\nprecision: float32\nimage_size: 1024\nGPU: V100 16GB",
+    "gold_answer": "batch_size=512 with float32 and 1024×1024 images exceeds 16GB VRAM. Reduce batch_size, enable mixed precision (fp16/bf16), or use gradient accumulation.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "config",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_092",
+    "query": "Why is GPU utilization only 20% with num_workers=0 (variant)?",
+    "image_path": "data/benchmark/images/ex_092_config.png",
+    "log_snippet": "num_workers: 0\ngpu_utilization: 18%\nbatch_size: 64",
+    "gold_answer": "With num_workers=0, data loading runs in the main process and stalls the GPU while preprocessing. Increase num_workers to 4-8 to load data in parallel with GPU computation.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
     "category": "config",
     "difficulty": "medium"
   },
   {
-    "id": "ex_061",
-    "query": "My config enables fp16 but disables GradScaler. What is the risk?",
-    "image_path": null,
-    "log_snippet": "My config enables fp16 but disables GradScaler. What is the risk?",
-    "gold_answer": "Float16 gradients may underflow without gradient scaling. GradScaler is recommended for typical float16 mixed precision training.",
+    "id": "ex_093",
+    "query": "My config enables fp16 but not GradScaler. What is the risk (variant)?",
+    "image_path": "data/benchmark/images/ex_093_config.png",
+    "log_snippet": "fp16: true\nuse_grad_scaler: false\nlearning_rate: 0.001",
+    "gold_answer": "Without GradScaler, float16 gradients may underflow to zero during backward. GradScaler multiplies the loss by a scale factor before backward to keep gradients in the float16 representable range.",
     "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "config",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_094",
+    "query": "Why is lr=10.0 causing unstable training in my config (variant)?",
+    "image_path": "data/benchmark/images/ex_094_config.png",
+    "log_snippet": "learning_rate: 10.0\noptimizer: adamw\nwarmup_steps: 0",
+    "gold_answer": "A learning rate of 10.0 is extremely large for AdamW. Typical values range from 1e-5 to 1e-3. A large LR causes the optimizer to overshoot minima, producing NaN or diverging loss.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
       "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
@@ -821,50 +1339,276 @@
     "difficulty": "hard"
   },
   {
-    "id": "ex_062",
-    "query": "Why does torch.no_grad reduce memory during inference?",
-    "image_path": null,
-    "log_snippet": "Why does torch.no_grad reduce memory during inference?",
-    "gold_answer": "torch.no_grad disables gradient calculation, reducing memory consumption because intermediate activations do not need to be saved for backward.",
+    "id": "ex_095",
+    "query": "How should I save a complete training checkpoint (variant)?",
+    "image_path": "data/benchmark/images/ex_095_checkpointing.png",
+    "log_snippet": "Need to save model, optimizer, scheduler, and current epoch.",
+    "gold_answer": "Use torch.save({'model': model.state_dict(), 'optimizer': optimizer.state_dict(), 'scheduler': scheduler.state_dict(), 'epoch': epoch}, path). Restore with torch.load and load_state_dict.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.no_grad.html"
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
     ],
     "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "hard"
-  },
-  {
-    "id": "ex_063",
-    "query": "When should I use torch.inference_mode instead of no_grad?",
-    "image_path": null,
-    "log_snippet": "When should I use torch.inference_mode instead of no_grad?",
-    "gold_answer": "torch.inference_mode disables autograd and additional view/version tracking overhead, making it useful for inference-only workloads.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
+    "category": "checkpointing",
     "difficulty": "medium"
   },
   {
-    "id": "ex_064",
-    "query": "How can gradient checkpointing reduce memory usage?",
-    "image_path": null,
-    "log_snippet": "How can gradient checkpointing reduce memory usage?",
-    "gold_answer": "Gradient checkpointing trades compute for memory by not storing all intermediate activations during forward and recomputing them during backward.",
+    "id": "ex_096",
+    "query": "How can gradient checkpointing reduce memory during training (variant)?",
+    "image_path": "data/benchmark/images/ex_096_checkpointing.png",
+    "log_snippet": "Training BERT-Large with batch_size=8, OOMing at layer 18.",
+    "gold_answer": "torch.utils.checkpoint.checkpoint(fn, *inputs) saves memory by not storing all intermediate activations. Only the outputs of checkpointed segments are kept; activations are recomputed on backward.",
     "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
       "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_097",
+    "query": "Why does torch.load give a security warning (variant)?",
+    "image_path": "data/benchmark/images/ex_097_checkpointing.png",
+    "log_snippet": "FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.",
+    "gold_answer": "From PyTorch 2.0+, torch.load warns if weights_only=False. Set weights_only=True when loading model checkpoints from untrusted sources to avoid arbitrary code execution.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_098",
+    "query": "Why does torch.compile break on my custom module (variant)?",
+    "image_path": "data/benchmark/images/ex_098_torch_compile.png",
+    "log_snippet": "Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.",
+    "gold_answer": "torch.compile breaks graphs at Python operations it cannot capture: dynamic control flow, in-place mutations, or unsupported Python builtins. Simplify the forward pass or use torch.compile(dynamic=True).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "torch_compile",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_099",
+    "query": "How do I use torch.compile only on part of my model (variant)?",
+    "image_path": "data/benchmark/images/ex_099_torch_compile.png",
+    "log_snippet": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "gold_answer": "Call torch.compile on a submodule: self.encoder = torch.compile(self.encoder). The rest of the model runs in eager mode. Use fullgraph=False to allow graph breaks in compiled parts.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "torch_compile",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_100",
+    "query": "Why do I need model.eval() during validation (variant)?",
+    "image_path": "data/benchmark/images/ex_100_general.png",
+    "log_snippet": "Validation accuracy drops from 88% to 76% when I forget model.eval().",
+    "gold_answer": "model.eval() switches Dropout (off) and BatchNorm (use running stats) to inference behavior. Not calling it during validation means Dropout randomly zeros activations and BatchNorm uses batch stats.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_101",
+    "query": "Why is my training crashing with CUDA out of memory (variant)?",
+    "image_path": "data/benchmark/images/ex_101_cuda_memory.png",
+    "log_snippet": "RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB.\nGPU 0 has 10.76 GiB total; 8.45 GiB already allocated; 1.23 GiB free.",
+    "gold_answer": "The training job is exceeding available CUDA memory. Reduce batch size, enable mixed precision (autocast + GradScaler), use gradient checkpointing, or reduce model/input size.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_102",
+    "query": "Why does memory_reserved stay high after I delete my tensors (variant)?",
+    "image_path": "data/benchmark/images/ex_102_cuda_memory.png",
+    "log_snippet": "After del tensor and torch.cuda.empty_cache():\nmemory_allocated=0.3 GB, memory_reserved=8.9 GB",
+    "gold_answer": "PyTorch uses a CUDA caching allocator. Deleted tensors free allocated memory, but reserved blocks may stay for reuse. empty_cache() releases unused cached memory to the OS.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
     ],
     "gold_chunk_ids": [],
     "category": "cuda_memory",
     "difficulty": "medium"
   },
   {
-    "id": "ex_065",
-    "query": "What does persistent_workers=True do?",
-    "image_path": null,
-    "log_snippet": "What does persistent_workers=True do?",
-    "gold_answer": "persistent_workers keeps DataLoader worker processes alive after one epoch, avoiding worker startup cost in later epochs.",
+    "id": "ex_103",
+    "query": "How do I measure peak GPU memory during one training step (variant)?",
+    "image_path": "data/benchmark/images/ex_103_cuda_memory.png",
+    "log_snippet": "I need to compare peak memory before and after the forward/backward pass.",
+    "gold_answer": "Use torch.cuda.reset_peak_memory_stats() before the step, then read torch.cuda.max_memory_allocated() after. This isolates the memory footprint of exactly one iteration.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_104",
+    "query": "How does gradient checkpointing reduce GPU memory (variant)?",
+    "image_path": "data/benchmark/images/ex_104_cuda_memory.png",
+    "log_snippet": "Training ResNet-50 with batch_size=128 OOMs. Tried reducing to 64 but still too large.",
+    "gold_answer": "torch.utils.checkpoint.checkpoint() trades compute for memory by not storing all intermediate activations during forward. They are recomputed during backward.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_105",
+    "query": "What does torch.cuda.empty_cache actually do (variant)?",
+    "image_path": "data/benchmark/images/ex_105_cuda_memory.png",
+    "log_snippet": "After empty_cache() GPU memory still shows 6 GB used by other processes.",
+    "gold_answer": "empty_cache() releases unused cached memory held by PyTorch's allocator so other applications can use it. It does not free actively allocated tensors.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_106",
+    "query": "Why does memory usage grow across epochs even after del and empty_cache (variant)?",
+    "image_path": "data/benchmark/images/ex_106_cuda_memory.png",
+    "log_snippet": "Epoch 1: reserved=4 GB. Epoch 2: reserved=5.2 GB. Epoch 3: reserved=6.1 GB.",
+    "gold_answer": "Memory leaks often come from accumulating tensors in a list (e.g. for logging), storing gradients unnecessarily, or not detaching from the computation graph. Use .detach().item() when logging scalars.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.empty_cache.html",
+      "https://pytorch.org/docs/stable/generated/torch.cuda.max_memory_allocated.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "cuda_memory",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_107",
+    "query": "How do I enable automatic mixed precision training (variant)?",
+    "image_path": "data/benchmark/images/ex_107_amp.png",
+    "log_snippet": "I want to use fp16 to speed up training and reduce memory.",
+    "gold_answer": "Wrap the forward pass and loss in torch.autocast('cuda'). Use GradScaler to scale the loss before backward and call scaler.step(optimizer) then scaler.update().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_108",
+    "query": "Why do I get NaN loss with mixed precision (variant)?",
+    "image_path": "data/benchmark/images/ex_108_amp.png",
+    "log_snippet": "loss=nan after epoch 1 with fp16 autocast enabled.",
+    "gold_answer": "Float16 can overflow or underflow. GradScaler helps by scaling up the loss before backward. For numerically sensitive ops (e.g. softmax, log), autocast keeps them in float32 automatically.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_109",
+    "query": "Why is GradScaler reducing the scale factor every step (variant)?",
+    "image_path": "data/benchmark/images/ex_109_amp.png",
+    "log_snippet": "GradScaler scale: 65536 → 32768 → 16384 → 8192 (decreasing each step)",
+    "gold_answer": "The scale factor drops when GradScaler detects inf/NaN in gradients. This means float16 is overflowing during backward. Check for large activation values or learning rate too high.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_110",
+    "query": "Should I use bfloat16 or float16 for mixed precision (variant)?",
+    "image_path": "data/benchmark/images/ex_110_amp.png",
+    "log_snippet": "Training on A100 GPU, getting NaN with fp16.",
+    "gold_answer": "bfloat16 has a wider exponent range than float16, making it more numerically stable on A100/H100 GPUs. Use torch.autocast('cuda', dtype=torch.bfloat16) if your hardware supports it.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_111",
+    "query": "Why do I still need GradScaler if I use autocast (variant)?",
+    "image_path": "data/benchmark/images/ex_111_amp.png",
+    "log_snippet": "Code uses torch.autocast but loss.backward() gives underflow warnings.",
+    "gold_answer": "autocast selects lower precision for forward ops. GradScaler prevents gradient underflow during backward by scaling the loss up before backward and unscaling before optimizer.step().",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_112",
+    "query": "How do I use mixed precision with a custom loss function (variant)?",
+    "image_path": "data/benchmark/images/ex_112_amp.png",
+    "log_snippet": "Custom loss class with matrix inverse causes NaN in fp16.",
+    "gold_answer": "Operations like matrix inverse are numerically sensitive in float16. Keep them in float32 by using .float() inside the critical section or wrapping them with torch.autocast(enabled=False).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "amp",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_113",
+    "query": "What does num_workers do in PyTorch DataLoader (variant)?",
+    "image_path": "data/benchmark/images/ex_113_dataloader.png",
+    "log_snippet": "DataLoader(dataset, batch_size=64, num_workers=0) — GPU utilization: 20%",
+    "gold_answer": "num_workers controls how many subprocesses load batches in parallel. num_workers=0 uses the main process. Increasing it can improve throughput when preprocessing is CPU-bound.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_114",
+    "query": "How do I fix the DataLoader bus error due to shared memory (variant)?",
+    "image_path": "data/benchmark/images/ex_114_dataloader.png",
+    "log_snippet": "RuntimeError: DataLoader worker is killed by signal: Bus error (SIGBUS). Insufficient shared memory (shm).",
+    "gold_answer": "Insufficient /dev/shm is common in Docker containers. Reduce num_workers or batch_size, set pin_memory=False, or increase container shm_size.",
     "gold_source_urls": [
       "https://pytorch.org/docs/stable/data.html"
     ],
@@ -873,68 +1617,518 @@
     "difficulty": "medium"
   },
   {
-    "id": "ex_066",
-    "query": "How do I zero gradients correctly?",
-    "image_path": null,
-    "log_snippet": "How do I zero gradients correctly?",
-    "gold_answer": "Call optimizer.zero_grad() before backpropagating the next batch. set_to_none=True can reduce memory operations and may improve performance.",
+    "id": "ex_115",
+    "query": "Why should DataLoader workers not return CUDA tensors (variant)?",
+    "image_path": "data/benchmark/images/ex_115_dataloader.png",
+    "log_snippet": "Dataset.__getitem__ does .cuda() before returning. Workers hang.",
+    "gold_answer": "CUDA has subtle multiprocessing rules. Worker processes can conflict over CUDA context initialization. Return CPU tensors from __getitem__ and move them to GPU in the training loop.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.optim.Optimizer.zero_grad.html"
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_116",
+    "query": "What does pin_memory=True do and when should I use it (variant)?",
+    "image_path": "data/benchmark/images/ex_116_dataloader.png",
+    "log_snippet": "Training with GPU but data transfer is slow.",
+    "gold_answer": "pin_memory=True allocates tensors in page-locked host memory, enabling faster async CPU-to-GPU transfers. Use it with CUDA training when data loading is a bottleneck.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_117",
+    "query": "What does persistent_workers=True do (variant)?",
+    "image_path": "data/benchmark/images/ex_117_dataloader.png",
+    "log_snippet": "DataLoader spends time reinitializing workers at the start of each epoch.",
+    "gold_answer": "persistent_workers=True keeps worker processes alive between epochs, avoiding the overhead of spawning and initializing them each epoch. Useful when worker startup is slow.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_118",
+    "query": "Why does my validation DataLoader shuffle=True hurt reproducibility (variant)?",
+    "image_path": "data/benchmark/images/ex_118_dataloader.png",
+    "log_snippet": "Validation metrics change between runs even with torch.manual_seed.",
+    "gold_answer": "shuffle=True in the DataLoader uses a random sampler. For reproducible validation, set shuffle=False. Use shuffle only for training to help the optimizer generalize.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dataloader",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_119",
+    "query": "Why does BatchNorm fail with batch size 1 (variant)?",
+    "image_path": "data/benchmark/images/ex_119_batch_norm.png",
+    "log_snippet": "RuntimeError: Expected more than 1 value per channel when training, got input size torch.Size([1, 64, 1, 1])",
+    "gold_answer": "BatchNorm needs enough values per channel to estimate meaningful statistics during training. Use a larger batch or switch to GroupNorm, LayerNorm, or InstanceNorm for small batches.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_120",
+    "query": "Why does model accuracy drop when I call model.eval() (variant)?",
+    "image_path": "data/benchmark/images/ex_120_batch_norm.png",
+    "log_snippet": "Train acc: 92%, Val acc: 74% after calling model.eval().",
+    "gold_answer": "In training mode, BatchNorm uses batch statistics. In eval mode, it uses running_mean and running_var accumulated during training. If these diverge, performance drops.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_121",
+    "query": "When should I use GroupNorm instead of BatchNorm (variant)?",
+    "image_path": "data/benchmark/images/ex_121_batch_norm.png",
+    "log_snippet": "Small batch size (2-4) because of large 3D medical images.",
+    "gold_answer": "GroupNorm divides channels into groups and normalizes within each group independently of batch size. It is more stable than BatchNorm when batch sizes are very small.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_122",
+    "query": "How do I freeze BatchNorm layers during fine-tuning (variant)?",
+    "image_path": "data/benchmark/images/ex_122_batch_norm.png",
+    "log_snippet": "Fine-tuning pretrained ResNet — BatchNorm statistics shifting.",
+    "gold_answer": "Call model.eval() on the specific BatchNorm modules, or set their track_running_stats=False. This keeps running statistics fixed during fine-tuning.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.GroupNorm.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "batch_norm",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_123",
+    "query": "How do I clip exploding gradients in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_123_optimizer.png",
+    "log_snippet": "grad_norm=948.2 at step 150, loss→nan at step 151.",
+    "gold_answer": "Call torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) after loss.backward() and before optimizer.step(). This limits gradient norm to prevent divergence.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_124",
+    "query": "What is the correct order for optimizer.step and scheduler.step (variant)?",
+    "image_path": "data/benchmark/images/ex_124_optimizer.png",
+    "log_snippet": "UserWarning: Detected call of lr_scheduler.step() before optimizer.step(). Skipping optimizer.step.",
+    "gold_answer": "Call optimizer.step() first to update parameters, then scheduler.step() to update the learning rate. Reversing this order causes PyTorch to skip the optimizer update and warns you.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
     ],
     "gold_chunk_ids": [],
     "category": "optimizer",
     "difficulty": "medium"
   },
   {
-    "id": "ex_067",
-    "query": "How do I avoid dtype mismatch between labels and CrossEntropyLoss?",
-    "image_path": null,
-    "log_snippet": "How do I avoid dtype mismatch between labels and CrossEntropyLoss?",
-    "gold_answer": "CrossEntropyLoss expects class indices as long tensors for the target in the common classification case, while logits are floating point.",
+    "id": "ex_125",
+    "query": "How do I restore optimizer state when resuming from a checkpoint (variant)?",
+    "image_path": "data/benchmark/images/ex_125_optimizer.png",
+    "log_snippet": "Loaded model checkpoint but loss spikes from epoch 5 onward after resume.",
+    "gold_answer": "Save both model.state_dict() and optimizer.state_dict() with torch.save. On resume, call optimizer.load_state_dict(checkpoint['optimizer']) before training continues.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html"
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_126",
+    "query": "How do I use AdamW with weight decay in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_126_optimizer.png",
+    "log_snippet": "Using Adam but want proper weight decay without L2 coupling.",
+    "gold_answer": "Use torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=0.01). AdamW decouples weight decay from the gradient update, unlike Adam with L2 regularization.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_127",
+    "query": "How do I zero gradients correctly in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_127_optimizer.png",
+    "log_snippet": "Gradient accumulation across two micro-batches is giving wrong results.",
+    "gold_answer": "Call optimizer.zero_grad() before each macro-batch. For gradient accumulation, zero only every N steps. Pass set_to_none=True to reduce memory operations.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_128",
+    "query": "How do I apply different learning rates to different layer groups (variant)?",
+    "image_path": "data/benchmark/images/ex_128_optimizer.png",
+    "log_snippet": "Want lr=1e-5 for pretrained layers and lr=1e-3 for the classifier head.",
+    "gold_answer": "Pass a list of parameter groups to the optimizer: optimizer = Adam([{'params': backbone.parameters(), 'lr': 1e-5}, {'params': head.parameters(), 'lr': 1e-3}])",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/optim.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html",
+      "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "optimizer",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_129",
+    "query": "Why do I get expected scalar type Float but found Half error (variant)?",
+    "image_path": "data/benchmark/images/ex_129_dtype.png",
+    "log_snippet": "RuntimeError: expected scalar type Float but found Half for input argument #2 'mat2'",
+    "gold_answer": "Model parameters and input tensors are using different dtypes. Cast inputs to float32 with .float() or cast the model to float16 with model.half() to make them consistent.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_130",
+    "query": "Why does CrossEntropyLoss complain about the target dtype (variant)?",
+    "image_path": "data/benchmark/images/ex_130_dtype.png",
+    "log_snippet": "RuntimeError: expected scalar type Long but found Float for argument 'target'",
+    "gold_answer": "CrossEntropyLoss expects integer class indices (Long dtype) for the target. Cast labels with labels.long() before passing them to the loss function.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
     "category": "dtype",
     "difficulty": "medium"
   },
   {
-    "id": "ex_068",
-    "query": "How do I debug exploding gradients?",
-    "image_path": null,
-    "log_snippet": "How do I debug exploding gradients?",
-    "gold_answer": "Inspect gradient norms and use gradient clipping such as torch.nn.utils.clip_grad_norm_ before optimizer.step().",
+    "id": "ex_131",
+    "query": "When should I prefer bfloat16 over float16 (variant)?",
+    "image_path": "data/benchmark/images/ex_131_dtype.png",
+    "log_snippet": "Training on H100 — float16 gets NaN after 100 steps, bfloat16 is stable.",
+    "gold_answer": "bfloat16 has the same exponent range as float32 (8 bits), making it numerically stable for gradients. float16 has only 5 exponent bits and is more prone to overflow. Use bf16 on A100/H100.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html"
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
     ],
     "gold_chunk_ids": [],
-    "category": "general",
+    "category": "dtype",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_132",
+    "query": "How do I create a tensor with a specific dtype and device (variant)?",
+    "image_path": "data/benchmark/images/ex_132_dtype.png",
+    "log_snippet": "Need a zeros tensor of type float16 on GPU without creating it on CPU first.",
+    "gold_answer": "Use torch.zeros(size, dtype=torch.float16, device='cuda') to create directly on the target device and dtype. Avoids an unnecessary CPU-to-GPU copy.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/tensors.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "dtype",
     "difficulty": "medium"
   },
   {
-    "id": "ex_069",
-    "query": "How do I set random seeds in PyTorch?",
-    "image_path": null,
-    "log_snippet": "How do I set random seeds in PyTorch?",
-    "gold_answer": "Use torch.manual_seed and related random seeding utilities. For reproducibility with CUDA and DataLoader workers, additional deterministic settings may be needed.",
+    "id": "ex_133",
+    "query": "Why does DistributedDataParallel hang at init_process_group (variant)?",
+    "image_path": "data/benchmark/images/ex_133_distributed.png",
+    "log_snippet": "DDP job started on 4 GPUs. Rank 0 prints 'init done' but hangs forever.",
+    "gold_answer": "All ranks must call init_process_group. If one rank fails or never reaches the call, the others block. Check that all processes use the same init_method, world_size, and backend.",
     "gold_source_urls": [
-      "https://pytorch.org/docs/stable/notes/randomness.html"
-    ],
-    "gold_chunk_ids": [],
-    "category": "general",
-    "difficulty": "easy"
-  },
-  {
-    "id": "ex_070",
-    "query": "Which backend should I use for GPU distributed training?",
-    "image_path": null,
-    "log_snippet": "Which backend should I use for GPU distributed training?",
-    "gold_answer": "For CUDA GPU distributed training, NCCL is commonly the recommended backend; Gloo is often used for CPU training.",
-    "gold_source_urls": [
-      "https://pytorch.org/docs/stable/distributed.html"
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
     ],
     "gold_chunk_ids": [],
     "category": "distributed",
     "difficulty": "medium"
+  },
+  {
+    "id": "ex_134",
+    "query": "How do I fix NCCL unhandled system error in DDP (variant)?",
+    "image_path": "data/benchmark/images/ex_134_distributed.png",
+    "log_snippet": "RuntimeError: NCCL error in ncclAllReduce: unhandled system error, NCCL version 2.16.2",
+    "gold_answer": "NCCL errors typically come from networking, GPU visibility, or rank configuration. Check NCCL_SOCKET_IFNAME, firewall rules, and that all GPUs are visible. Verify world_size matches the number of processes.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_135",
+    "query": "When should I use DistributedSampler with DDP (variant)?",
+    "image_path": "data/benchmark/images/ex_135_distributed.png",
+    "log_snippet": "DDP training but all ranks see identical batches.",
+    "gold_answer": "Use DistributedSampler(dataset, num_replicas=world_size, rank=rank) to partition data across ranks. Call sampler.set_epoch(epoch) each epoch to re-shuffle consistently.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_136",
+    "query": "Why must all DDP processes enter the same collective operations (variant)?",
+    "image_path": "data/benchmark/images/ex_136_distributed.png",
+    "log_snippet": "DDP deadlock when rank 0 and rank 1 take different if-else branches.",
+    "gold_answer": "DDP synchronizes gradients via allreduce collectives. If ranks take different code paths and don't all call the same collective, the job deadlocks. Keep control flow symmetric across ranks.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_137",
+    "query": "Which backend should I use for GPU distributed training (variant)?",
+    "image_path": "data/benchmark/images/ex_137_distributed.png",
+    "log_snippet": "Starting DDP training on 8 NVIDIA A100 GPUs.",
+    "gold_answer": "Use NCCL as the backend for GPU distributed training — it is optimized for NVIDIA GPUs. Gloo is the fallback for CPU distributed training.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/distributed.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "https://pytorch.org/docs/stable/data.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "distributed",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_138",
+    "query": "What does scaled dot product attention compute (variant)?",
+    "image_path": "data/benchmark/images/ex_138_architecture.png",
+    "log_snippet": "Implementing attention manually — need to match PyTorch's SDPA output.",
+    "gold_answer": "SDPA computes: softmax(Q @ K.T / sqrt(d_k)) @ V. Query-key similarities are scaled by 1/sqrt(d_k) before softmax to prevent gradient vanishing in high-dimension spaces.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_139",
+    "query": "What is MultiheadAttention used for in PyTorch (variant)?",
+    "image_path": "data/benchmark/images/ex_139_architecture.png",
+    "log_snippet": "nn.MultiheadAttention(embed_dim=768, num_heads=12) — need to understand output shape.",
+    "gold_answer": "MultiheadAttention jointly attends to information from multiple representation subspaces using parallel attention heads. Output shape is (seq_len, batch, embed_dim) by default.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_140",
+    "query": "How do I add a causal mask to MultiheadAttention for a decoder (variant)?",
+    "image_path": "data/benchmark/images/ex_140_architecture.png",
+    "log_snippet": "Decoder attends to future tokens — need to mask them out.",
+    "gold_answer": "Pass attn_mask to MultiheadAttention. A causal mask is a boolean upper-triangular matrix where True positions are ignored. Use torch.nn.Transformer.generate_square_subsequent_mask(seq_len).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "architecture",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_141",
+    "query": "Why is a batch_size of 512 on one GPU causing out-of-memory (variant)?",
+    "image_path": "data/benchmark/images/ex_141_config.png",
+    "log_snippet": "batch_size: 512\nprecision: float32\nimage_size: 1024\nGPU: V100 16GB",
+    "gold_answer": "batch_size=512 with float32 and 1024×1024 images exceeds 16GB VRAM. Reduce batch_size, enable mixed precision (fp16/bf16), or use gradient accumulation.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "config",
+    "difficulty": "easy"
+  },
+  {
+    "id": "ex_142",
+    "query": "Why is GPU utilization only 20% with num_workers=0 (variant)?",
+    "image_path": "data/benchmark/images/ex_142_config.png",
+    "log_snippet": "num_workers: 0\ngpu_utilization: 18%\nbatch_size: 64",
+    "gold_answer": "With num_workers=0, data loading runs in the main process and stalls the GPU while preprocessing. Increase num_workers to 4-8 to load data in parallel with GPU computation.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "config",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_143",
+    "query": "My config enables fp16 but not GradScaler. What is the risk (variant)?",
+    "image_path": "data/benchmark/images/ex_143_config.png",
+    "log_snippet": "fp16: true\nuse_grad_scaler: false\nlearning_rate: 0.001",
+    "gold_answer": "Without GradScaler, float16 gradients may underflow to zero during backward. GradScaler multiplies the loss by a scale factor before backward to keep gradients in the float16 representable range.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "config",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_144",
+    "query": "Why is lr=10.0 causing unstable training in my config (variant)?",
+    "image_path": "data/benchmark/images/ex_144_config.png",
+    "log_snippet": "learning_rate: 10.0\noptimizer: adamw\nwarmup_steps: 0",
+    "gold_answer": "A learning rate of 10.0 is extremely large for AdamW. Typical values range from 1e-5 to 1e-3. A large LR causes the optimizer to overshoot minima, producing NaN or diverging loss.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/cuda.html",
+      "https://pytorch.org/docs/stable/data.html",
+      "https://pytorch.org/docs/stable/amp.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "config",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_145",
+    "query": "How should I save a complete training checkpoint (variant)?",
+    "image_path": "data/benchmark/images/ex_145_checkpointing.png",
+    "log_snippet": "Need to save model, optimizer, scheduler, and current epoch.",
+    "gold_answer": "Use torch.save({'model': model.state_dict(), 'optimizer': optimizer.state_dict(), 'scheduler': scheduler.state_dict(), 'epoch': epoch}, path). Restore with torch.load and load_state_dict.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_146",
+    "query": "How can gradient checkpointing reduce memory during training (variant)?",
+    "image_path": "data/benchmark/images/ex_146_checkpointing.png",
+    "log_snippet": "Training BERT-Large with batch_size=8, OOMing at layer 18.",
+    "gold_answer": "torch.utils.checkpoint.checkpoint(fn, *inputs) saves memory by not storing all intermediate activations. Only the outputs of checkpointed segments are kept; activations are recomputed on backward.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_147",
+    "query": "Why does torch.load give a security warning (variant)?",
+    "image_path": "data/benchmark/images/ex_147_checkpointing.png",
+    "log_snippet": "FutureWarning: You are using torch.load with weights_only=False. This can lead to arbitrary code execution.",
+    "gold_answer": "From PyTorch 2.0+, torch.load warns if weights_only=False. Set weights_only=True when loading model checkpoints from untrusted sources to avoid arbitrary code execution.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/notes/serialization.html",
+      "https://pytorch.org/docs/stable/checkpoint.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "checkpointing",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_148",
+    "query": "Why does torch.compile break on my custom module (variant)?",
+    "image_path": "data/benchmark/images/ex_148_torch_compile.png",
+    "log_snippet": "Graph break: unsupported Python operation inside model forward. torch._dynamo.exc.InternalTorchDynamoError.",
+    "gold_answer": "torch.compile breaks graphs at Python operations it cannot capture: dynamic control flow, in-place mutations, or unsupported Python builtins. Simplify the forward pass or use torch.compile(dynamic=True).",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "torch_compile",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ex_149",
+    "query": "How do I use torch.compile only on part of my model (variant)?",
+    "image_path": "data/benchmark/images/ex_149_torch_compile.png",
+    "log_snippet": "Want to compile the encoder but not the decoder due to dynamic shapes.",
+    "gold_answer": "Call torch.compile on a submodule: self.encoder = torch.compile(self.encoder). The rest of the model runs in eager mode. Use fullgraph=False to allow graph breaks in compiled parts.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/torch.compiler.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "torch_compile",
+    "difficulty": "hard"
+  },
+  {
+    "id": "ex_150",
+    "query": "Why do I need model.eval() during validation (variant)?",
+    "image_path": "data/benchmark/images/ex_150_general.png",
+    "log_snippet": "Validation accuracy drops from 88% to 76% when I forget model.eval().",
+    "gold_answer": "model.eval() switches Dropout (off) and BatchNorm (use running stats) to inference behavior. Not calling it during validation means Dropout randomly zeros activations and BatchNorm uses batch stats.",
+    "gold_source_urls": [
+      "https://pytorch.org/docs/stable/generated/torch.no_grad.html",
+      "https://pytorch.org/docs/stable/generated/torch.inference_mode.html",
+      "https://pytorch.org/docs/stable/notes/randomness.html",
+      "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"
+    ],
+    "gold_chunk_ids": [],
+    "category": "general",
+    "difficulty": "easy"
   }
 ]

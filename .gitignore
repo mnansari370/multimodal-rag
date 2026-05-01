@@ -156,3 +156,30 @@ data/embeddings/*
 # Keep benchmark JSON/images only if intentionally committed
 # data/benchmark/images/*
 # !data/benchmark/images/.gitkeep
+
+# Secrets
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs
+results/logs/*
+!results/logs/.gitkeep
+*.out
+*.err
+
+# Large generated data
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/embeddings/*
+!data/embeddings/.gitkeep
+
+# Local benchmark backups
+data/benchmark/*backup*.json

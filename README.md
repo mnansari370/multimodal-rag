@@ -220,11 +220,11 @@ End-to-end multimodal retrieval (e.g., CLIP indexes) would require a separate em
 
 ```
 .
-├── pipeline.py                   # End-to-end PipelineConfig + MultimodalRAGPipeline
 ├── configs/
 │   ├── pipeline.yaml             # Default config: hybrid + coverage pruning + Claude Haiku
 │   └── pipeline_claude.yaml
 ├── src/
+│   ├── pipeline.py               # End-to-end PipelineConfig + MultimodalRAGPipeline
 │   ├── ingestion/
 │   │   ├── downloader.py         # Crawls PyTorch docs sitemap, extracts structured content
 │   │   └── cleaner.py            # Filters boilerplate, normalizes whitespace

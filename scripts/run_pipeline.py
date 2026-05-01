@@ -17,7 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from pipeline import MultimodalRAGPipeline, PipelineConfig
+from src.pipeline import MultimodalRAGPipeline, PipelineConfig
 
 
 logging.basicConfig(level=logging.WARNING)

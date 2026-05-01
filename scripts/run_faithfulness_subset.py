@@ -25,7 +25,7 @@ import sys
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from pipeline import MultimodalRAGPipeline, PipelineConfig
+from src.pipeline import MultimodalRAGPipeline, PipelineConfig
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s — %(levelname)s — %(message)s")

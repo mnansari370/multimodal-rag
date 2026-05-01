@@ -6,8 +6,7 @@ and consistently outperforms linear score interpolation because it
 doesn't require tuning score weights — rank position alone drives the
 fusion.
 
-RRF formula: score(d) = Σ 1 / (k + rank(d))
-where k=60 is a standard smoothing constant.
+RRF formula:  score(d) = Σ  1 / (k + rank(d)),   k=60 standard constant.
 """
 
 import logging
@@ -32,13 +31,10 @@ def reciprocal_rank_fusion(
     Fuse multiple ranked lists using Reciprocal Rank Fusion.
 
     Args:
-        rankings: List of ranked result lists (each from a different retriever).
-        score_keys: Original score field names to preserve in the output.
-        id_key: Field used to identify the same chunk across lists.
+        rankings: Ranked result lists from different retrievers.
+        score_keys: Original score field names to preserve in output.
+        id_key: Field used to match the same chunk across lists.
         k: Smoothing constant (default 60).
-
-    Returns:
-        Merged list sorted by descending RRF score.
     """
     rrf_scores = defaultdict(float)
     chunk_store = {}
@@ -47,11 +43,9 @@ def reciprocal_rank_fusion(
         for rank, chunk in enumerate(ranked_list, start=1):
             cid = chunk[id_key]
             rrf_scores[cid] += 1.0 / (k + rank)
-            # Keep the most recently seen version (has all score fields)
             if cid not in chunk_store:
                 chunk_store[cid] = chunk
             else:
-                # Merge score fields from all retrievers
                 chunk_store[cid].update(
                     {sk: chunk[sk] for sk in score_keys if sk in chunk}
                 )
@@ -69,9 +63,9 @@ class HybridRetriever:
     """
     Combines BM25 and dense retrieval via RRF.
 
-    The hybrid approach almost always beats either retriever alone:
-    BM25 catches exact error strings and function names; dense retrieval
-    catches semantic matches when the user's wording differs from the docs.
+    BM25 catches exact error strings and function names; dense catches
+    semantic matches when the user's wording differs from the docs.
+    The hybrid almost always beats either retriever alone.
     """
 
     def __init__(
@@ -96,15 +90,7 @@ class HybridRetriever:
         bm25_candidates: int = 50,
         dense_candidates: int = 50,
     ) -> list[dict]:
-        """
-        Retrieve top_k chunks using RRF over BM25 + dense candidates.
-
-        Args:
-            query: The search query.
-            top_k: Number of final results to return.
-            bm25_candidates: How many results to pull from BM25 before fusion.
-            dense_candidates: How many results to pull from dense before fusion.
-        """
+        """Retrieve top_k chunks using RRF over BM25 + dense candidates."""
         bm25_results = self.bm25.search(query, top_k=bm25_candidates)
         dense_results = self.dense.search(query, top_k=dense_candidates)
 

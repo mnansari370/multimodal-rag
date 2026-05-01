@@ -1,9 +1,8 @@
 """
-Run the VLP (Vision-Language Parser) over all benchmark examples that
-have screenshots and save the structured outputs to a JSON file.
+Run the VLP (Vision-Language Parser) over all benchmark screenshots and
+cache the structured outputs to disk.
 
-This is the HPC job that runs Module 2 in batch mode. Running VLP once
-and caching the outputs means we can re-run downstream evaluation without
+Caching the outputs means downstream evaluations can re-run without
 re-calling the vision API every time.
 
 Output format (one entry per benchmark example):

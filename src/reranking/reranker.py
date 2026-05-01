@@ -19,14 +19,7 @@ DEFAULT_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
 
 class Reranker:
-    """
-    Cross-encoder reranker wrapping sentence-transformers CrossEncoder.
-
-    Usage:
-        reranker = Reranker()
-        candidates = hybrid_retriever.search(query, top_k=50)
-        reranked = reranker.rerank(query, candidates, top_k=10)
-    """
+    """Cross-encoder reranker wrapping sentence-transformers CrossEncoder."""
 
     def __init__(self, model_name: str = DEFAULT_MODEL):
         self.model_name = model_name
@@ -43,18 +36,7 @@ class Reranker:
         candidates: list[dict],
         top_k: int = 10,
     ) -> list[dict]:
-        """
-        Score each candidate with the cross-encoder and return top_k.
-
-        Args:
-            query: The user's (possibly reformulated) query.
-            candidates: List of chunk dicts from the retriever.
-            top_k: How many to return after reranking.
-
-        Returns:
-            Top_k chunks sorted by descending reranker score.
-            Each chunk gets a 'reranker_score' field added.
-        """
+        """Score each candidate with the cross-encoder, return top_k with 'reranker_score' added."""
         if not candidates:
             return []
 

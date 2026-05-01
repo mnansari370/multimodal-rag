@@ -1,12 +1,6 @@
 """
-Retriever ablation study.
-
-Compares BM25-only, dense-only, hybrid, and hybrid+reranker retrieval
-on the benchmark. This produces the left section of the main results
-table (Section 8 of the project report).
-
-Each experiment runs retrieval on every benchmark query and computes
-Recall@k, Hit@k, MRR, and nDCG@k against the gold source URLs.
+Retriever ablation — compares BM25-only, dense-only, hybrid, and hybrid+reranker
+on the benchmark. Computes Recall@k, Hit@k, MRR, and nDCG@k for each setting.
 
 Usage:
     python scripts/run_retriever_ablation.py
@@ -34,9 +28,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# Each experiment is (display_name, retriever_type, use_reranker).
-# This covers all rows of the ablation table except the full system
-# (which adds VLP, evaluated in run_pipeline.py / evaluate.py).
+# (name, retriever_type, use_reranker). VLP is off — isolated retriever comparison.
 EXPERIMENTS = [
     ("bm25_only",         "bm25",   False),
     ("dense_only",        "dense",  False),

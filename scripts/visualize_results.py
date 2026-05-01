@@ -1,7 +1,5 @@
 """
-Visualize evaluation results — generates the plots for the project report.
-
-Reads JSON result files from the results/ directory and produces:
+Visualize evaluation results — reads JSON files from results/ and produces:
   - Retrieval comparison bar chart (BM25 vs dense vs hybrid)
   - Ablation table heatmap (system components)
   - Efficiency tradeoff scatter plot (tokens vs faithfulness)

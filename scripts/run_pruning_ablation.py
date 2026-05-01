@@ -1,15 +1,9 @@
 """
-Context pruning ablation study.
+Context pruning ablation — measures how threshold, diversity, and MMR strategies
+affect prompt token count and retrieval-to-generation latency.
 
-Measures how different pruning strategies affect prompt token count,
-latency, and answer quality. This produces the efficiency table from
-Section 6.2 of the project report.
-
-All experiments use the same hybrid retrieval + reranking stack.
-Only the context-selection step changes across experiments.
-
-The ablation table shows:
-  Setting | Prompt tokens | Latency (s) | Faithfulness | Answer score
+All experiments share the same hybrid retrieval + reranking stack.
+Only the context-selection step changes.
 
 Usage:
     python scripts/run_pruning_ablation.py

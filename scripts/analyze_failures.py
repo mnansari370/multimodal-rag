@@ -1,18 +1,11 @@
 """
-Failure analysis script (Section 14 of the project report).
+Retrieval failure analysis — finds benchmark examples where the retriever
+misses the gold source and saves a candidate list for inspection.
 
-Finds benchmark examples where the retriever misses the gold source and
-saves a candidate list for manual inspection and write-up.
-
-The report says to document at least 5 failure cases with one paragraph
-each explaining what went wrong. This script finds the raw candidates;
-the write-up goes in the report / README.
-
-Common failure types this script flags:
-  1. Retriever finds topically related chunks but not the specific fix
-  2. Gold source was chunked in a way that separated the relevant part
-  3. The query terms are too vague for both BM25 and dense retrieval
-  4. The reformulated query over-emphasized the error code vs. the fix
+Common failure types flagged:
+  1. Correct page retrieved but relevant chunk was split differently
+  2. BM25 finds nothing (sparse query with no exact-match terms)
+  3. Query is too vague — both BM25 and dense return wrong topic
 
 Usage:
     python scripts/analyze_failures.py
@@ -179,8 +172,6 @@ def main():
         json.dump(top_failures, f, indent=2)
 
     logger.info("Saved top %d failure cases to %s", len(top_failures), output_path)
-    logger.info("")
-    logger.info("Next step: read %s and write one paragraph per case for the report.", output_path)
 
 
 if __name__ == "__main__":

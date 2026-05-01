@@ -1,3 +1,13 @@
+"""
+End-to-end evaluation — runs the full pipeline on the benchmark and reports
+retrieval metrics, answer quality (token F1, citation accuracy), and efficiency.
+
+Usage:
+    python scripts/evaluate.py
+    python scripts/evaluate.py --retrieval-only
+    python scripts/evaluate.py --max-examples 20 --no-ragas
+"""
+
 import sys
 import json
 import logging

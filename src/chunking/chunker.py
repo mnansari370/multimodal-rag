@@ -9,8 +9,6 @@ Two chunking strategies for documentation pages:
 2. Fixed-size chunking with overlap — classic sliding window over the
    full page text, useful as a comparison baseline.
 
-The project report specifically says to benchmark both strategies using
-Recall@10 before committing to one. This module makes that easy.
 """
 
 import json

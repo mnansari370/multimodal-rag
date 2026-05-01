@@ -1,17 +1,9 @@
 """
-Answer generator (Module 7 of the pipeline).
+Answer generator — takes a query and selected context chunks, produces
+a grounded answer with [Source N] citations.
 
-Takes the user's (reformulated) query and the selected context chunks,
-and produces a grounded answer with [Source N] citations.
-
-The generator is intentionally kept as a simple API call. The intelligence
-is in the retrieval, reranking, and context-selection stages that come
-before it — by the time we reach generation, the context should already
-contain the right information.
-
-Using the Anthropic API with Claude gives us accurate token counts from
-the API response itself (msg.usage.input_tokens), which is important for
-the efficiency ablation study in Section 6.2.
+The Anthropic API returns accurate token counts (msg.usage.input_tokens),
+which is what we use for efficiency tracking.
 """
 
 import os
@@ -22,8 +14,6 @@ from dataclasses import dataclass, field
 logger = logging.getLogger(__name__)
 
 
-# The system prompt tells the model to behave as a RAG assistant:
-# answer only from provided context, always cite sources, be concise.
 SYSTEM_PROMPT = """You are a PyTorch technical troubleshooting assistant.
 Your job is to diagnose and explain errors based on the provided documentation context.
 
@@ -55,24 +45,13 @@ class GeneratorOutput:
     answer: str
     sources: list = field(default_factory=list)
     model_name: str = ""
-    prompt_tokens: int = 0       # input tokens as reported by the API
-    completion_tokens: int = 0   # output tokens
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
     generation_time_s: float = 0.0
 
 
 class AnswerGenerator:
-    """
-    Module 7: Answer generator.
-
-    Wraps the Anthropic Claude API to produce cited answers from context.
-    Token counts come from the API usage response, which is accurate for
-    the efficiency ablation table.
-
-    Usage:
-        gen = AnswerGenerator()
-        out = gen.generate(query="Why is training crashing?", chunks=reranked_chunks)
-        print(out.answer)
-    """
+    """Wraps the Anthropic Claude API to produce cited answers from context."""
 
     def __init__(
         self,
@@ -80,7 +59,6 @@ class AnswerGenerator:
         model_name: str = "claude-haiku-4-5-20251001",
     ):
         self.backend = backend
-        # Use Sonnet for higher answer quality, Haiku for speed/cost
         self.model_name = model_name
 
     def _build_context_block(self, chunks: list[dict]) -> str:
@@ -101,7 +79,6 @@ class AnswerGenerator:
         return "\n\n---\n\n".join(parts)
 
     def _build_user_prompt(self, query: str, chunks: list[dict]) -> str:
-        """Combine context and query into the user-turn message."""
         context = self._build_context_block(chunks)
         return (
             f"Documentation context:\n\n{context}\n\n"
@@ -116,17 +93,7 @@ class AnswerGenerator:
         chunks: list[dict],
         max_new_tokens: int = 500,
     ) -> GeneratorOutput:
-        """
-        Generate a cited answer from the selected context chunks.
-
-        Args:
-            query: The (possibly reformulated) user query.
-            chunks: Context chunks selected by the pruning stage.
-            max_new_tokens: Max tokens for the generated answer.
-
-        Returns:
-            GeneratorOutput with the answer, token counts, and timing.
-        """
+        """Generate a cited answer from the selected context chunks."""
         if not chunks:
             logger.warning("No context chunks provided to generator.")
             return GeneratorOutput(
@@ -150,14 +117,11 @@ class AnswerGenerator:
         chunks: list[dict],
         max_new_tokens: int,
     ) -> GeneratorOutput:
-        """Call the Anthropic API and return a GeneratorOutput."""
         import anthropic
 
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
-            raise RuntimeError(
-                "ANTHROPIC_API_KEY not set. Export it before running generation."
-            )
+            raise RuntimeError("ANTHROPIC_API_KEY not set.")
 
         client = anthropic.Anthropic(api_key=api_key)
 
@@ -171,13 +135,8 @@ class AnswerGenerator:
         )
         elapsed = time.perf_counter() - start
 
-        answer = msg.content[0].text
-
-        # Token counts come directly from the API response — more accurate
-        # than any local approximation, and these are what we report in
-        # the efficiency ablation table.
         return GeneratorOutput(
-            answer=answer,
+            answer=msg.content[0].text,
             sources=chunks,
             model_name=self.model_name,
             prompt_tokens=msg.usage.input_tokens,

@@ -1,21 +1,13 @@
 """
-Vision-Language Parser (Module 2 of the pipeline).
+Vision-Language Parser — converts a screenshot into structured retrieval cues.
 
-When a user uploads a screenshot, this module runs a Vision-Language Model
-on it and returns a structured interpretation: the error message, visual
-category, software components mentioned, and retrieval keywords.
+When a user uploads a screenshot, we run a VLM on it once and extract the
+error message, visual category, relevant software components, and keywords.
+That structured text is then injected into the retrieval query by the
+reformulator, which measurably improves retrieval for vague queries.
 
-That structured text is then injected into the query by the reformulator
-(Module 3), which measurably improves retrieval because the reformulated
-query contains actual error terms rather than vague natural language.
-
-Supported backends:
-  - anthropic  : Claude claude-haiku-4-5-20251001 via API (recommended, fast)
-  - openai     : GPT-4o-mini via API (alternative)
-  - internvl2  : InternVL2-2B or 7B running locally on GPU (no API cost)
-
-The VLP runs once per screenshot. Output is cached in the PipelineOutput
-so downstream stages don't re-run it.
+Supported backends: anthropic (Claude Haiku), openai (GPT-4o-mini),
+internvl2 (local GPU, no API cost).
 """
 
 import os
@@ -24,7 +16,6 @@ import io
 import json
 import base64
 import logging
-from pathlib import Path
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
@@ -60,8 +51,8 @@ class VLPOutput:
         return " ".join(parts)
 
 
-# The exact prompt sent to the VLM. Returning JSON makes parsing reliable
-# across all backends and avoids brittle regex on free-form prose.
+# Returning JSON makes parsing reliable across all backends and avoids
+# brittle regex on free-form prose from different model families.
 VLP_PROMPT = """Analyze this technical screenshot carefully. It is from a PyTorch
 troubleshooting context.
 
@@ -81,7 +72,6 @@ Do not include any text outside the JSON object.
 def _parse_vlp_json(raw: str) -> dict:
     """Pull the JSON object out of raw VLM output, handling markdown fences."""
     raw = raw.strip()
-    # Strip markdown code fences if the model wrapped the JSON
     match = re.search(r"\{.*\}", raw, re.DOTALL)
     if not match:
         return {}
@@ -99,15 +89,8 @@ def _image_to_base64_png(image: Image.Image) -> str:
     return base64.b64encode(buf.getvalue()).decode("utf-8")
 
 
-# ─── Backend: Anthropic Claude (recommended) ─────────────────────────────────
-
 class _ClaudeVisionBackend:
-    """
-    Uses claude-haiku-4-5-20251001 via the Anthropic API.
-
-    Haiku is fast and cheap for the VLP step, which just needs to extract
-    structured cues from the image — it doesn't need Sonnet-level reasoning.
-    """
+    """Claude Haiku via Anthropic API. Fast and cheap for structured extraction."""
 
     def __init__(self, model_name: str = "claude-haiku-4-5-20251001"):
         self.model_name = model_name
@@ -115,9 +98,7 @@ class _ClaudeVisionBackend:
     def describe(self, image: Image.Image) -> str:
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
-            raise RuntimeError(
-                "ANTHROPIC_API_KEY not set. Export it before running the VLP."
-            )
+            raise RuntimeError("ANTHROPIC_API_KEY not set.")
 
         import anthropic
 
@@ -148,10 +129,8 @@ class _ClaudeVisionBackend:
         return msg.content[0].text.strip()
 
 
-# ─── Backend: OpenAI GPT-4o-mini ─────────────────────────────────────────────
-
 class _OpenAIVisionBackend:
-    """Uses GPT-4o-mini via the OpenAI API."""
+    """GPT-4o-mini via OpenAI API."""
 
     def __init__(self, model_name: str = "gpt-4o-mini"):
         self.model_name = model_name
@@ -184,14 +163,12 @@ class _OpenAIVisionBackend:
         return response.choices[0].message.content.strip()
 
 
-# ─── Backend: InternVL2 (local GPU) ──────────────────────────────────────────
-
 class _InternVL2Backend:
     """
-    Runs InternVL2-2B or 7B locally on GPU.
+    InternVL2-2B or 7B running locally on GPU.
 
-    Use this when you don't want API costs and have a GPU available.
-    The 2B model is fast; 7B gives better extraction for complex screenshots.
+    Use this when you want zero API cost and have a GPU available.
+    The 2B model is fast; 7B gives better extraction on complex screenshots.
     """
 
     def __init__(self, model_name: str = "OpenGVLab/InternVL2-2B"):
@@ -245,20 +222,8 @@ class _InternVL2Backend:
         )
 
 
-# ─── Public interface ─────────────────────────────────────────────────────────
-
 class VisionLanguageParser:
-    """
-    Module 2: Vision-Language Parser.
-
-    Takes a screenshot and returns a structured VLPOutput dict that the
-    query reformulator (Module 3) uses to improve retrieval.
-
-    Usage:
-        vlp = VisionLanguageParser(backend="anthropic")
-        result = vlp.parse(image_path="screenshot.png")
-        print(result.error_message)
-    """
+    """Takes a screenshot and returns structured VLPOutput for the reformulator."""
 
     BACKENDS = {
         "anthropic": _ClaudeVisionBackend,
@@ -281,12 +246,7 @@ class VisionLanguageParser:
         image: Optional[Image.Image] = None,
         image_path: Optional[str] = None,
     ) -> VLPOutput:
-        """
-        Parse a screenshot and return structured visual cues.
-
-        Pass either a PIL Image or a file path — not both.
-        Returns an empty VLPOutput if neither is provided.
-        """
+        """Parse a screenshot and return structured visual cues."""
         if image is None and image_path is None:
             return VLPOutput()
 

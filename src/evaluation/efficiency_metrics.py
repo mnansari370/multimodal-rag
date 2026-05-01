@@ -1,8 +1,5 @@
 """
-Efficiency evaluation — measures token cost and latency for the ablation table.
-
-This is what produces the core comparison table from Section 6.2:
-  Setting | Prompt tokens | Latency (s) | Faithfulness | Answer score
+Efficiency evaluation — token cost and latency tracking across pipeline runs.
 """
 
 import time

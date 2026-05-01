@@ -29,14 +29,6 @@ _pipeline: MultimodalRAGPipeline = None
 THEME = gr.themes.Soft(
     primary_hue=gr.themes.colors.blue,
     neutral_hue=gr.themes.colors.slate,
-    font=[gr.themes.GoogleFont("Inter"), "ui-sans-serif", "sans-serif"],
-).set(
-    button_primary_background_fill="linear-gradient(90deg, #1e40af, #2563eb)",
-    button_primary_background_fill_hover="linear-gradient(90deg, #1d3fad, #1d4ed8)",
-    button_primary_text_color="#ffffff",
-    button_primary_border_color="transparent",
-    block_label_text_size="sm",
-    block_label_text_weight="600",
 )
 
 
@@ -81,15 +73,19 @@ CSS = """
 }
 
 /* ── Submit button ── */
-#submit-btn {
+#submit-btn, #submit-btn button {
     width: 100% !important;
     padding: 13px !important;
     font-size: 1rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.2px !important;
     border-radius: 8px !important;
+    background: linear-gradient(90deg, #1e40af, #2563eb) !important;
+    color: #fff !important;
+    border: none !important;
     box-shadow: 0 2px 10px rgba(37,99,235,0.35) !important;
     margin-top: 4px !important;
+    cursor: pointer !important;
 }
 
 /* ── Output containers ── */
